@@ -44,6 +44,9 @@ def _bbs_disable_interactions_on_zone_load(event: BBOnZoneLoadEndEvent):
         # Call a FireFighter
         237652,  # phone_CallFirefighter
         239064,  # fire_CallFirefighter
+        212088,  # sink_washHands_OffTheGrid
+        212217,  # sink_BrushTeeth_OffTheGrid
+        212246,  # shower_TakeShower_OffTheGrid
     ]
 
     # noinspection PyBroadException
