@@ -47,6 +47,11 @@ def _bbs_disable_interactions_on_zone_load(event: BBOnZoneLoadEndEvent):
         212088,  # sink_washHands_OffTheGrid
         212217,  # sink_BrushTeeth_OffTheGrid
         212246,  # shower_TakeShower_OffTheGrid
+        # Purchase
+        256727,  # purchasePickerInteraction_AnimalObjects_Chickens
+        265795,  # purchasePickerInteraction_AnimalObjects_LivestockPen
+        303830,  # purchasePickerInteraction_AnimalObjects_GoatSheep
+        311069,  # purchasePickerInteraction_AnimalObjects_GoatSheep_FromPhone
     ]
 
     # noinspection PyBroadException

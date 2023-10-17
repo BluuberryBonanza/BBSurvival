@@ -6,13 +6,12 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 Copyright (c) BLUUBERRYBONANZA
 """
 import services
+from bbsurvival.bb_lib.utils.bb_eco_lifestyle_utility_utils import BBEcoLifestyleUtilityUtils
 from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
 from bluuberrylibrary.mod_identity import ModIdentity
-from objects.components.statistic_component import StatisticComponent
 from sims.household_utilities.utilities_manager import ZoneUtilitiesManager, UtilityInfo
 from sims.household_utilities.utility_types import Utilities
 from sims4.commands import CommandType, Command
-from sims4.resources import Types
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbl_print_utilities')
 log.enable()
@@ -28,17 +27,12 @@ def _bbl_command_print_utilities(_connection: int = None):
     output('Printing utility info.')
     try:
         current_zone_id = services.current_zone_id()
-        zone = services.get_zone(current_zone_id)
-        lot = zone.lot
-        import objects.components.types
-        statistic_component: StatisticComponent = None if lot is None else lot.get_component(objects.components.types.STATISTIC_COMPONENT)
-        instance_manager = services.get_instance_manager(Types.STATISTIC)
-        statistic_power = instance_manager.get(233027)  # commodity_Utilities_Power
-        statistic_water = instance_manager.get(233028)  # commodity_Utilities_Water
-        power_value = statistic_component.get_stat_value(statistic_power)
-        water_value = statistic_component.get_stat_value(statistic_water)
+        power_value = BBEcoLifestyleUtilityUtils.get_power_level(current_zone_id)
+        water_value = BBEcoLifestyleUtilityUtils.get_water_level(current_zone_id)
+        eco_footprint_value = BBEcoLifestyleUtilityUtils.get_eco_footprint_level(current_zone_id)
         output(f'POWER: {power_value}.')
         output(f'WATER: {water_value}.')
+        output(f'ECO FOOTPRINT: {eco_footprint_value}.')
         utilities_manager: ZoneUtilitiesManager = services.get_utilities_manager_by_zone_id(current_zone_id)
         power_utility_info: UtilityInfo = utilities_manager.get_utility_info(Utilities.POWER)
         power_surplus = power_utility_info.surplus
@@ -65,14 +59,7 @@ def _bbl_command_set_power_level(amount: float, _connection: int = None):
     output(f'Setting power level of current lot to {amount}.')
 
     current_zone_id = services.current_zone_id()
-    zone = services.get_zone(current_zone_id)
-    lot = zone.lot
-    import objects.components.types
-    statistic_component: StatisticComponent = None if lot is None else lot.get_component(
-        objects.components.types.STATISTIC_COMPONENT)
-    instance_manager = services.get_instance_manager(Types.STATISTIC)
-    statistic_power = instance_manager.get(233027)  # commodity_Utilities_Power
-    statistic_component.set_stat_value(statistic_power, amount)
+    BBEcoLifestyleUtilityUtils.set_power_level(current_zone_id, amount)
 
 
 @Command(
@@ -85,11 +72,17 @@ def _bbl_command_set_water_level(amount: float, _connection: int = None):
     output(f'Setting water level of current lot to {amount}.')
 
     current_zone_id = services.current_zone_id()
-    zone = services.get_zone(current_zone_id)
-    lot = zone.lot
-    import objects.components.types
-    statistic_component: StatisticComponent = None if lot is None else lot.get_component(
-        objects.components.types.STATISTIC_COMPONENT)
-    instance_manager = services.get_instance_manager(Types.STATISTIC)
-    statistic_water = instance_manager.get(233028)  # commodity_Utilities_Water
-    statistic_component.set_stat_value(statistic_water, amount)
+    BBEcoLifestyleUtilityUtils.set_water_level(current_zone_id, amount)
+
+
+@Command(
+    'bbl.set_eco_footprint_level',
+    command_type=CommandType.Live
+)
+def _bbl_command_set_eco_footprint_level(amount: float, _connection: int = None):
+    from sims4.commands import CheatOutput
+    output = CheatOutput(_connection)
+    output(f'Setting eco footprint level of current lot to {amount}.')
+
+    current_zone_id = services.current_zone_id()
+    BBEcoLifestyleUtilityUtils.set_eco_footprint_level(current_zone_id, amount)
