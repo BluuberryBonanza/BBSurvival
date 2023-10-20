@@ -29,7 +29,7 @@ class BBSScavengeQuickInteraction(BBSuperInteraction):
     def get_log_name(cls) -> str:
         return 'bbs_scavenge_quick_interaction'
 
-    def bbl_started(self, interaction_sim_info: SimInfo, interaction_target: Any) -> BBTestResult:
+    def bbl_started(self, interaction_sim_info: SimInfo, interaction_target_sim_info: Any) -> BBTestResult:
         def _on_leave_rabbit_hole(_sim_info: SimInfo, cancelled: bool):
             if cancelled:
                 return
@@ -38,7 +38,7 @@ class BBSScavengeQuickInteraction(BBSuperInteraction):
             except Exception as ex:
                 self.get_log().error('An error occurred while giving scavenging rewards.', exception=ex)
 
-        success = BBSimRabbitHoleUtils.send_into_rabbit_hole(interaction_sim_info, BBSRabbitHoleId.SCAVENGE_QUICK, on_leave_rabbit_hole=_on_leave_rabbit_hole)
+        success = BBSimRabbitHoleUtils.send_into_rabbit_hole(interaction_target_sim_info, BBSRabbitHoleId.SCAVENGE_QUICK, on_leave_rabbit_hole=_on_leave_rabbit_hole)
 
         if success:
             return BBTestResult.TRUE

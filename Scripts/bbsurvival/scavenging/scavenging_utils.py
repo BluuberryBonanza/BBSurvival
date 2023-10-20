@@ -17,7 +17,7 @@ from bluuberrylibrary.dialogs.notifications.bb_notification import BBNotificatio
 from bluuberrylibrary.enums.string_ids import BBStringId
 from bluuberrylibrary.logs.bb_log_mixin import BBLogMixin
 from bluuberrylibrary.mod_registration.bb_mod_identity import BBModIdentity
-from bluuberrylibrary.utils.bb_localization_utils import BBLocalizationUtils
+from bluuberrylibrary.utils.text.bb_localization_utils import BBLocalizationUtils
 from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
 from distributor.shared_messages import IconInfoData
 from objects.game_object import GameObject

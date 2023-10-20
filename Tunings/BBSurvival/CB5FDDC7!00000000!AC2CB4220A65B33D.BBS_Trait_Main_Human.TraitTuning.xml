@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="Trait" i="trait" m="traits.traits" n="BBS_Trait_Main_Human" s="12406489131795198781">
+  <L n="ages">
+	<E>INFANT</E>
+	<E>TODDLER</E>
+	<E>CHILD</E>
+	<E>TEEN</E>
+	<E>YOUNGADULT</E>
+	<E>ADULT</E>
+	<E>ELDER</E>
+  </L>
+  <L n="species">
+    <E>HUMAN</E>
+  </L>
+  <L n="actor_mixers">
+    <U>
+      <T n="key">13998<!--sim_Chat--></T>
+      <L n="value">
+        <T>7008747167992817329<!--BBS_Settlement_Interaction_AskToJoinSettlement_Mixer--></T>
+      </L>
+    </U>
+  </L>
+  <T n="buffs_add_on_spawn_only">False</T>
+  <T n="display_name">0xA74483D3<!--BBS Main Trait--></T>
+  <T n="display_name_gender_neutral">0xA74483D3<!--BBS Main Trait--></T>
+  <L n="event_test_based_loots">
+    <U>
+      <T n="loot">247120<!--loot_Lifestyles_Progress_Unlock_Technophobe--></T>
+      <V n="test" t="utility">
+        <U n="utility">
+          <L n="utility_states">
+            <U>
+              <T n="require_active">False</T>
+            </U>
+          </L>
+        </U>
+      </V>
+    </U>
+  </L>
+  <T n="icon" p="InGame\UI\Icons\SimSocialStatus\SimSocialStatus_Age_Adult.png">2f7d0004:00000000:810e3a4d4bf15fbc</T>
+  <E n="min_lod_value">MINIMUM</E>
+  <E n="trait_type">HIDDEN</E>
+</I>
