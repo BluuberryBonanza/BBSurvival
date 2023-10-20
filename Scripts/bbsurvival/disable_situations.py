@@ -7,6 +7,7 @@ from buffs.buff import Buff
 from celebrity_fans.fan_situation_manager import FanSituationManager
 from sims4.commands import Command, CommandType
 from sims4.resources import Types
+from situations.ambient.ambient_service import _AmbientSourceStreet
 from situations.situation import Situation
 from venues.scheduling_zone_director import SchedulingZoneDirectorMixin
 
@@ -34,12 +35,6 @@ def _bbs_command_print_walkbys(_connection: int = None):
     except Exception as ex:
         output('Error occurred.')
         log.error('Problem occurred', exception=ex)
-
-
-# @BBInjectionUtils.inject(ModIdentity(), _AmbientSourceStreet, _AmbientSourceStreet.start_appropriate_situation.__name__)
-def _bbs_disable_base_walk_bys(original, self, *_, **__):
-    log.debug('walkby', walkby_tuning=self._walkby_tuning)
-    return original(self, *_, **__)
 
 
 # @BBInjectionUtils.inject(ModIdentity(), Situation, Situation.start_situation.__name__)
@@ -1764,6 +1759,15 @@ log = BBLogRegistry().register_log(ModIdentity(), 'bbs_situation_disabler')
 log.enable()
 
 
+@BBInjectionUtils.inject(ModIdentity(), _AmbientSourceStreet, _AmbientSourceStreet._start_specific_situation.__name__)
+def _bbs_disable_ambiet_source_street_walk_bys(original, self, situation_type, *_, **__):
+    situation_id = BBSituationUtils.get_situation_guid(situation_type)
+    if situation_id in BBSituationDisabler.DISABLED_SITUATION_IDS:
+        log.debug('Preventing AmbientSourceStreet Situation from starting.', situation=situation_type, situation_id=situation_id)
+        return False
+    return original(self, situation_type, *_, **__)
+
+
 @BBInjectionUtils.inject(ModIdentity(), SchedulingZoneDirectorMixin, SchedulingZoneDirectorMixin.can_schedule_situation.__name__)
 def _bbs_disable_certain_situations_can_schedule(original, self, situation, *_, **__):
     situation_id = BBSituationUtils.get_situation_guid(situation)
@@ -1783,7 +1787,7 @@ def _bbs_disable_fan_situations(original, self, *_, **__):
 def _bbs_disable_buff_situations(original, self, *_, **__):
     if self.auto_situation is None:
         return original(self, *_, **__)
-    situation = self.auto_situation
+    situation = self.auto_situation.situation
     situation_id = BBSituationUtils.get_situation_guid(situation)
     if situation_id in BBSituationDisabler.DISABLED_SITUATION_IDS:
         log.debug('Preventing Situation from starting.', situation=situation, situation_id=situation_id)

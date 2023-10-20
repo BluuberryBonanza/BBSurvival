@@ -84,6 +84,9 @@ def _bbs_disable_interactions_on_zone_load(event: BBOnZoneLoadEndEvent):
         interaction_ids.extend(quick_meal_interaction_ids)
 
     for interaction_id in interaction_ids:
+        interaction = BBInteractionUtils.load_interaction_by_guid(interaction_id)
+        if interaction is None:
+            continue
         impossible_sim_info_test = SimInfoTest()
         impossible_sim_info_test.who = ParticipantType.Actor
         impossible_sim_info_test.gender = None
@@ -94,6 +97,5 @@ def _bbs_disable_interactions_on_zone_load(event: BBOnZoneLoadEndEvent):
         impossible_sim_info_test.has_been_played = False
         impossible_sim_info_test.is_active_sim = True
         impossible_sim_info_test.match_type = MatchType.MATCH_ALL
-        interaction = BBInteractionUtils.load_interaction_by_guid(interaction_id)
         interaction.test_globals = TestList((impossible_sim_info_test,))
     return TestResult.TRUE

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="RabbitHole" i="rabbit_hole" m="rabbit_hole.rabbit_hole" n="BBS_RabbitHole_Scavenging_Quick" s="16565740869551071219">
+  <T n="affordance">3381143320838695304<!--BBS_RabbitHole_Interaction_Scavenging_Quick--></T>
+  <V n="away_action" t="enabled">
+    <T n="enabled">11876769096457821896<!--BBS_RabbitHole_AwayAction_Scavenging_Quick--></T>
+  </V>
+  <L n="loot_list">
+    <T>9953209831826340977<!--BBS_RabbitHole_LootActions_Scavenging_Quick--></T>
+  </L>
+  <L n="tested_affordances">
+    <U>
+      <T n="affordance">3381143320838695304<!--BBS_RabbitHole_Interaction_Scavenging_Quick--></T>
+    </U>
+  </L>
+</I>
