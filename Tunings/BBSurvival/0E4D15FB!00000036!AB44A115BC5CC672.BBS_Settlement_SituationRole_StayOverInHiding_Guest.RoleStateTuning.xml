@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="RoleState" i="role_state" m="role.role_state" n="BBS_Settlement_SituationRole_StayOverInHiding_Guest" s="12341165993628583538">
+  <L n="_buffs">
+    <U>
+      <T n="buff_type">101052<!--Buff_Role_Appropriateness_NoCallToMeal--></T>
+    </U>
+    <U>
+      <T n="buff_type">303300<!--buff_TemporaryStay_Hidden_Guest--></T>
+    </U>
+    <U>
+      <T n="buff_type">3395655258979769929<!--BBS_Settlement_Buff_StayOverInHiding_Guest--></T>
+    </U>
+  </L>
+  <U n="_off_lot_autonomy_buff">
+    <T n="buff_type">38292<!--buff_offLotAutonomyMod_OnLotOnly--></T>
+  </U>
+  <V n="_on_activate" t="push_affordance">
+    <U n="push_affordance">
+      <T n="affordance">322380<!--solo_TemporaryStay_Arrival--></T>
+    </U>
+  </V>
+  <L n="tags">
+    <E>Appropriateness_CallToMeal</E>
+  </L>
+</I>

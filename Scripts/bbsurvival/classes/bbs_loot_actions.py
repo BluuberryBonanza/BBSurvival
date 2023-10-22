@@ -1,3 +1,4 @@
+import services
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
 from interactions import ParticipantType
@@ -38,12 +39,45 @@ class BBSAddToSettlementLootOp(BaseTargetedLootOperation):
         BBSimHouseholdUtils.move_to_household_of_sim(sim_info, target_sim_info)
 
 
+class BBSLightOnFireLootOp(BaseTargetedLootOperation):
+    FACTORY_TUNABLES = {
+        'subject': TunableEnumEntry(
+            description='\n            The thing we want to set on fire.\n            ',
+            tunable_type=ParticipantType,
+            default=ParticipantType.Object
+        ),
+    }
+
+    __slots__ = {'subject'}
+
+    def __init__(self, *_, subject=ParticipantType.Object, **__) -> None:
+        super().__init__(*_, **__)
+        self.subject = subject
+
+    def _apply_to_subject_and_target(self, subject, target, resolver) -> None:
+        if self._tests:
+            test_result = self._tests.run_tests(resolver)
+            if not test_result:
+                return test_result
+
+        fire_service = services.get_fire_service()
+        if fire_service is None:
+            return
+        fire_service.spawn_fire_at_object(subject)
+
+
 class BBSLootActionVariant(LootActionVariant):
     def __init__(self, *args, statistic_pack_safe=False, **kwargs) -> None:
         super().__init__(
             *args,
             statistic_pack_safe=statistic_pack_safe,
             add_to_settlement=BBSAddToSettlementLootOp.TunableFactory(
+                target_participant_type_options={
+                    'description': '\n                    The participant of the interaction\n                    ',
+                    'default_participant': ParticipantType.Object
+                }
+            ),
+            light_on_fire=BBSLightOnFireLootOp.TunableFactory(
                 target_participant_type_options={
                     'description': '\n                    The participant of the interaction\n                    ',
                     'default_participant': ParticipantType.Object

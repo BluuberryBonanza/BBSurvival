@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="BBSLootActions" i="action" m="bbsurvival.classes.bbs_loot_actions" n="BBS_Pyro_LootActions_LightOnFire_TargetObject" s="7370321681240190352">
+  <L n="loot_actions">
+    <V t="light_on_fire">
+      <U n="light_on_fire">
+        <E n="subject">Object</E>
+      </U>
+    </V>
+  </L>
+</I>

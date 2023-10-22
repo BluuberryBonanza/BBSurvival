@@ -76,7 +76,7 @@ class BBSScavengingUtils(BBLogMixin):
         run_length_value = int(run_length)
         seed_count = 5 * run_length_value
         fruit_count = 5 * run_length_value
-        animal_count = 5 * run_length_value
+        animal_count = 2 * run_length_value
         ingredient_count = 5 * run_length_value
         mineral_count = 5 * run_length_value
 
