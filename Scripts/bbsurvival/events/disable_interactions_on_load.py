@@ -54,35 +54,6 @@ def _bbs_disable_interactions_on_zone_load(event: BBOnZoneLoadEndEvent):
         311069,  # purchasePickerInteraction_AnimalObjects_GoatSheep_FromPhone
     ]
 
-    # noinspection PyBroadException
-    try:
-        import nomorequickmeals
-    except:
-        # No More Snacks is not installed, so we'll exclude these automatically.
-        quick_meal_interaction_ids = [
-            # Grab a Quick Meal
-            13396,  # fridge_GrabSnack
-            13397,  # fridge_GrabSnackAutonomously
-            266693,  # fridge_GrabSnackAutonomously_LactoseIntolerant
-            181585,  # fridge_GrabCookiesAutonomously
-            145873,  # fridge_Butler_CookGourmetPartyMeal
-            145872,  # fridge_Butler_CookPartyMeal
-            145871,  # fridge_Butler_CookGourmetFamilyMeal
-            145851,  # fridge_Butler_MakeSnack
-            126096,  # fridge_Cook_SpookyPartyFood_Autonomously
-            350833,  # lunchbox_GrabSnackAutonomously
-            350013,  # lunchbox_Craft_HaveQuickMeal
-            103037,  # cooler_GrabSnackAutonomously
-            102276,  # cooler_Craft_HaveQuickMeal
-            77672,  # fridge_GrabSnack_PieMenu
-            13601,  # microwave_StartCrafting
-            217063,  # fridge_GrabSnack_Microwave_PieMenu
-            164448,  # fridge_GrabSackLunch
-            270682,  # fridge_GrabSackLunch_RequiredIngredients
-        ]
-
-        interaction_ids.extend(quick_meal_interaction_ids)
-
     for interaction_id in interaction_ids:
         interaction = BBInteractionUtils.load_interaction_by_guid(interaction_id)
         if interaction is None:
