@@ -5,9 +5,3 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 
 Copyright (c) BLUUBERRYBONANZA
 """
-
-
-class BBSInteractionId:
-    SCAVENGE_QUICK = 10823191732913407929
-    LIGHT_ON_FIRE = 15326837819522616760
-    EAT_HARVESTABLE = 3558233205551617596

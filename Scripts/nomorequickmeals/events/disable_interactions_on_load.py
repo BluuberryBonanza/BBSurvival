@@ -13,12 +13,12 @@ from event_testing.tests import TestList
 from interactions import ParticipantType
 from nomorequickmeals.mod_identity import ModIdentity
 from sims.sim_info_tests import SimInfoTest, MatchType
-interactions_disabled = False
+interactions_modified = False
 
 
 @BBEventHandlerRegistry.register(ModIdentity(), BBOnZoneLoadEndEvent)
 def _nms_disable_interactions_on_zone_load(event: BBOnZoneLoadEndEvent):
-    global interactions_disabled
+    global interactions_modified
     if interactions_disabled:
         return
     interactions_disabled = True

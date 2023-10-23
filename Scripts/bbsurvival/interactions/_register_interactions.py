@@ -109,3 +109,99 @@ class _BBSObjectInteractionRegistration(BBObjectInteractionHandler):
         if definition_id in excluded_animal_definition_ids:
             return False
         return super_result
+
+
+# @BBInteractionRegistry.register()
+class _BBSObjectFoodInteractionRegistration(BBObjectInteractionHandler):
+
+    @property
+    def interaction_guids(self) -> Tuple[int]:
+        return (
+            BBSInteractionId.EAT_HARVESTABLE,
+        )
+
+    def should_register(self, game_object: GameObject) -> bool:
+        super_result = super().should_register(game_object)
+        if not super_result:
+            return super_result
+        included_object_definition_ids = (
+            270185,  # gardenFruitCropLarge_EP11GENAubergine_set1
+            270186,  # gardenFruitCropLarge_EP11GENLettuce_set1
+            270187,  # gardenFruitCropLarge_EP11GENPumpkin_set1
+            286426,  # gardenFruitCropLarge_EP11GENPumpkin_set2
+            286427,  # gardenFruitCropLarge_EP11GENPumpkin_set3
+            271873,  # gardenFruitCropLarge_EP11GENWatermelon_set1
+            283842,  # gardenFruitCropLarge_EP11GENmushroom_set1
+            270295,  # gardenFruitCropMedium_EP11GENAubergine_set1
+            270297,  # gardenFruitCropMedium_EP11GENLettuce_set1
+            270299,  # gardenFruitCropMedium_EP11GENPumpkin_set1
+            286424,  # gardenFruitCropMedium_EP11GENPumpkin_set2
+            286425,  # gardenFruitCropMedium_EP11GENPumpkin_set3
+            271875,  # gardenFruitCropMedium_EP11GENWatermelon_set1
+            283840,  # gardenFruitCropMedium_EP11GENmushroom_set1
+            270289,  # gardenFruitCropSmall_EP11GENAubergine_set1
+            270291,  # gardenFruitCropSmall_EP11GENLettuce_set1
+            270293,  # gardenFruitCropSmall_EP11GENPumpkin_set1
+            286422,  # gardenFruitCropSmall_EP11GENPumpkin_set2
+            286423,  # gardenFruitCropSmall_EP11GENPumpkin_set3
+            271877,  # gardenFruitCropSmall_EP11GENWatermelon_set1
+            283838,  # gardenFruitCropSmall_EP11GENmushroom_set1
+            165689,  # gardenFruitEF05GENforbiddenFruit
+            29009,  # gardenFruitGENAlien_01
+            21939,  # gardenFruitGENApple_01
+            48368,  # gardenFruitGENApple_vfxTest
+            23438,  # gardenFruitGENBlackberry_01
+            45767,  # gardenFruitGENBonsai
+            45299,  # gardenFruitGENCarrot_01
+            22467,  # gardenFruitGENCherry_01
+            37858,  # gardenFruitGENCowplant_01
+            23440,  # gardenFruitGENDragon_01
+            23442,  # gardenFruitGENGrapes_01
+            22466,  # gardenFruitGENLemon_01
+            45311,  # gardenFruitGENMushroom_01
+            23445,  # gardenFruitGENPear_01
+            22468,  # gardenFruitGENPlantain_01
+            23439,  # gardenFruitGENPomegranate_01
+            23437,  # gardenFruitGENStrawberry_01
+            46336,  # gardenFruitGENTomato_01
+            188687,  # gardenFruit_EP05GENgreenBeans
+            188689,  # gardenFruit_EP05GENgreenPeppers
+            188693,  # gardenFruit_EP05GENmoney
+            188691,  # gardenFruit_EP05GENpeas
+            215737,  # gardenFruit_EP07GENcoconut
+            213665,  # gardenFruit_EP07GENkava
+            215738,  # gardenFruit_EP07GENpineapple
+            242040,  # gardenFruit_EP09GENsoybean
+            270257,  # gardenFruit_EP11GENBlueberry_set1
+            286364,  # gardenFruit_EP11GENMushroomWildBasic
+            272255,  # gardenFruit_EP11GENMushroomWildSpicy
+            272253,  # gardenFruit_EP11GENMushroomWildVerdant
+            270259,  # gardenFruit_EP11GENRaspberry_set1
+            272254,  # gardenFruit_EP11GENmushroomWildCharming
+            272256,  # gardenFruit_EP11GENmushroomWildLovely
+            271725,  # gardenFruit_EP11GENmushroomWildMysterious
+            270260,  # gardenFruit_EP11GENmushroomWildNightly
+            125468,  # gardenFruit_GENGrowfruit_01
+            66140,  # gardenFruit_GP01GENelderberry
+            67556,  # gardenFruit_GP01GENhuckleberry
+            66145,  # gardenFruit_GP01GENmushroomMorel
+            147404,  # gardenFruit_GP04GENmosquito
+            144964,  # gardenFruit_GP04GENplasma
+            178855,  # gardenFruit_GP06GENBlackBean
+            187285,  # gardenFruit_GP06GENBlackBean_01
+            178801,  # gardenFruit_GP06GENEmotionalBerry_confident
+            178802,  # gardenFruit_GP06GENEmotionalBerry_energized
+            178803,  # gardenFruit_GP06GENEmotionalBerry_flirty
+            178804,  # gardenFruit_GP06GENEmotionalBerry_focused
+            178800,  # gardenFruit_GP06GENEmotionalBerry_happy
+            178805,  # gardenFruit_GP06GENEmotionalBerry_inspired
+            178806,  # gardenFruit_GP06GENEmotionalBerry_playful
+            178808,  # gardenFruit_GP06GENavocado
+            187283,  # gardenFruit_GP06GENavocado_01
+            227207,  # gardenFruit_GP08GENmandrake
+            227209,  # gardenFruit_GP08GENvalerian
+        )
+        definition_id = game_object.definition.id
+        if definition_id not in included_object_definition_ids:
+            return False
+        return super_result
