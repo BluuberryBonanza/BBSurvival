@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="TestSetInstance" i="snippet" m="event_testing.tests" n="BBS_Scavenge_TestSet_NotAngry_Actor" s="2736072745268911039">
+  <L n="test">
+    <L>
+      <V t="mood">
+        <U n="mood">
+          <T n="disallow">True</T>
+          <T n="mood">14632<!--Mood_Angry--></T>
+          <E n="who">Actor</E>
+          <V n="tooltip" t="enabled">
+            <T n="enabled">0x630A426D<!--{0.SimFirstName} is too Angry to do this!--></T>
+          </V>
+        </U>
+      </V>
+    </L>
+  </L>
+</I>

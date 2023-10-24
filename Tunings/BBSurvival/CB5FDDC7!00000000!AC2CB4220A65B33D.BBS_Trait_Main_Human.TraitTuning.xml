@@ -20,6 +20,11 @@
       </L>
     </U>
   </L>
+  <L n="super_affordances">
+    <T>1821652105402754157<!--BBS_Scavenge_RabbitHole_Interaction_Scavenge_Quick_Start--></T>
+    <T>14324793451058723617<!--BBS_Scavenge_RabbitHole_Interaction_Scavenge_Moderate_Start--></T>
+    <T>12870447787021869724<!--BBS_Scavenge_RabbitHole_Interaction_Scavenge_Long_Start--></T>
+  </L>
   <T n="buffs_add_on_spawn_only">False</T>
   <T n="display_name">0xA74483D3<!--BBS Main Trait--></T>
   <T n="display_name_gender_neutral">0xA74483D3<!--BBS Main Trait--></T>

@@ -10,18 +10,7 @@ from typing import Tuple
 from bbsurvival.enums.interaction_ids import BBSInteractionId
 from bluuberrylibrary.interactions.registration.bb_interaction_registry import BBInteractionRegistry
 from bluuberrylibrary.interactions.registration.handlers.bb_object_interaction_handler import BBObjectInteractionHandler
-from bluuberrylibrary.interactions.registration.handlers.bb_sim_interaction_handler import BBSimInteractionHandler
 from objects.game_object import GameObject
-
-
-@BBInteractionRegistry.register()
-class _BBSSimInteractionRegistration(BBSimInteractionHandler):
-
-    @property
-    def interaction_guids(self) -> Tuple[int]:
-        return (
-            BBSInteractionId.SCAVENGE_QUICK,
-        )
 
 
 @BBInteractionRegistry.register()

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="BBSScavengeInteraction" i="interaction" m="bbsurvival.interactions.scavenge_interaction" n="BBS_Scavenge_RabbitHole_Interaction_Scavenge_Long_Start" s="12870447787021869724">
+  <E n="run_length">LONG</E>
+  <V n="_icon" t="participant">
+    <U n="participant">
+      <L n="participant_type">
+        <E>Actor</E>
+      </L>
+    </U>
+  </V>
+  <L n="_false_advertisements">
+    <V t="statistic_change">
+      <U n="statistic_change">
+        <T n="amount">0.4</T>
+        <T n="stat">16655<!--motive_Fun--></T>
+      </U>
+    </V>
+  </L>
+  <V n="_saveable" t="enabled" />
+  <T n="allow_autonomous">True</T>
+  <T n="allow_user_directed">True</T>
+  <T n="attention_cost">0.5</T>
+  <L n="basic_extras">
+    <V t="change_outfit">
+      <U n="change_outfit">
+        <V n="outfit_change" t="for_reason">
+          <U n="for_reason">
+            <V n="on_entry" t="disabled" />
+            <V n="on_exit" t="enabled">
+              <E n="enabled">Category_Athletic</E>
+            </V>
+          </U>
+        </V>
+      </U>
+    </V>
+  </L>
+  <V n="basic_content" t="flexible_length">
+    <U n="flexible_length">
+      <L n="conditional_actions">
+        <V t="literal">
+          <U n="literal">
+            <L n="conditions">
+              <V t="time_based">
+                <U n="time_based">
+                  <T n="max_time">1</T>
+                  <T n="min_time">1</T>
+                </U>
+              </V>
+            </L>
+            <E n="interaction_action">EXIT_NATURALLY</E>
+          </U>
+        </V>
+      </L>
+      <T n="start_autonomous_inertial">False</T>
+    </U>
+  </V>
+  <V n="content_score" t="disabled" />
+  <T n="category">3306818262285983416<!--BBS_Pie_Survival--></T>
+  <T n="display_name">0x4D3482DD<!--Go Scavenging (Long)--></T>
+  <U n="display_name_text_tokens">
+    <L n="tokens">
+      <V t="participant_type">
+        <U n="participant_type">
+          <V n="objects" t="from_participant">
+            <U n="from_participant">
+              <E n="participant">Actor</E>
+            </U>
+          </V>
+        </U>
+      </V>
+      <V t="participant_type">
+        <U n="participant_type">
+          <V n="objects" t="from_participant">
+            <U n="from_participant">
+              <E n="participant">Object</E>
+            </U>
+          </V>
+        </U>
+      </V>
+    </L>
+  </U>
+  <L n="interaction_category_tags">
+    <E>Interaction_Super</E>
+    <E>Interaction_All</E>
+  </L>
+  <E n="scoring_priority">NORMAL</E>
+  <T n="subaction_selection_weight">1</T>
+  <E n="target_type">TARGET</E>
+  <L n="test_autonomous">
+    <L>
+      <V t="appropriateness" />
+      <V t="trait">
+        <U n="trait">
+          <L n="blacklist_traits">
+            <T>258759<!--trait_SimPreference_Dislikes_Activities_Fitness--></T>
+          </L>
+        </U>
+      </V>
+    </L>
+  </L>
+  <L n="test_globals">
+    <V t="test_set_reference">
+      <T n="test_set_reference">2736072745268911039<!--BBS_Scavenge_TestSet_NotAngry_Actor--></T>
+    </V>
+    <V t="test_set_reference">
+      <T n="test_set_reference">1417566161948442341<!--BBS_Scavenge_TestSet_NotFatigued_Actor--></T>
+    </V>
+    <V t="test_set_reference">
+      <T n="test_set_reference">134952<!--testSet_PregnantDisallow_InLabor--></T>
+    </V>
+    <V t="test_set_reference">
+      <T n="test_set_reference">97269<!--testSet_PregnantDisallow_3rdTrimester--></T>
+    </V>
+    <V t="test_set_reference">
+      <T n="test_set_reference">28305<!--testSet_EmotionNotMiserable--></T>
+    </V>
+    <V t="test_set_reference">
+      <T n="test_set_reference">97371<!--testSet_Fitness_PulledMuscle--></T>
+    </V>
+  </L>
+  <T n="time_overhead">30</T>
+</I>

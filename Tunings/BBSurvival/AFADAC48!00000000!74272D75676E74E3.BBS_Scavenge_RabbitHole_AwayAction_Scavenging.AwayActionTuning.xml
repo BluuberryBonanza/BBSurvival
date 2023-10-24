@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<I c="AwayAction" i="away_action" m="away_actions.away_actions" n="BBS_RabbitHole_AwayAction_Scavenging_Quick" s="11876769096457821896">
+<I c="AwayAction" i="away_action" m="away_actions.away_actions" n="BBS_Scavenge_RabbitHole_AwayAction_Scavenging" s="8369708414761071843">
   <L n="_exit_conditions" />
   <L n="_tests" />
   <V n="icon_data" t="enabled">

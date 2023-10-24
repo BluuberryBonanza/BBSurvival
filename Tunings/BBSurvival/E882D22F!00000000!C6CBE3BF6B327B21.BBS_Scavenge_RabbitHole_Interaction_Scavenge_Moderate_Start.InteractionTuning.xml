@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<I c="BBSScavengeQuickInteraction" i="interaction" m="bbsurvival.interactions.scavenge_quick_interaction" n="BBS_RabbitHole_Interaction_Scavenge_Quick" s="10823191732913407929">
+<I c="BBSScavengeInteraction" i="interaction" m="bbsurvival.interactions.scavenge_interaction" n="BBS_Scavenge_RabbitHole_Interaction_Scavenge_Moderate_Start" s="14324793451058723617">
+  <E n="run_length">MODERATE</E>
   <V n="_icon" t="participant">
     <U n="participant">
       <L n="participant_type">
@@ -7,7 +8,16 @@
       </L>
     </U>
   </V>
+  <L n="_false_advertisements">
+    <V t="statistic_change">
+      <U n="statistic_change">
+        <T n="amount">0.4</T>
+        <T n="stat">16655<!--motive_Fun--></T>
+      </U>
+    </V>
+  </L>
   <V n="_saveable" t="enabled" />
+  <T n="allow_autonomous">True</T>
   <T n="allow_user_directed">True</T>
   <T n="attention_cost">0.5</T>
   <L n="basic_extras">
@@ -45,7 +55,8 @@
     </U>
   </V>
   <V n="content_score" t="disabled" />
-  <T n="display_name">0xEE5CB6E4<!--Go Scavenging (Quick)--></T>
+  <T n="category">3306818262285983416<!--BBS_Pie_Survival--></T>
+  <T n="display_name">0xAD0421BA<!--Go Scavenging (Moderate)--></T>
   <U n="display_name_text_tokens">
     <L n="tokens">
       <V t="participant_type">
@@ -74,7 +85,38 @@
   </L>
   <E n="scoring_priority">NORMAL</E>
   <T n="subaction_selection_weight">1</T>
-  <E n="target_type">ACTOR</E>
-  <L n="test_globals" />
+  <E n="target_type">TARGET</E>
+  <L n="test_autonomous">
+    <L>
+      <V t="appropriateness" />
+      <V t="trait">
+        <U n="trait">
+          <L n="blacklist_traits">
+            <T>258759<!--trait_SimPreference_Dislikes_Activities_Fitness--></T>
+          </L>
+        </U>
+      </V>
+    </L>
+  </L>
+  <L n="test_globals">
+    <V t="test_set_reference">
+      <T n="test_set_reference">2736072745268911039<!--BBS_Scavenge_TestSet_NotAngry_Actor--></T>
+    </V>
+    <V t="test_set_reference">
+      <T n="test_set_reference">1417566161948442341<!--BBS_Scavenge_TestSet_NotFatigued_Actor--></T>
+    </V>
+    <V t="test_set_reference">
+      <T n="test_set_reference">134952<!--testSet_PregnantDisallow_InLabor--></T>
+    </V>
+    <V t="test_set_reference">
+      <T n="test_set_reference">97269<!--testSet_PregnantDisallow_3rdTrimester--></T>
+    </V>
+    <V t="test_set_reference">
+      <T n="test_set_reference">28305<!--testSet_EmotionNotMiserable--></T>
+    </V>
+    <V t="test_set_reference">
+      <T n="test_set_reference">97371<!--testSet_Fitness_PulledMuscle--></T>
+    </V>
+  </L>
   <T n="time_overhead">30</T>
 </I>

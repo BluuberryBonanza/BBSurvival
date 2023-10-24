@@ -10,5 +10,5 @@ from bluuberrylibrary.enums.classes.bb_int import BBInt
 
 class BBSScavengingRunLength(BBInt):
     QUICK: 'BBSScavengingRunLength' = 1
-    MEDIUM: 'BBSScavengingRunLength' = 2
+    MODERATE: 'BBSScavengingRunLength' = 2
     LONG: 'BBSScavengingRunLength' = 3

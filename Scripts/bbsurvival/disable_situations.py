@@ -5,6 +5,7 @@ from bluuberrylibrary.utils.debug.bb_injection_utils import BBInjectionUtils
 from bluuberrylibrary.utils.instances.bb_situation_utils import BBSituationUtils
 from buffs.buff import Buff
 from celebrity_fans.fan_situation_manager import FanSituationManager
+from drama_scheduler.drama_node import BaseDramaNode
 from sims4.commands import Command, CommandType
 from sims4.resources import Types
 from situations.ambient.ambient_service import _AmbientSourceStreet
@@ -31,6 +32,26 @@ def _bbs_command_print_walkbys(_connection: int = None):
             log.debug(f'{guid64},  # {instance_tuning_name}')
             if 'walkby' not in instance_tuning_name and 'walk_by' not in instance_tuning_name:
                 continue
+        output('Done')
+    except Exception as ex:
+        output('Error occurred.')
+        log.error('Problem occurred', exception=ex)
+
+
+@Command(
+    'bbs.print_drama_nodes',
+    command_type=CommandType.Live
+)
+def _bbs_command_print_dramanodes(_connection: int = None):
+    from sims4.commands import CheatOutput
+    output = CheatOutput(_connection)
+    try:
+        output(f'Printing Drama Nodes.')
+        for (resource_key, instance) in BBInstanceUtils.get_all_instances(Types.DRAMA_NODE, return_type=BaseDramaNode):
+            instance: BaseDramaNode = instance
+            instance_tuning_name = instance.__name__.lower()
+            guid64 = getattr(instance, 'guid64', None)
+            log.debug(f'{guid64},  # {instance_tuning_name}')
         output('Done')
     except Exception as ex:
         output('Error occurred.')

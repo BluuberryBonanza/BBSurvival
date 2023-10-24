@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="TestSetInstance" i="snippet" m="event_testing.tests" n="BBS_Scavenge_TestSet_NotFatigued_Actor" s="1417566161948442341">
+  <L n="test">
+    <L>
+      <V t="buff">
+        <U n="buff">
+          <L n="blacklist">
+            <T>31361<!--buff_Object_Fitness_GoodWorkout--></T>
+            <T>31362<!--buff_Object_Fitness_VeryFatigued--></T>
+            <T>12543<!--buff_Object_Fitness-Fatigued--></T>
+            <T>28907<!--buff_Object_Fitness-Fatigued_Lazy--></T>
+          </L>
+          <E n="subject">Actor</E>
+          <V n="tooltip" t="enabled">
+            <T n="enabled">0x3F0F405C<!--{0.SimFirstName} is too fatigued to do this.--></T>
+          </V>
+        </U>
+      </V>
+    </L>
+  </L>
+</I>

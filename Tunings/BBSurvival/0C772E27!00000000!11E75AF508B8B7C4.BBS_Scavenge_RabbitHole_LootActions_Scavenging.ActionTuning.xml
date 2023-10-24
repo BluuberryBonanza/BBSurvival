@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<I c="LootActions" i="action" m="interactions.utils.loot" n="BBS_RabbitHole_LootActions_Scavenging_Quick" s="9953209831826340977">
+<I c="LootActions" i="action" m="interactions.utils.loot" n="BBS_Scavenge_RabbitHole_LootActions_Scavenging" s="1290099826724747204">
   <L n="loot_actions">
     <V t="notification_and_dialog">
       <U n="notification_and_dialog">

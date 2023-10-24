@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<I c="SuperInteraction" i="interaction" m="interactions.base.super_interaction" n="BBS_RabbitHole_Interaction_Scavenging_Quick" s="3381143320838695304">
+<I c="SuperInteraction" i="interaction" m="interactions.base.super_interaction" n="BBS_Scavenge_RabbitHole_Interaction_Scavenging_Quick" s="37311875668882973">
   <L n="_constraints">
     <U>
       <L n="constraints">
@@ -492,6 +492,43 @@
       </U>
     </V>
   </L>
+  <U n="skill_loot_data">
+    <E n="effectiveness">StandardPeriodic</E>
+    <V n="level_range" t="enabled">
+      <U n="enabled">
+        <T n="lower_bound">1</T>
+        <T n="upper_bound">10</T>
+      </U>
+    </V>
+    <T n="stat">16659<!--skill_Fitness--></T>
+  </U>
+  <V n="sim_affinity_posture_scoring_data" t="enabled">
+    <U n="enabled">
+      <L n="my_scoring">
+        <U>
+          <V n="affinity_strategy" t="relationship_based" />
+          <T n="negate_tag">True</T>
+          <E n="running_interaction_tag">Sleeping</E>
+        </U>
+        <U>
+          <V n="affinity_strategy" t="relationship_based" />
+          <E n="running_interaction_tag">Workout</E>
+        </U>
+        <U>
+          <V n="affinity_strategy" t="avoid" />
+          <E n="running_interaction_tag">Very_Loud</E>
+        </U>
+        <U>
+          <V n="affinity_strategy" t="avoid" />
+          <E n="running_interaction_tag">Chat</E>
+        </U>
+      </L>
+      <L n="my_tags">
+        <E>Loud</E>
+        <E>Workout</E>
+      </L>
+    </U>
+  </V>
   <V n="content_score" t="disabled" />
   <T n="counts_as_inside">True</T>
   <T n="display_name">0xA3070706<!--Scavenging--></T>
@@ -523,7 +560,70 @@
     <E>Interaction_All</E>
     <E>Interaction_Pets_SS3Allowed</E>
   </L>
-  <V n="outcome" t="single" />
+  <V n="outcome" t="test_based">
+    <U n="test_based">
+      <L n="fallback_outcomes">
+        <U>
+          <U n="outcome">
+            <L n="loot_list">
+              <T>23988<!--loot_Buff_PotentiallySore--></T>
+              <T>100293<!--loot_Workout_PuddleChance_Slob--></T>
+            </L>
+          </U>
+        </U>
+      </L>
+      <L n="tested_outcomes">
+        <U>
+          <L n="potential_outcomes">
+            <U>
+              <U n="outcome">
+                <L n="loot_list">
+                  <T>23988<!--loot_Buff_PotentiallySore--></T>
+                  <T>100293<!--loot_Workout_PuddleChance_Slob--></T>
+                </L>
+              </U>
+            </U>
+          </L>
+          <L n="tests">
+            <L>
+              <V t="mood">
+                <U n="mood">
+                  <T n="mood">14646<!--Mood_Uncomfortable--></T>
+                </U>
+              </V>
+            </L>
+          </L>
+        </U>
+        <U>
+          <L n="potential_outcomes">
+            <U>
+              <U n="outcome">
+                <L n="continuation">
+                  <U>
+                    <T n="affordance">10186<!--mixer_Stand_EnergizedResponse--></T>
+                    <E n="target">Object</E>
+                  </U>
+                </L>
+                <L n="loot_list">
+                  <T>23988<!--loot_Buff_PotentiallySore--></T>
+                  <T>100293<!--loot_Workout_PuddleChance_Slob--></T>
+                </L>
+              </U>
+            </U>
+          </L>
+          <L n="tests">
+            <L>
+              <V t="mood">
+                <U n="mood">
+                  <T n="mood">14636<!--Mood_Energized--></T>
+                </U>
+              </V>
+            </L>
+          </L>
+        </U>
+      </L>
+    </U>
+  </V>
   <E n="scoring_priority">NORMAL</E>
   <T n="subaction_selection_weight">1</T>
   <E n="target_type">ACTOR</E>
