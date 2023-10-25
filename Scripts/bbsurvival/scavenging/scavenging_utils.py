@@ -37,22 +37,26 @@ class BBSScavengingUtils(BBLogMixin):
         return 'bbs_scavenging_utils'
 
     @classmethod
-    def give_scavenge_rewards(cls, sim_info: SimInfo, run_length: BBSScavengingRunLength) -> None:
-        """give_scavenge_rewards(sim_info, run_length)
+    def give_scavenge_rewards(cls, scavenger_sim_info: SimInfo, run_length: BBSScavengingRunLength, to_receive_sim_info: SimInfo=None) -> None:
+        """give_scavenge_rewards(scavenger_sim_info, run_length, to_receive_sim_info=None)
 
         Give scavenging Rewards to a Sim.
 
-        :param sim_info: The info of a Sim.
-        :type sim_info: SimInfo
+        :param scavenger_sim_info: The info of a Sim.
+        :type scavenger_sim_info: SimInfo
         :param run_length: The length of the scavenging run.
         :type run_length: BBSScavengingRunLength
+        :param to_receive_sim_info: The info of the Sim to receive the rewards from the scavenger. Default is the Scavenger
+        :type to_receive_sim_info: SimInfo, optional
         """
+        if to_receive_sim_info is None:
+            to_receive_sim_info = scavenger_sim_info
         log = cls.get_log()
-        log.debug('Giving scavenge rewards', sim=sim_info)
+        log.debug('Giving scavenge rewards', sim=scavenger_sim_info, target_of_rewards=to_receive_sim_info)
         scavenge_random = Random()
         simoleons_found = scavenge_random.randint(0, 200)
         log.debug('Simoleons found', simoleons_found=simoleons_found)
-        BBSimCurrencyUtils.add_simoleons(sim_info, simoleons_found)
+        BBSimCurrencyUtils.add_simoleons(to_receive_sim_info, simoleons_found)
 
         received_items: List[GameObject] = list()
 
@@ -149,7 +153,7 @@ class BBSScavengingUtils(BBLogMixin):
                     to_add_seeds.append(chosen_seed)
             log.debug('Chose Seeds', chosen_seeds=chosen_seeds, to_add_seeds=to_add_seeds)
             for to_add_seed in to_add_seeds:
-                BBSimInventoryUtils.create_in_inventory(sim_info, to_add_seed, on_added=_add_received_item)
+                BBSimInventoryUtils.create_in_inventory(to_receive_sim_info, to_add_seed, on_added=_add_received_item)
         else:
             log.debug('Not giving Seeds', seed_chance=seed_chance, seed_dice_roll=seed_dice_roll)
 
@@ -281,7 +285,7 @@ class BBSScavengingUtils(BBLogMixin):
                     to_add_fruits.append(chosen_fruit)
             log.debug('Chose fruits', chosen_fruits=chosen_fruits, to_add_fruits=to_add_fruits)
             for to_add_fruit in to_add_fruits:
-                BBSimInventoryUtils.create_in_inventory(sim_info, to_add_fruit, on_added=_add_received_item)
+                BBSimInventoryUtils.create_in_inventory(to_receive_sim_info, to_add_fruit, on_added=_add_received_item)
         else:
             log.debug('Not giving Fruits', fruit_chance=fruit_chance, fruit_dice_roll=fruit_dice_roll)
 
@@ -359,7 +363,7 @@ class BBSScavengingUtils(BBLogMixin):
                         to_add_animals.append(chosen_animal)
                 log.debug('Chose animals', chosen_animals=chosen_animals, to_add_animals=to_add_animals)
                 for to_add_animal in to_add_animals:
-                    BBSimInventoryUtils.create_in_inventory(sim_info, to_add_animal, on_added=_add_received_item)
+                    BBSimInventoryUtils.create_in_inventory(to_receive_sim_info, to_add_animal, on_added=_add_received_item)
             else:
                 log.debug('Not giving Animals', animal_chance=animal_chance, animal_dice_roll=animal_dice_roll)
 
@@ -412,7 +416,7 @@ class BBSScavengingUtils(BBLogMixin):
                     to_add_ingredients.append(chosen_ingredient)
             log.debug('Chose ingredients', chosen_ingredients=chosen_ingredients, to_add_ingredients=to_add_ingredients)
             for to_add_ingredient in to_add_ingredients:
-                BBSimInventoryUtils.create_in_inventory(sim_info, to_add_ingredient, on_added=_add_received_item)
+                BBSimInventoryUtils.create_in_inventory(to_receive_sim_info, to_add_ingredient, on_added=_add_received_item)
         else:
             log.debug('Not giving ingredients', ingredient_chance=ingredient_chance, ingredient_dice_roll=ingredient_dice_roll)
 
@@ -491,13 +495,13 @@ class BBSScavengingUtils(BBLogMixin):
                     to_add_minerals.append(chosen_mineral)
             log.debug('Chose minerals', chosen_minerals=chosen_minerals, to_add_minerals=to_add_minerals)
             for to_add_mineral in to_add_minerals:
-                BBSimInventoryUtils.create_in_inventory(sim_info, to_add_mineral, on_added=_add_received_item)
+                BBSimInventoryUtils.create_in_inventory(to_receive_sim_info, to_add_mineral, on_added=_add_received_item)
         else:
             log.debug('Not giving minerals', mineral_chance=mineral_chance, mineral_dice_roll=mineral_dice_roll)
 
         try:
             if received_items:
-                sim = BBSimUtils.to_sim_instance(sim_info)
+                sim = BBSimUtils.to_sim_instance(scavenger_sim_info)
                 received_item_strings = list()
                 if simoleons_found > 0:
                     received_item_strings.append(BBLocalizationUtils.to_localized_string(BBSStringId.STRING_SIMOLEONS, tokens=(str(simoleons_found),)))

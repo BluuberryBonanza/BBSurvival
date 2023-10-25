@@ -15,6 +15,7 @@ from bbsurvival.scavenging.scavenging_utils import BBSScavengingUtils
 from bluuberrylibrary.classes.bb_test_result import BBTestResult
 from bluuberrylibrary.interactions.classes.bb_super_interaction import BBSuperInteraction
 from bluuberrylibrary.mod_registration.bb_mod_identity import BBModIdentity
+from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
 from interactions.context import InteractionContext
 from sims.sim_info import SimInfo
 from sims4.tuning.tunable import TunableEnumEntry
@@ -58,7 +59,7 @@ class BBSScavengeInteraction(BBSuperInteraction):
             if cancelled:
                 return
             try:
-                BBSScavengingUtils.give_scavenge_rewards(_sim_info, self.run_length)
+                BBSScavengingUtils.give_scavenge_rewards(_sim_info, self.run_length, to_receive_sim_info=BBSimUtils.get_active_sim_info())
             except Exception as ex:
                 self.get_log().error('An error occurred while giving scavenging rewards.', exception=ex)
 
