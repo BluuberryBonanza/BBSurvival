@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <I c="LootActions" i="action" m="interactions.utils.loot" n="BBS_Scavenge_RabbitHole_LootActions_Scavenging" s="1290099826724747204">
   <L n="loot_actions">
+    <V t="buff">
+      <U n="buff">
+        <U n="buff">
+          <V n="buff_reason" t="enabled">
+            <T n="enabled">0x0163095B<!--(From Scavenging)--></T>
+          </V>
+          <T n="buff_type">2780976527957441862<!--BBS_Scavenge_Buff_Scavenging_ScavengingFatigue--></T>
+        </U>
+        <U n="chance">
+          <T n="base_chance">100</T>
+        </U>
+      </U>
+    </V>
     <V t="notification_and_dialog">
       <U n="notification_and_dialog">
         <V n="dialog" t="notification">
