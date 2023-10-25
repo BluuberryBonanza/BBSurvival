@@ -11,9 +11,6 @@
         <T type="Int64">32</T>
         <T type="Int64">64</T>
       </L>
-      <L name="species">
-        <T type="Int64">1</T>
-      </L>
       <L name="bb_filter_styles" />
       <L name="bb_filter_tags" />
       <T name="cas_idle_asm_key">00000000-00000000-0000000000000000</T>
@@ -24,6 +21,9 @@
       <T name="display_name">0xA74483D3</T>
       <L name="genders" />
       <T name="icon">00B2D882-00000000-810E3A4D4BF15FBC</T>
+      <L name="species">
+        <T type="Int64">1</T>
+      </L>
       <L name="tags" />
       <T name="trait_description">0x00000000</T>
       <T name="trait_origin_description">0x00000000</T>

@@ -78,11 +78,11 @@ class BBSScavengingUtils(BBLogMixin):
 
         # Amount of items given for the run
         run_length_value = int(run_length)
-        seed_count = 5 * run_length_value
-        fruit_count = 5 * run_length_value
-        animal_count = 2 * run_length_value
-        ingredient_count = 5 * run_length_value
-        mineral_count = 5 * run_length_value
+        seed_count = 1 * run_length_value
+        fruit_count = 1 * run_length_value
+        animal_count = 1 * run_length_value
+        ingredient_count = 1 * run_length_value
+        mineral_count = 1 * run_length_value
 
         from sims4.common import get_available_packs
         available_packs = get_available_packs()
