@@ -545,12 +545,14 @@ class BBSScavengingUtils(BBLogMixin):
         log = cls.get_log()
         # Create the notification that indicates the items received.
         try:
+            received_item_strings = list()
+            scavenging_sim = BBSimUtils.to_sim_instance(scavenger_sim_info)
+            to_receive_sim = BBSimUtils.to_sim_instance(to_receive_sim_info)
+
+            if simoleons_found > 0:
+                received_item_strings.append(BBLocalizationUtils.to_localized_string(BBSStringId.STRING_SIMOLEONS, tokens=(str(simoleons_found),)))
+
             if received_items:
-                scavenging_sim = BBSimUtils.to_sim_instance(scavenger_sim_info)
-                to_receive_sim = BBSimUtils.to_sim_instance(to_receive_sim_info)
-                received_item_strings = list()
-                if simoleons_found > 0:
-                    received_item_strings.append(BBLocalizationUtils.to_localized_string(BBSStringId.STRING_SIMOLEONS, tokens=(str(simoleons_found),)))
                 for (received_item, item_count) in received_items:
                     catalog_name = received_item.custom_name if received_item.has_custom_name() else received_item.catalog_name
                     log.debug('Got item definition', received_item=received_item, catalog_name=catalog_name, definition_id=str(received_item.definition.id))
@@ -568,6 +570,7 @@ class BBSScavengingUtils(BBLogMixin):
                     else:
                         received_item_strings.append(BBLocalizationUtils.to_localized_string(catalog_name, tokens=(item_count,), normalize_tokens=False))
 
+            if received_item_strings:
                 text = BBLocalizationUtils.combine_strings(received_item_strings, separator_text=BBStringId.BBL_STRING_NEWLINE_STRING)
 
                 BBNotification(
