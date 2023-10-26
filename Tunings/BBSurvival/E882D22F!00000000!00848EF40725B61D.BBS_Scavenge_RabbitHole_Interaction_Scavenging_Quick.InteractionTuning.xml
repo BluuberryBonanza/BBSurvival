@@ -44,6 +44,18 @@
           </U>
         </V>
       </L>
+      <V n="content" t="staging_content">
+        <U n="staging_content">
+          <U n="content_set">
+            <L n="affordance_links">
+              <T>23936<!--mixer_AtWork_EatMeal--></T>
+              <T>23930<!--mixer_AtWork_SolveBladder--></T>
+              <T>165275<!--mixer_AtWork_EatSackLunch--></T>
+              <T>98790<!--mixer_AtWork_Default--></T>
+            </L>
+          </U>
+        </U>
+      </V>
       <V n="content" t="looping_content">
         <U n="looping_content">
           <U n="animation_ref">

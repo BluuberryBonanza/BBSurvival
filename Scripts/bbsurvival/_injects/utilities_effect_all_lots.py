@@ -22,7 +22,7 @@ def _bbl_remove_reason(original, self, *_, **__):
     return original(self, *_, **__)
 
 
-# This is a temporary fix. We should really look into why OFF_THE_GRID is not properly staying in the _shutoff_reasons
+# TODO: This is a temporary fix. We should really look into why OFF_THE_GRID is not properly staying in the _shutoff_reasons
 @BBInjectionUtils.inject(ModIdentity(), UtilityInfo, 'active')
 def _bbl_utility_info_active(original, self, *_, **__):
     # We override this so that power and water being active only applies when there is a surplus of power.

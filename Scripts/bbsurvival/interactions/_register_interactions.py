@@ -14,19 +14,17 @@ from objects.game_object import GameObject
 
 
 @BBInteractionRegistry.register()
-class _BBSObjectInteractionRegistration(BBObjectInteractionHandler):
+class _BBSLightOnFireObjectInteractionRegistration(BBObjectInteractionHandler):
 
     @property
     def interaction_guids(self) -> Tuple[int]:
         return (
             BBSInteractionId.LIGHT_ON_FIRE,
         )
-    
-    def should_register(self, game_object: GameObject) -> bool:
-        super_result = super().should_register(game_object)
-        if not super_result:
-            return super_result
-        excluded_animal_definition_ids = (
+
+    def get_excluded_definition_ids(self) -> Tuple[int]:
+        # noinspection PyTypeChecker
+        return (
             # Chickens
             266636,  # animalAvianChicken_EP11GEN_set1 (White Hen)
             263031,  # animalAvianRooster_EP11GEN_set1 (White Rooster)
@@ -93,9 +91,43 @@ class _BBSObjectInteractionRegistration(BBObjectInteractionHandler):
             273846,  # animalBirdSmall_EP11GEN_set4_goldcrest
             273847,  # animalBirdSmall_EP11GEN_set5_blackcap
             273848,  # animalBirdSmall_EP11GEN_set6_greenfinch
+
+            # Animal Housing
+            270277,  # animalPen_EP11GEN_set1
+            284098,  # animalPen_EP11GEN_set2
+            284099,  # animalPen_EP11GEN_set3
+            284100,  # animalPen_EP11GEN_set4
+            284101,  # animalPen_EP11GEN_set5
+            284102,  # animalPen_EP11GEN_set6
+            286738,  # animalPen_EP11GEN_set7
+            286739,  # animalPen_EP11GEN_set8
+            286740,  # animalPen_EP11GEN_set9
+            286741,  # animalPen_EP11GEN_set10
+            286742,  # animalPen_EP11GEN_set11
+            286743,  # animalPen_EP11GEN_set12
+            286744,  # animalPen_EP11GEN_set13
+
+            264211,  # chickenCoop_EP11GEN_set1
+            281509,  # chickenCoop_EP11GEN_set2
+            281510,  # chickenCoop_EP11GEN_set3
+            281511,  # chickenCoop_EP11GEN_set4
+            286771,  # chickenCoop_EP11GEN_set5
+            286772,  # chickenCoop_EP11GEN_set6
+            286773,  # chickenCoop_EP11GEN_set7
+            286774,  # chickenCoop_EP11GEN_set8
+            286775,  # chickenCoop_EP11GEN_set9
+            286776,  # chickenCoop_EP11GEN_set10
+            286777,  # chickenCoop_EP11GEN_set11
+            286778,  # chickenCoop_EP11GEN_set12
+            286779,  # chickenCoop_EP11GEN_set13
         )
+    
+    def should_register(self, game_object: GameObject) -> bool:
+        super_result = super().should_register(game_object)
+        if not super_result:
+            return super_result
         definition_id = game_object.definition.id
-        if definition_id in excluded_animal_definition_ids:
+        if definition_id in self.get_excluded_definition_ids():
             return False
         return super_result
 

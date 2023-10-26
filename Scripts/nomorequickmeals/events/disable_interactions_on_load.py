@@ -19,7 +19,7 @@ interactions_modified = False
 @BBEventHandlerRegistry.register(ModIdentity(), BBOnZoneLoadEndEvent)
 def _nms_disable_interactions_on_zone_load(event: BBOnZoneLoadEndEvent):
     global interactions_modified
-    if interactions_disabled:
+    if interactions_modified:
         return
     interactions_disabled = True
 
