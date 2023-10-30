@@ -27,7 +27,6 @@ original_start_crafting_super_interaction_picker_rows_gen = StartCraftingSuperIn
 
 log = BBLogRegistry().register_log(ModIdentity(), 'rci_ingredients')
 
-
 class _NewRecipeClass:
     excluded_recipes = (
         236756,  # recipe_Drink_JuiceFizzing_FizzyJuice_Single_Confident
@@ -62,6 +61,11 @@ class _NewRecipeClass:
         236822,  # recipe_Drink_JuiceFizzing_SuspiciousFizz_Multi
     )
 
+    EXCLUDED_INTERACTION_IDS = (
+        237125,  # juiceFizzer_StartCrafting_StartFizzing
+        237209,  # juiceFizzer_StartCrafting_StartFizzingSeltzer
+    )
+
     def all_ingredients_required(cls):  # cls here is actually "Recipe" and not "_NewRecipeClass
         recipe_id = getattr(cls, 'guid64', None)
         if recipe_id in _NewRecipeClass.excluded_recipes:
@@ -74,7 +78,8 @@ class _NewRecipeClass:
     def rci_picker_rows_gen(cls, inst, target, context, crafter=DEFAULT, order_count=1, recipe_ingredients_map=None, funds_source=None, **kwargs):
         original_result = None
         try:
-            log.debug('Doing picker rows gen', clas=cls, inst=inst, target=target, context=context, crafter=crafter, order_count=order_count, recipe_ingredients_map=recipe_ingredients_map, funds_source=funds_source, kwargles=kwargs)
+            interaction_id = getattr(cls, 'guid64', None)
+            log.debug('Got it', clas=cls, inst=inst, interaction_id=interaction_id)
             kwargs_to_pass = original_start_crafting_super_interaction_picker_rows_gen.keywords
             original_result = original_start_crafting_super_interaction_picker_rows_gen.func(
                 cls,
@@ -88,25 +93,25 @@ class _NewRecipeClass:
                 funds_source=funds_source,
                 **kwargs
             )
-            log.debug('original result', original_result=original_result)
-
-            crafter_other = context.sim
-            is_ingredients_only = cls.ingredient_cost_only
-            subclass_of_order_interaction = issubclass(cls, StartCraftingOrderSuperInteraction)
-            inventory_target = target
-            if crafter_other is DEFAULT and subclass_of_order_interaction and cls.ingredient_source and inst is not None:
-                recipe_list = inst.get_valid_recipe_list()
+            if interaction_id in _NewRecipeClass.EXCLUDED_INTERACTION_IDS:
+                yield from original_result
             else:
-                recipe_list = cls.recipes
-            candidate_ingredients = cls._get_ingredient_candidates(crafter_other, crafting_target=inventory_target)
-            hashable_recipe_list = tuple(recipe_list)
-            hashable_candidate_ingredients = tuple(candidate_ingredients)
-            (recipe_to_requirements_map, requirements_to_candidates_map) = cls._prebuild_recipe_requirement_candidate_maps(hashable_recipe_list, hashable_candidate_ingredients, is_ingredients_only)
-            recipe_ingredients_map_other = {}
-            for recipe_picker_row in original_result:
-                if not recipe_picker_row.is_enable:
-                    yield recipe_picker_row
+                log.debug('original result', original_result=original_result)
+
+                crafter_other = context.sim
+                is_ingredients_only = cls.ingredient_cost_only
+                subclass_of_order_interaction = issubclass(cls, StartCraftingOrderSuperInteraction)
+                inventory_target = target
+                if crafter_other is DEFAULT and subclass_of_order_interaction and cls.ingredient_source and inst is not None:
+                    recipe_list = inst.get_valid_recipe_list()
                 else:
+                    recipe_list = cls.recipes
+                candidate_ingredients = cls._get_ingredient_candidates(crafter_other, crafting_target=inventory_target)
+                hashable_recipe_list = tuple(recipe_list)
+                hashable_candidate_ingredients = tuple(candidate_ingredients)
+                (recipe_to_requirements_map, requirements_to_candidates_map) = cls._prebuild_recipe_requirement_candidate_maps(hashable_recipe_list, hashable_candidate_ingredients, is_ingredients_only)
+                recipe_ingredients_map_other = {}
+                for recipe_picker_row in original_result:
                     recipe = recipe_picker_row.tag
                     log.debug('Original val', original_result_val=recipe_picker_row, recipe=recipe, recipe_to_requirements_map=recipe_to_requirements_map.get(recipe, tuple()))
                     has_required_ingredients = True
@@ -144,7 +149,7 @@ class _NewRecipeClass:
                         recipe_picker_row.row_tooltip = tooltip
                         recipe_picker_row.ingredients_list = ingredients_comma_list
                     else:
-                        log.debug('Not making required', recipe)
+                        log.debug('Not making required', recipe=recipe)
                     yield recipe_picker_row
         except Exception as ex:
             log.error('An error occurred while generating crafting recipes', interaction=cls, exception=ex)
@@ -155,7 +160,7 @@ class _NewRecipeClass:
 StartCraftingSuperInteraction.picker_rows_gen = flexmethod(_NewRecipeClass.rci_picker_rows_gen)
 
 
-Recipe.all_ingredients_required = classproperty(_NewRecipeClass.all_ingredients_required)
+# Recipe.all_ingredients_required = classproperty(_NewRecipeClass.all_ingredients_required)
 
 original_start_crafting_function = StartCraftingMixin.get_default_candidate_ingredients
 
@@ -176,7 +181,6 @@ def _start_crafting_override(crafter, check_sim_inventory=True, check_fridge_sha
 
 
 autonomous_log = BBLogRegistry().register_log(ModIdentity(), 'rci_ingredients_autonomously')
-# autonomous_log.enable()
 
 
 @BBInjectionUtils.inject(ModIdentity(), StartCraftingAutonomouslySuperInteraction, StartCraftingAutonomouslySuperInteraction._autonomous_test.__name__)
@@ -184,6 +188,11 @@ def _rci_override_autonomous_crafting_interaction(original, cls, target, context
     # original_result = original(target, context, who)
     # autonomous_log.debug('Original result', clas=cls, original_result=original_result, target=target, context=context, who=who)
     # return original_result
+    interaction_id = getattr(cls, 'guid64', None)
+    autonomous_log.enable()
+    autonomous_log.debug('Got it', clas=cls, interaction_id=interaction_id)
+    if interaction_id in _NewRecipeClass.EXCLUDED_INTERACTION_IDS:
+        return original(target, context, who)
     food_restriction_tracker = who.sim_info.food_restriction_tracker
     candidate_ingredients = cls._get_ingredient_candidates(who, crafting_target=target)
     for recipe in cls.recipes:
@@ -210,13 +219,14 @@ def _rci_override_autonomous_crafting_interaction(original, cls, target, context
 def _rci_handle_begin_crafting(original, self, valid_recipes: List[Recipe]):
     weights = []
     for recipe in valid_recipes:
-        result = CraftingProcess.recipe_test(self.target, self.context, recipe, self.sim, 0, build_error_list=False, from_autonomy=True, check_bucks_costs=False)
+        result = CraftingProcess.recipe_test(self.target, self.context, recipe, self.sim, 0, build_error_list=autonomous_log.is_enabled(), from_autonomy=True, check_bucks_costs=False)
         if result:
             autonomous_log.debug('Tested recipe and passed.', recipe=recipe, result=result)
             weights.append((recipe.calculate_autonomy_weight(self.sim), recipe))
         else:
-            autonomous_log.debug('Failed recipe', recipe=recipe, result=result)
+            autonomous_log.debug('Failed recipe', recipe=recipe, result=result, result_errors=result.errors)
     if not weights:
+        autonomous_log.debug('Unable to "find best recipe".', valid_recipes=valid_recipes)
         return
     import sims4.random
     recipe = sims4.random.pop_weighted(weights)
