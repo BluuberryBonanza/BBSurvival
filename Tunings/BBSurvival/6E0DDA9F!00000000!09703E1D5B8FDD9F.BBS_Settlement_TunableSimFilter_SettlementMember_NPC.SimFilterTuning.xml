@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="TunableSimFilter" i="sim_filter" m="filters.tunable" n="BBS_Settlement_TunableSimFilter_SettlementMember_NPC" s="680111839544073631">
+  <L n="_filter_terms">
+    <V t="trait">
+      <U n="trait">
+        <T n="trait">2678083922030780745<!--BBS_Settlement_Trait_SettlementMember--></T>
+      </U>
+    </V>
+  </L>
+  <V n="_household_templates_override" t="enabled">
+    <L n="enabled">
+      <T>2679157507374262749<!--BBS_Settlement_HouseholdTemplate_NPC_AllSims_Single--></T>
+    </L>
+  </V>
+  <T n="_template_chooser">15779007283405655354<!--BBS_Settlement_TemplateChooser_AllSims--></T>
+  <V n="repurpose_terms" t="use_specific_sims">
+    <T n="use_specific_sims">113938<!--filter_Unimportant_NoCareer--></T>
+  </V>
+  <T n="use_weighted_random">True</T>
+</I>

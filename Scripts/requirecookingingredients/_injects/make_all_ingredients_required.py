@@ -189,7 +189,6 @@ def _rci_override_autonomous_crafting_interaction(original, cls, target, context
     # autonomous_log.debug('Original result', clas=cls, original_result=original_result, target=target, context=context, who=who)
     # return original_result
     interaction_id = getattr(cls, 'guid64', None)
-    autonomous_log.enable()
     autonomous_log.debug('Got it', clas=cls, interaction_id=interaction_id)
     if interaction_id in _NewRecipeClass.EXCLUDED_INTERACTION_IDS:
         return original(target, context, who)

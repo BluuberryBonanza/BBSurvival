@@ -1,12 +1,24 @@
+"""
+This mod is licensed under the Creative Commons Attribution 4.0 International public license (CC BY 4.0).
+https://creativecommons.org/licenses/by/4.0/
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+Copyright (c) BLUUBERRYBONANZA
+"""
 import services
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
+from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
+from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
 from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
 from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
 from interactions import ParticipantType
 from interactions.utils.loot import LootActions, LootActionVariant
 from interactions.utils.loot_basic_op import BaseTargetedLootOperation
 from sims4.tuning.tunable import TunableList, TunableEnumEntry
+
+log = BBLogRegistry().register_log(ModIdentity(), 'bbs_loot_actions')
+log.enable()
 
 
 class BBSAddToSettlementLootOp(BaseTargetedLootOperation):
@@ -39,11 +51,15 @@ class BBSAddToSettlementLootOp(BaseTargetedLootOperation):
         target_sim = resolver.get_participant(self.target)
         target_sim_info = BBSimUtils.to_sim_info(target_sim)
         result = BBSimHouseholdUtils.move_to_household_of_sim(sim_info, target_sim_info)
-        BBSimTraitUtils.add_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_MEMBER)
+        log.debug('Added Sim to target household', sim=sim_info, target=target_sim_info, result=result)
+        trait_result = BBSimTraitUtils.add_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_MEMBER)
+        log.debug('added trait?', trait_result=trait_result)
         if not BBSimTraitUtils.has_trait(target_sim_info, BBSSettlementTraitId.SETTLEMENT_HEAD):
             BBSimTraitUtils.add_trait(target_sim_info, BBSSettlementTraitId.SETTLEMENT_HEAD)
-            from bbsurvival.settlement.settlement_context_manager import BBSSettlementContextManager
-            BBSSettlementContextManager().setup_settlement_context(target_sim_info)
+
+        from bbsurvival.settlement.settlement_context_manager import BBSSettlementContextManager
+        add_result = BBSSettlementContextManager().add_settlement_member_context(sim_info, head_of_settlement_sim_info=target_sim_info)
+        log.debug('Add context result', add_result=add_result)
 
 
 class BBSLightOnFireLootOp(BaseTargetedLootOperation):

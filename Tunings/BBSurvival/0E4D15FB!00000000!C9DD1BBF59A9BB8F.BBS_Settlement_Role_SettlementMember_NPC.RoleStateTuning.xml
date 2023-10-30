@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="RoleState" i="role_state" m="role.role_state" n="BBS_Settlement_Role_SettlementMember_NPC" s="14545812880133569423">
+  <L n="_buffs">
+    <U>
+      <T n="buff_type">13095909479476608519<!--BBS_Settlement_Buff_SettlementMember_Appropriateness--></T>
+    </U>
+    <U>
+      <T n="buff_type">16439467735142065438<!--BBS_Settlement_Buff_SettlementMember_RoleWorking--></T>
+    </U>
+  </L>
+  <T n="always_active">True</T>
+  <E n="_autonomy_state_override">FULL</E>
+  <E n="_crafting_process_override">LOT_OWNER</E>
+  <U n="_off_lot_autonomy_buff">
+    <T n="buff_type">38292<!--buff_offLotAutonomyMod_OnLotOnly--></T>
+  </U>
+  <V n="_on_activate" t="autonomy_ping" />
+  <L n="role_affordances">
+  </L>
+  <L n="tags">
+    <E>Role_VIPRope_Allowed</E>
+    <E>Role_ExcludeFromYogaAndMeditationClass</E>
+  </L>
+</I>

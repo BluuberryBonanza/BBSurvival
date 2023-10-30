@@ -100,7 +100,7 @@ class BBSSettlementMemberSituation(SituationComplexCommon):
 
     @classmethod
     def _get_tuned_job_and_default_role_state_tuples(cls) -> Any:
-        return [(cls.situation_job, cls.working_state)]
+        return [(cls.situation_job, cls.working_state.role_state)]
 
     @classmethod
     def get_sims_expected_to_be_in_situation(cls) -> int:

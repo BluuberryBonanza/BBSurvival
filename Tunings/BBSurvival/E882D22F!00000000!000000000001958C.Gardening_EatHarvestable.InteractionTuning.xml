@@ -50,6 +50,7 @@
       </U>
     </V>
   </L>
+  <T n="allow_autonomous">True</T>
   <T n="allow_from_object_inventory">True</T>
   <T n="allow_from_sim_inventory">True</T>
   <T n="attention_cost">0.75</T>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="TunableTemplateChooser" i="template_chooser" m="filters.sim_template" n="BBS_Settlement_TemplateChooser_AllSims" s="15779007283405655354">
+  <L n="_templates">
+    <U>
+      <T n="template">16848459876838863042<!--BBS_Settlement_Template_Baby--></T>
+      <T n="weight">3</T>
+    </U>
+    <U>
+      <T n="template">9187285606568538806<!--BBS_Settlement_Template_Infant--></T>
+      <T n="weight">3</T>
+    </U>
+    <U>
+      <T n="template">279769<!--template_toddler--></T>
+      <T n="weight">3</T>
+    </U>
+    <U>
+      <T n="template">27506<!--template_child--></T>
+      <T n="weight">3</T>
+    </U>
+    <U>
+      <T n="template">27679<!--template_teen--></T>
+      <T n="weight">3</T>
+    </U>
+    <U>
+      <T n="template">15952<!--template_adult--></T>
+      <T n="weight">2</T>
+    </U>
+    <U>
+      <T n="template">27680<!--template_YA--></T>
+      <T n="weight">3</T>
+    </U>
+    <U>
+      <T n="template">40344<!--template_elder--></T>
+      <T n="weight">1</T>
+    </U>
+  </L>
+</I>
