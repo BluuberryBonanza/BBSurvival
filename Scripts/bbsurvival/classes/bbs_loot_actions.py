@@ -1,5 +1,7 @@
 import services
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
+from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
+from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
 from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
 from interactions import ParticipantType
 from interactions.utils.loot import LootActions, LootActionVariant
@@ -36,7 +38,12 @@ class BBSAddToSettlementLootOp(BaseTargetedLootOperation):
         sim_info = BBSimUtils.to_sim_info(subject)
         target_sim = resolver.get_participant(self.target)
         target_sim_info = BBSimUtils.to_sim_info(target_sim)
-        BBSimHouseholdUtils.move_to_household_of_sim(sim_info, target_sim_info)
+        result = BBSimHouseholdUtils.move_to_household_of_sim(sim_info, target_sim_info)
+        BBSimTraitUtils.add_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_MEMBER)
+        if not BBSimTraitUtils.has_trait(target_sim_info, BBSSettlementTraitId.SETTLEMENT_HEAD):
+            BBSimTraitUtils.add_trait(target_sim_info, BBSSettlementTraitId.SETTLEMENT_HEAD)
+            from bbsurvival.settlement.settlement_context_manager import BBSSettlementContextManager
+            BBSSettlementContextManager().setup_settlement_context(target_sim_info)
 
 
 class BBSLightOnFireLootOp(BaseTargetedLootOperation):

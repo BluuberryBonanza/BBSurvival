@@ -8,9 +8,14 @@ Copyright (c) BLUUBERRYBONANZA
 from typing import Type, Any, TypeVar, ItemsView, Union
 
 import services
+from bluuberrylibrary.enums.classes.bb_int import BBInt
+from bluuberrylibrary.enums.classes.bb_int_flags import BBIntFlags
+from enum import Int
 from sims4.resources import Types
+from sims4.tuning.dynamic_enum import DynamicEnum, DynamicEnumLocked
 from sims4.tuning.instance_manager import InstanceManager
 
+BBEnumType = TypeVar('BBEnumType', int, BBInt, BBIntFlags, Int, DynamicEnum, DynamicEnumLocked)
 BBExpectedReturnType = TypeVar('BBExpectedReturnType', bound=Any)
 
 
@@ -62,3 +67,31 @@ class BBInstanceUtils:
         :rtype: InstanceManager or None
         """
         return services.get_instance_manager(instance_type)
+
+    @classmethod
+    def get_enum_from_name(cls, name: str, enum_type: Type[BBEnumType], default_value: BBEnumType = None) -> BBEnumType:
+        """get_enum_from_name(name, enum_type, default_value=None)
+
+        Get an enum by using its name.
+
+        :param name: The name of the enum.
+        :type name: str
+        :param enum_type: The type of enum being got.
+        :type enum_type: Type[BBEnumType]
+        :param default_value: A value used when an enum is not found matching the name.
+        :type default_value: BBEnumType
+        :return: An enum with a matching name.
+        :rtype: BBEnumType
+        """
+        if hasattr(enum_type, name):
+            return getattr(enum_type, name)
+        # noinspection PyBroadException
+        try:
+            # noinspection PyTypeChecker
+            if name in enum_type:
+                return enum_type[name]
+        except:
+            pass
+        if hasattr(enum_type, 'name_to_value') and name in enum_type.name_to_value:
+            return enum_type.name_to_value.get(name)
+        return default_value

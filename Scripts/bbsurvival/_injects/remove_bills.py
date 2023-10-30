@@ -22,9 +22,9 @@ def _bbs_current_payment_owed(original, *_, **__):
 
 @BBInjectionUtils.inject(ModIdentity(), Bills, Bills._get_bill_multiplier.__name__)
 def _bbs_get_bill_multiplier(original, *_, **__):
-    multipliers = original(*_, **__)
+    (multipliers, bill_multiplier_descriptions) = original(*_, **__)
     multipliers[ALL_BILLS_SOURCE] = 0
-    return multipliers
+    return (multipliers, bill_multiplier_descriptions)
 
 
 @BBInjectionUtils.inject(ModIdentity(), Bills, Bills._get_property_taxes.__name__)
