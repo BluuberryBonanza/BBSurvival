@@ -164,3 +164,78 @@ class _BBSDigSpotDigMagicObjectInteractionRegistration(BBObjectInteractionHandle
         if object_guid == -1:
             return False
         return object_guid in self.get_included_tuning_ids()
+
+
+@BBInteractionRegistry.register()
+class _BBSAnimalFeederObjectInteractionRegistration(BBObjectInteractionHandler):
+
+    @property
+    def interaction_guids(self) -> Tuple[int]:
+        return (
+            BBSSettlementInteractionId.SETTLEMENT_RANCHER_ANIMAL_FEEDER_REFILL_WITH_WILD_GRASS,
+        )
+
+    def get_included_tuning_ids(self) -> Tuple[int]:
+        # noinspection PyTypeChecker
+        return (
+            311825,  # object_AnimalObjects_AnimalFeeder_GoatSheep_Horse
+        )
+
+    def should_register(self, game_object: GameObject) -> bool:
+        super_result = super().should_register(game_object)
+        if not super_result:
+            return super_result
+        object_guid = getattr(game_object, 'guid64', -1)
+        if object_guid == -1:
+            return False
+        return object_guid in self.get_included_tuning_ids()
+
+
+@BBInteractionRegistry.register()
+class _BBSLivestockPenObjectInteractionRegistration(BBObjectInteractionHandler):
+
+    @property
+    def interaction_guids(self) -> Tuple[int]:
+        return (
+            BBSSettlementInteractionId.SETTLEMENT_RANCHER_LIVESTOCK_PEN_INSIDE_REFILL_WITH_WILD_GRASS,
+        )
+
+    def get_included_tuning_ids(self) -> Tuple[int]:
+        # noinspection PyTypeChecker
+        return (
+            258035,  # object_animalObjects_home_livestock_livestockPen
+        )
+
+    def should_register(self, game_object: GameObject) -> bool:
+        super_result = super().should_register(game_object)
+        if not super_result:
+            return super_result
+        object_guid = getattr(game_object, 'guid64', -1)
+        if object_guid == -1:
+            return False
+        return object_guid in self.get_included_tuning_ids()
+
+
+@BBInteractionRegistry.register()
+class _BBSCoopObjectInteractionRegistration(BBObjectInteractionHandler):
+
+    @property
+    def interaction_guids(self) -> Tuple[int]:
+        return (
+            BBSSettlementInteractionId.SETTLEMENT_RANCHER_COOP_COLLECT_EGGS,
+        )
+
+    def get_included_tuning_ids(self) -> Tuple[int]:
+        # noinspection PyTypeChecker
+        return (
+            256701,  # object_animalObjects_home_livestock_chickenCoop
+        )
+
+    def should_register(self, game_object: GameObject) -> bool:
+        super_result = super().should_register(game_object)
+        if not super_result:
+            return super_result
+        object_guid = getattr(game_object, 'guid64', -1)
+        if object_guid == -1:
+            return False
+        return object_guid in self.get_included_tuning_ids()

@@ -100,6 +100,8 @@ class BBSSettlementMemberContext(BBJSONSerializable):
             job_flags = BBBitwiseUtils.add_bits(job_flags, BBSSettlementMemberJobFlags.TEACHER)
         if BBSimTraitUtils.has_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_GATHERER):
             job_flags = BBBitwiseUtils.add_bits(job_flags, BBSSettlementMemberJobFlags.GATHERER)
+        if BBSimTraitUtils.has_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_RANCHER):
+            job_flags = BBBitwiseUtils.add_bits(job_flags, BBSSettlementMemberJobFlags.RANCHER)
         self._job_flags = job_flags
 
     def _update_job_traits(self):
@@ -154,6 +156,11 @@ class BBSSettlementMemberContext(BBJSONSerializable):
             BBSimTraitUtils.add_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_GATHERER)
         else:
             BBSimTraitUtils.remove_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_GATHERER)
+
+        if BBBitwiseUtils.has_any_bits(self._job_flags, BBSSettlementMemberJobFlags.RANCHER):
+            BBSimTraitUtils.add_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_RANCHER)
+        else:
+            BBSimTraitUtils.remove_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_RANCHER)
 
     def setup(self):
         self._start_situation()

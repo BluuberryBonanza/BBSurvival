@@ -47,6 +47,7 @@ class BBSSettlementAssignAsJobInteraction(BBSocialMixerInteraction):
         BBSSettlementMemberJobFlags.MAINTENANCE,
         # BBSSettlementMemberJobFlags.TEACHER,
         BBSSettlementMemberJobFlags.GATHERER,
+        BBSSettlementMemberJobFlags.RANCHER,
     )
 
     @classmethod
