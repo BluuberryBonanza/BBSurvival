@@ -13,17 +13,11 @@ from event_testing.results import TestResult
 from event_testing.tests import TestList
 from interactions import ParticipantType
 from sims.sim_info_tests import SimInfoTest, MatchType
-interactions_disabled = False
 
+class _InteractionDisabler:
+    interactions_disabled = False
 
-@BBEventHandlerRegistry.register(ModIdentity(), BBOnZoneLoadEndEvent)
-def _bbs_disable_interactions_on_zone_load(event: BBOnZoneLoadEndEvent):
-    global interactions_disabled
-    if interactions_disabled:
-        return
-    interactions_disabled = True
-
-    interaction_ids = [
+    DISABLED_INTERACTION_IDS = [
         # Order a Delivery
         262154,  # phone_PickServices_Start_Deliveries
         261896,  # phone_pickServiceToHire_Deliveries
@@ -190,14 +184,27 @@ def _bbs_disable_interactions_on_zone_load(event: BBOnZoneLoadEndEvent):
         107703,  # mannequin_RemoveOutfit_Picker_Formal
         107702,  # mannequin_RemoveOutfit_Picker_Everyday
         269939,  # purchase_MarketStalls_MusicFestival
+        324408,  # sI_AnimalFeederInteractions_RefillFeed
 
         # Maybe remove later?
         116619,  # si_Retail_BuyItemFromInventory_Autonomous
         145263,  # si_CraftSalesTable_PurchaseObject_Autonomous
         145262,  # si_CraftSalesTable_PurchaseObject
+        233486,  # trashUpdate_GoToGarbageDump
+        233487,  # virtualRabbitHoleInteractions_trashUpdate
+        231894,  # Empty_Trash_Outdoor_TrashUpdate
+        231893,  # trashUpdate_Collect_NoTargetRecyclables
+        254791,  # collect_Trash_Compost_Aggregate
     ]
 
-    for interaction_id in interaction_ids:
+
+@BBEventHandlerRegistry.register(ModIdentity(), BBOnZoneLoadEndEvent)
+def _bbs_disable_interactions_on_zone_load(event: BBOnZoneLoadEndEvent):
+    if _InteractionDisabler.interactions_disabled:
+        return
+    _InteractionDisabler.interactions_disabled = True
+
+    for interaction_id in _InteractionDisabler.DISABLED_INTERACTION_IDS:
         interaction = BBInteractionUtils.load_interaction_by_guid(interaction_id)
         if interaction is None:
             continue

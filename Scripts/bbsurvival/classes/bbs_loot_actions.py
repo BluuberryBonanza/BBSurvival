@@ -8,6 +8,7 @@ Copyright (c) BLUUBERRYBONANZA
 import services
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
 from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
 from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
@@ -19,6 +20,94 @@ from sims4.tuning.tunable import TunableList, TunableEnumEntry
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_loot_actions')
 log.enable()
+
+
+class BBSAssignToJobLootOp(BaseTargetedLootOperation):
+    FACTORY_TUNABLES = {
+        'subject': TunableEnumEntry(
+            description='\n            The Sim we want to move.\n            ',
+            tunable_type=ParticipantType,
+            default=ParticipantType.Actor
+        ),
+        'target': TunableEnumEntry(
+            description='\n            The Sim we want to assign the job.\n            ',
+            tunable_type=ParticipantType,
+            default=ParticipantType.TargetSim
+        ),
+        'settlement_job': TunableEnumEntry(
+            description='\n            The job to assign.\n            ',
+            tunable_type=BBSSettlementMemberJobFlags,
+            default=BBSSettlementMemberJobFlags.NONE
+        ),
+    }
+
+    __slots__ = {'subject', 'target', 'settlement_job'}
+
+    def __init__(self, *_, subject=ParticipantType.Actor, target=ParticipantType.TargetSim, settlement_job=BBSSettlementMemberJobFlags.NONE, **__) -> None:
+        super().__init__(*_, **__)
+        self.subject = subject
+        self.target = target
+        self.settlement_job = settlement_job
+
+    def _apply_to_subject_and_target(self, subject, target, resolver) -> None:
+        if self._tests:
+            test_result = self._tests.run_tests(resolver)
+            if not test_result:
+                return test_result
+        target_sim = resolver.get_participant(self.target)
+        target_sim_info = BBSimUtils.to_sim_info(target_sim)
+        from bbsurvival.settlement.settlement_context_manager import BBSSettlementContextManager
+        settlement_context = BBSSettlementContextManager().settlement_context
+        if settlement_context is None:
+            return
+        target_context = settlement_context.get_member_context(target_sim_info)
+        if target_context is None:
+            return
+        target_context.add_job(self.settlement_job)
+
+
+class BBSUnassignFromJobLootOp(BaseTargetedLootOperation):
+    FACTORY_TUNABLES = {
+        'subject': TunableEnumEntry(
+            description='\n            The Sim we want to move.\n            ',
+            tunable_type=ParticipantType,
+            default=ParticipantType.Actor
+        ),
+        'target': TunableEnumEntry(
+            description='\n            The Sim we want to assign the job.\n            ',
+            tunable_type=ParticipantType,
+            default=ParticipantType.TargetSim
+        ),
+        'settlement_job': TunableEnumEntry(
+            description='\n            The job to assign.\n            ',
+            tunable_type=BBSSettlementMemberJobFlags,
+            default=BBSSettlementMemberJobFlags.NONE
+        ),
+    }
+
+    __slots__ = {'subject', 'target', 'settlement_job'}
+
+    def __init__(self, *_, subject=ParticipantType.Actor, target=ParticipantType.TargetSim, settlement_job=BBSSettlementMemberJobFlags.NONE, **__) -> None:
+        super().__init__(*_, **__)
+        self.subject = subject
+        self.target = target
+        self.settlement_job = settlement_job
+
+    def _apply_to_subject_and_target(self, subject, target, resolver) -> None:
+        if self._tests:
+            test_result = self._tests.run_tests(resolver)
+            if not test_result:
+                return test_result
+        target_sim = resolver.get_participant(self.target)
+        target_sim_info = BBSimUtils.to_sim_info(target_sim)
+        from bbsurvival.settlement.settlement_context_manager import BBSSettlementContextManager
+        settlement_context = BBSSettlementContextManager().settlement_context
+        if settlement_context is None:
+            return
+        target_context = settlement_context.get_member_context(target_sim_info)
+        if target_context is None:
+            return
+        target_context.remove_job(self.settlement_job)
 
 
 class BBSAddToSettlementLootOp(BaseTargetedLootOperation):
@@ -95,6 +184,18 @@ class BBSLootActionVariant(LootActionVariant):
             *args,
             statistic_pack_safe=statistic_pack_safe,
             add_to_settlement=BBSAddToSettlementLootOp.TunableFactory(
+                target_participant_type_options={
+                    'description': '\n                    The participant of the interaction\n                    ',
+                    'default_participant': ParticipantType.Object
+                }
+            ),
+            assign_to_job=BBSAssignToJobLootOp.TunableFactory(
+                target_participant_type_options={
+                    'description': '\n                    The participant of the interaction\n                    ',
+                    'default_participant': ParticipantType.Object
+                }
+            ),
+            unassign_from_job=BBSUnassignFromJobLootOp.TunableFactory(
                 target_participant_type_options={
                     'description': '\n                    The participant of the interaction\n                    ',
                     'default_participant': ParticipantType.Object

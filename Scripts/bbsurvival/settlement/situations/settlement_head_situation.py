@@ -21,7 +21,7 @@ from situations.situation_job import SituationJob
 from situations.situation_types import SituationSerializationOption
 
 
-class _BBSSettlementMemberSituationBaseState(HasTunableFactory, AutoFactoryInit, SituationState):
+class _BBSSettlementHeadSituationBaseState(HasTunableFactory, AutoFactoryInit, SituationState):
     FACTORY_TUNABLES = {
         'role_state': RoleState.TunableReference(
             description='\n                The role state that is active on the Sim for the duration\n                of this state.\n                '
@@ -34,7 +34,7 @@ class _BBSSettlementMemberSituationBaseState(HasTunableFactory, AutoFactoryInit,
 
     def __init__(self, *_, **__) -> None:
         super().__init__(*_, **__)
-        self.owner: BBSSettlementMemberSituation = self.owner
+        self.owner: BBSSettlementHeadSituation = self.owner
 
     def on_activate(self, reader=None) -> None:
         owner = self.owner
@@ -50,14 +50,14 @@ class _BBSSettlementMemberSituationBaseState(HasTunableFactory, AutoFactoryInit,
         pass
 
 
-class _BBSSettlementMemberSituationState(_BBSSettlementMemberSituationBaseState):
+class _BBSSettlementHeadSituationState(_BBSSettlementHeadSituationBaseState):
     pass
 
 
-class BBSSettlementMemberSituation(SituationComplexCommon):
+class BBSSettlementHeadSituation(SituationComplexCommon):
     INSTANCE_TUNABLES = {
         'situation_job': SituationJob.TunableReference(description='\n            The situation job for the Sim.\n            '),
-        'working_state': _BBSSettlementMemberSituationState.TunableFactory(
+        'working_state': _BBSSettlementHeadSituationState.TunableFactory(
             description='\n            The state during which the Sim hangs out on the lot.\n            ',
         ),
     }
@@ -89,7 +89,7 @@ class BBSSettlementMemberSituation(SituationComplexCommon):
     def _states(cls) -> List[SituationStateData]:
         return [
             # *super_states,
-            SituationStateData(1, _BBSSettlementMemberSituationState, factory=cls.working_state),
+            SituationStateData(1, _BBSSettlementHeadSituationState, factory=cls.working_state),
         ]
 
     @classmethod

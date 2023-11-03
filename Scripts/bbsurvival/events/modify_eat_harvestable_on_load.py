@@ -24,7 +24,7 @@ from statistics.statistic_ops import StatisticChangeOp, StatisticSetMaxOp
 interactions_modified = False
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_modify_harvestable')
-log.enable()
+# log.enable()
 
 
 # @BBEventHandlerRegistry.register(ModIdentity(), BBOnZoneLoadEndEvent)

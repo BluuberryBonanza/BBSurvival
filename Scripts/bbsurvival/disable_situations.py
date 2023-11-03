@@ -14,7 +14,7 @@ from situations.situation import Situation
 from venues.scheduling_zone_director import SchedulingZoneDirectorMixin
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbl_situations')
-log.enable()
+# log.enable()
 
 
 @Command(
@@ -442,15 +442,15 @@ class BBSituationDisabler:
         178171,  # openstreetsautonomysituation_jungle_marketplace_browser
         178117,  # openstreetsautonomysituation_jungle_marketplace_fish
         178229,  # openstreetsautonomysituation_jungle_marketplace_tourist_takephoto
-        163983,  # openstreetsautonomysituation_petworld_stray_cat_fisher
-        163985,  # openstreetsautonomysituation_petworld_stray_cat_ghost
-        163982,  # openstreetsautonomysituation_petworld_stray_cat_inheat
-        181421,  # openstreetsautonomysituation_petworld_stray_cat_jungle
-        163981,  # openstreetsautonomysituation_petworld_stray_cat_wanderer
-        163984,  # openstreetsautonomysituation_petworld_stray_dog_ghost
-        163980,  # openstreetsautonomysituation_petworld_stray_dog_inheat
-        181422,  # openstreetsautonomysituation_petworld_stray_dog_jungle
-        163979,  # openstreetsautonomysituation_petworld_stray_dog_wanderer
+        # 163983,  # openstreetsautonomysituation_petworld_stray_cat_fisher
+        # 163985,  # openstreetsautonomysituation_petworld_stray_cat_ghost
+        # 163982,  # openstreetsautonomysituation_petworld_stray_cat_inheat
+        # 181421,  # openstreetsautonomysituation_petworld_stray_cat_jungle
+        # 163981,  # openstreetsautonomysituation_petworld_stray_cat_wanderer
+        # 163984,  # openstreetsautonomysituation_petworld_stray_dog_ghost
+        # 163980,  # openstreetsautonomysituation_petworld_stray_dog_inheat
+        # 181422,  # openstreetsautonomysituation_petworld_stray_dog_jungle
+        # 163979,  # openstreetsautonomysituation_petworld_stray_dog_wanderer
         247326,  # openstreetsautonomysituation_summit_bunnyslope
         247413,  # openstreetsautonomysituation_summit_climber
         247324,  # openstreetsautonomysituation_summit_slope
@@ -619,8 +619,8 @@ class BBSituationDisabler:
         134211,  # situation_autonomous_openstreets_citylife_weirdo_daytime
         145070,  # situation_autonomous_openstreets_citylife_weirdo_raccoon
         139837,  # situation_autonomous_openstreets_citylife_weirdos
-        77048,  # situation_autonomous_openstreets_fish
-        127054,  # situation_autonomous_openstreets_fish_neighbor
+        # 77048,  # situation_autonomous_openstreets_fish
+        # 127054,  # situation_autonomous_openstreets_fish_neighbor
         38937,  # situation_autonomous_openstreets_garden
         40408,  # situation_autonomous_openstreets_jogger
         180994,  # situation_autonomous_openstreets_marketstalls_customer
@@ -1756,7 +1756,7 @@ class BBSituationDisabler:
 
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_situation_disabler')
-log.enable()
+# log.enable()
 
 
 @BBInjectionUtils.inject(ModIdentity(), _AmbientSourceStreet, _AmbientSourceStreet._start_specific_situation.__name__)

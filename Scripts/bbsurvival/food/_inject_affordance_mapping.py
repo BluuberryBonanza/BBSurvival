@@ -13,7 +13,6 @@ from objects.components.affordance_tuning import AffordanceTuningComponent
 from sims4.resources import Types
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_override_affordance_tuning')
-log.enable()
 
 
 # @BBInjectionUtils.inject(ModIdentity(), AffordanceTuningComponent, '__init__')

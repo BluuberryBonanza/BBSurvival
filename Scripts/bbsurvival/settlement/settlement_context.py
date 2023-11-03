@@ -20,6 +20,7 @@ class BBSSettlementContext(BBJSONSerializable):
         member_contexts: List[BBSSettlementMemberContext]
     ):
         self._member_contexts = list(member_contexts)
+        self._is_running = False
         head_sims_of_community = list()
         for member_context in self._member_contexts:
             if member_context.is_head_of_settlement:
@@ -47,6 +48,10 @@ class BBSSettlementContext(BBJSONSerializable):
             self._home_zone_id = -1
 
     @property
+    def is_running(self) -> bool:
+        return self._is_running
+
+    @property
     def head_member_context(self) -> BBSSettlementMemberContext:
         return self._head_member_context
 
@@ -58,10 +63,17 @@ class BBSSettlementContext(BBJSONSerializable):
     def member_contexts(self) -> Tuple[BBSSettlementMemberContext]:
         return tuple(self._member_contexts)
 
+    def has_member_context(self, sim_info: SimInfo) -> bool:
+        return self.get_member_context(sim_info) is not None
+
     def add_member_context(self, member_context: BBSSettlementMemberContext):
+        if self.has_member_context(member_context.sim_info):
+            return
         self._member_contexts.append(member_context)
 
     def remove_member_context(self, member_context: BBSSettlementMemberContext):
+        if not self.has_member_context(member_context.sim_info):
+            return
         if member_context in self._member_contexts:
             self._member_contexts.remove(member_context)
 
@@ -73,6 +85,12 @@ class BBSSettlementContext(BBJSONSerializable):
     def setup(self) -> None:
         for member_context in self.member_contexts:
             member_context.setup()
+        self._is_running = True
+
+    def teardown(self) -> None:
+        for member_context in self.member_contexts:
+            member_context.teardown()
+        self._is_running = False
 
     def serialize(self: 'BBSSettlementContext') -> Dict[str, Any]:
         data = dict()

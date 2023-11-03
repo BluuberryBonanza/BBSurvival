@@ -12,9 +12,11 @@ from bbsurvival.enums.rabbit_hole_ids import BBSRabbitHoleId
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.scavenging.bbs_scavenging_run_length import BBSScavengingRunLength
 from bbsurvival.scavenging.scavenging_utils import BBSScavengingUtils
+from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
 from bluuberrylibrary.classes.bb_test_result import BBTestResult
 from bluuberrylibrary.interactions.classes.bb_super_interaction import BBSuperInteraction
 from bluuberrylibrary.mod_registration.bb_mod_identity import BBModIdentity
+from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
 from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
 from interactions.context import InteractionContext
 from sims.sim_info import SimInfo
@@ -52,6 +54,9 @@ class BBSScavengeInteraction(BBSuperInteraction):
         if interaction_sim_info is not interaction_target_sim_info:
             cls.get_log().debug('Sim is not target', interaction_sim=interaction_sim_info, target=interaction_target_sim_info)
             return BBTestResult.NONE
+        if (interaction_context.source == InteractionContext.SOURCE_AUTONOMY
+                and not BBSimTraitUtils.has_trait(interaction_sim_info, BBSSettlementTraitId.SETTLEMENT_SCOUT)):
+            return BBTestResult(False, reason=f'{interaction_sim_info} is not a Scout.')
         return super().bbl_test(interaction_sim_info, interaction_target_sim_info, interaction_context, *args, **kwargs)
 
     def bbl_started(self, interaction_sim_info: SimInfo, interaction_target_sim_info: Any) -> BBTestResult:

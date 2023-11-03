@@ -40,6 +40,27 @@ class BBSimHouseholdUtils:
         return BBHouseholdUtils.get_household_manager().get(sim_info.household.id)
 
     @classmethod
+    def is_in_same_household_of_sim(cls, sim_info_a: SimInfo, sim_info_b: SimInfo) -> bool:
+        """is_in_same_household_of_sim(sim_info_a, sim_info_b)
+
+        Check if Sim A is in the same household as Sim B.
+
+        :param sim_info_a: The info of a Sim.
+        :type sim_info_a: SimInfo
+        :param sim_info_b: The info of a Sim.
+        :type sim_info_b: SimInfo
+        :return: True, if Sim A is in the same household as Sim B. False, if not.
+        :rtype: bool
+        """
+        sim_household_a = cls.get_household(sim_info_a)
+        if sim_household_a is None:
+            return False
+        sim_household_b = cls.get_household(sim_info_b)
+        if sim_household_b is None:
+            return False
+        return sim_household_a is sim_household_b
+
+    @classmethod
     def move_to_household_of_sim(cls, moving_sim_info: SimInfo, destination_household_sim_info: SimInfo) -> BBRunResult:
         """move_to_household_of_sim(moving_sim_info, destination_household_sim_info)
 

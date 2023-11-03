@@ -1,0 +1,17 @@
+"""
+This mod is licensed under the Creative Commons Attribution 4.0 International public license (CC BY 4.0).
+https://creativecommons.org/licenses/by/4.0/
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+Copyright (c) BLUUBERRYBONANZA
+"""
+
+
+class BBSSettlementInteractionId:
+    SETTLEMENT_GATHERER_COLLECT_FROGS = 16553368972916350950
+    SETTLEMENT_GATHERER_DIG = 15506372340132188583
+    SETTLEMENT_GATHERER_DIG_TREASURE = 4676812932275878353
+    SETTLEMENT_GATHERER_DIG_GP06_COMMON = 13486228684353622867
+    SETTLEMENT_GATHERER_DIG_GP06_RARE = 10951347774700814896
+    SETTLEMENT_GATHERER_DIG_MAGIC = 393066030141702449
+
