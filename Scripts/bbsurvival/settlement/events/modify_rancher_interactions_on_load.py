@@ -202,7 +202,8 @@ def _bbs_disable_leave_interactions_for_community_members_on_zone_load(event: BB
                     # log.debug('a test', a_test=a_test)
 
     chicken_coop_object_part = BBInstanceUtils.get_instance(Types.OBJECT_PART, 270077, return_type=ObjectPart)  # objectPart_AnimalObject_AnimalHomes_SimNest
-    log.debug('Chicken coop part', chicken_coop_object_part=chicken_coop_object_part, affordance_data=chicken_coop_object_part.supported_affordance_data)
-    compatibility = chicken_coop_object_part.supported_affordance_data.compatibility
-    log.debug('Compability', compatibility=compatibility, compatibility_dir=dir(compatibility))
+    if chicken_coop_object_part is not None:
+        # log.debug('Chicken coop part', chicken_coop_object_part=chicken_coop_object_part, affordance_data=chicken_coop_object_part.supported_affordance_data)
+        compatibility = chicken_coop_object_part.supported_affordance_data.compatibility
+        # log.debug('Compability', compatibility=compatibility, compatibility_dir=dir(compatibility))
     return TestResult.TRUE

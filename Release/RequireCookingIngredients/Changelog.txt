@@ -1,2 +1,5 @@
+Version 1.2:
+- Changed how ingredients are made to be required. Ingredient requirements are now limited to interactions when Cooking on Fridge, BBQ Pit, Grill, Stove, Ice Cream Machine, Cupcake Machine, Campfire, and Cauldron.
+
 Version 1.1:
 - Fixed an issue where the Fizzing interaction on the Fizzing Station was not available.

@@ -239,3 +239,53 @@ class _BBSCoopObjectInteractionRegistration(BBObjectInteractionHandler):
         if object_guid == -1:
             return False
         return object_guid in self.get_included_tuning_ids()
+
+
+@BBInteractionRegistry.register()
+class _BBSDirtMoundObjectInteractionRegistration(BBObjectInteractionHandler):
+
+    @property
+    def interaction_guids(self) -> Tuple[int]:
+        return (
+            BBSSettlementInteractionId.SETTLEMENT_GATHERER_DIRT_MOUND_DIG_HUMAN,
+        )
+
+    def get_included_tuning_ids(self) -> Tuple[int]:
+        # noinspection PyTypeChecker
+        return (
+            173085,  # object_DirtMound
+        )
+
+    def should_register(self, game_object: GameObject) -> bool:
+        super_result = super().should_register(game_object)
+        if not super_result:
+            return super_result
+        object_guid = getattr(game_object, 'guid64', -1)
+        if object_guid == -1:
+            return False
+        return object_guid in self.get_included_tuning_ids()
+
+
+@BBInteractionRegistry.register()
+class _BBSDirtMoundMountainObjectInteractionRegistration(BBObjectInteractionHandler):
+
+    @property
+    def interaction_guids(self) -> Tuple[int]:
+        return (
+            BBSSettlementInteractionId.SETTLEMENT_GATHERER_DIRT_MOUND_MOUNTAIN_DIG_HUMAN,
+        )
+
+    def get_included_tuning_ids(self) -> Tuple[int]:
+        # noinspection PyTypeChecker
+        return (
+            251001,  # snowDrift_Mountain
+        )
+
+    def should_register(self, game_object: GameObject) -> bool:
+        super_result = super().should_register(game_object)
+        if not super_result:
+            return super_result
+        object_guid = getattr(game_object, 'guid64', -1)
+        if object_guid == -1:
+            return False
+        return object_guid in self.get_included_tuning_ids()

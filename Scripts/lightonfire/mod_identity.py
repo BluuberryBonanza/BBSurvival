@@ -13,7 +13,7 @@ class ModIdentity(BBModIdentity):
 
     @property
     def mod_name(self) -> str:
-        return 'RequireCookingIngredients'
+        return 'LightOnFire'
 
     @property
     def mod_author(self) -> str:
@@ -21,7 +21,7 @@ class ModIdentity(BBModIdentity):
 
     @property
     def module_namespace(self) -> str:
-        return 'requirecookingingredients'
+        return 'lightonfire'
 
     @property
     def script_file_path(self) -> str:
@@ -29,4 +29,4 @@ class ModIdentity(BBModIdentity):
 
     @property
     def mod_version(self) -> str:
-        return '1.2'
+        return '1.0'
