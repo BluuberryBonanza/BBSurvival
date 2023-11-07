@@ -289,3 +289,71 @@ class _BBSDirtMoundMountainObjectInteractionRegistration(BBObjectInteractionHand
         if object_guid == -1:
             return False
         return object_guid in self.get_included_tuning_ids()
+
+
+@BBInteractionRegistry.register()
+class _BBSFridgeStoveObjectInteractionRegistration(BBObjectInteractionHandler):
+
+    @property
+    def interaction_guids(self) -> Tuple[int]:
+        # noinspection PyTypeChecker
+        return (
+            BBSSettlementInteractionId.SETTLEMENT_COOK_COOK_GROUP_MEAL_AUTONOMOUSLY,
+            BBSSettlementInteractionId.SETTLEMENT_COOK_COOK_GROUP_MEAL_AUTONOMOUSLY_VEGETARIAN,
+            BBSSettlementInteractionId.SETTLEMENT_COOK_COOK_GROUP_MEAL_AUTONOMOUSLY_REQUIRED_INGREDIENTS,
+            BBSSettlementInteractionId.SETTLEMENT_COOK_COOK_GROUP_MEAL_AUTONOMOUSLY_VEGETARIAN_REQUIRED_INGREDIENTS,
+        )
+
+    def get_included_tuning_ids(self) -> Tuple[int]:
+        # noinspection PyTypeChecker
+        return (
+            10191,  # object_fridgeLOW_01
+            10192,  # object_fridgeHIGH_01
+            14919,  # object_fridgeMED_01
+            36439,  # object_fridgeModRWCulinary_01
+            36440,  # object_fridgeMED_02
+            36441,  # object_fridgeDS_02
+            217114,  # object_fridgeGFVintage_01
+            223824,  # object_fridgeLOW_Mini
+            223916,  # object_fridgeMED_Mini
+            115853,  # object_fridge1x1_EP01GENlab_01
+            122001,  # object_fridge1x1_GP02ZEN
+            270943,  # object_FridgeMED_Mini_Skincare
+            121943,  # object_Fridge_SP03BRUSHED
+            217118,  # object_Fridge1x1_GP05WOOD
+            182432,  # fridge1x1_GP06APP
+            223320,  # object_Fridge_GP08IRONold
+            155531,  # object_Fridge_LowQuality_Used
+            253958,  # object_fridge1x1_EP10KIT
+            269450,  # object_fridge1x1_EP11IRON
+            323200,  # object_Fridge_EP13CLASSIC
+            134399,  # object_HomeChefStation
+            135402,  # object_homeChefStation_InWall
+            14972,  # object_stove_electric
+            36821,  # object_stoveMinorDS_01
+            36822,  # object_stoveMinorLOW_01
+            36823,  # object_stoveMinorMED_01
+            36824,  # object_stoveMinorHIGH_01
+            77313,  # object_stoveMinorGFVintage_01
+            97201,  # object_stoveRWCulGriddle_01
+            239082,  # object_stove_GP08IRONold
+            121948,  # object_stoveSP03BRUSHED
+            258242,  # object_stove_counter_OvenCounterTop
+            258243,  # object_stove_counter_OvenCounter
+            258244,  # object_stove_counter_StoveCounter
+            267684,  # object_stove_counter_StoveCounter_Gas
+            155529,  # object_stove_LowQuality_Used
+            323469,  # object_stoveMinor_EP13CLASSIC
+            269477,  # object_stoveMinor_EP11IRON
+            181021,  # object_stoveMinor_GP06APP
+            168694,  # object_stoveMinor_GP05GENretro
+        )
+
+    def should_register(self, game_object: GameObject) -> bool:
+        super_result = super().should_register(game_object)
+        if not super_result:
+            return super_result
+        object_guid = getattr(game_object, 'guid64', -1)
+        if object_guid == -1:
+            return False
+        return object_guid in self.get_included_tuning_ids()

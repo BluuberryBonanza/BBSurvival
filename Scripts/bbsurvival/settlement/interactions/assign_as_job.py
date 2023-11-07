@@ -37,7 +37,7 @@ class BBSSettlementAssignAsJobInteraction(BBSocialMixerInteraction):
         return 'bbs_assign_as_job'
 
     ENABLED_JOBS = (
-        # BBSSettlementMemberJobFlags.COOK,
+        BBSSettlementMemberJobFlags.COOK,
         BBSSettlementMemberJobFlags.NANNY,
         BBSSettlementMemberJobFlags.GARDENER,
         # BBSSettlementMemberJobFlags.GUARD,

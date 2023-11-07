@@ -279,15 +279,17 @@ class _NewRecipeClass:
         # 263073,  # crossStitch_StartCrafting_KitSmall_FromReference
         # Autonomous
         13388,  # fridge_CookAutonomously
+        152488,  # fridge_CookAutonomously_Vegetarian
         13390,  # fridge_CookGourmetAutonomously
         26331,  # fridge_CookGroupDessert_Autonomously
         26361,  # fridge_CookGroupMeal_Autonomously
+        248570,  # fridge_CookGroupMeal_Autonomously_JunkFood
+        248571,  # fridge_CookGroupMeal_Autonomously_HealthNut
+        152490,  # fridge_CookGroupMeal_Autonomously_Vegetarian
         31030,  # fridge_BakeCake_Autonomously
         37404,  # fridge_Cook_CostumePartyFood_Autonomously
         37405,  # fridge_Cook_BlackAndWhitePartyFood_Autonomously
-        152488,  # fridge_CookAutonomously_Vegetarian
         152489,  # fridge_CookGourmetAutonomously_Vegetarian
-        152490,  # fridge_CookGroupMeal_Autonomously_Vegetarian
         106195,  # fridge_CookGroupMeal_MindControlled
         112476,  # fridge_StartBakingAutonomously
         126096,  # fridge_Cook_SpookyPartyFood_Autonomously
@@ -298,8 +300,6 @@ class _NewRecipeClass:
         217536,  # fridge_Cook_MindControl_Autonomously
         248563,  # fridge_CookAutonomously_JunkFood
         248564,  # fridge_CookAutonomously_HealthNut
-        248570,  # fridge_CookGroupMeal_Autonomously_JunkFood
-        248571,  # fridge_CookGroupMeal_Autonomously_HealthNut
         269881,  # fridge_CookAutonomously_JunkFood_RequiredIngredients
         269882,  # fridge_CookAutonomously_HealthNut_RequiredIngredients
         266482,  # fridge_CookAutonomously_LactoseIntolerant
@@ -317,6 +317,16 @@ class _NewRecipeClass:
         # 245590,  # Knitting_CraftingAutonomously
         # 348378,  # crossStitch_StartCrafting_Autonomously
         # 348579,  # crossStitch_NPCStartCrafting_Autonomously_ClubFromHoop
+
+        # BBSurvival
+        7995875054397017713,  # BBS_Settlement_Cook_Interaction_CookGroupMeal_Autonomously
+        10462810107024859868,  # BBS_Settlement_Cook_Interaction_CookGroupMeal_Autonomously_Vegetarian
+        814717969105474455,  # BBS_Settlement_Cook_Interaction_CookGroupMeal_Autonomously_HealthNut
+        293372703558580114,  # BBS_Settlement_Cook_Interaction_CookGroupMeal_Autonomously_JunkFood
+        14328021566752945877,  # BBS_Settlement_Cook_Interaction_CookGroupMeal_Autonomously_RequiredIngredients
+        782307983293902176,  # BBS_Settlement_Cook_Interaction_CookGroupMeal_Autonomously_Vegetarian_RequiredIngredients
+        14110877983032746747,  # BBS_Settlement_Cook_Interaction_CookGroupMeal_Autonomously_HealthNut_RequiredIngredients
+        1268364330115466166,  # BBS_Settlement_Cook_Interaction_CookGroupMeal_Autonomously_JunkFood_RequiredIngredients
     )
 
     def all_ingredients_required(cls):  # cls here is actually "Recipe" and not "_NewRecipeClass
@@ -466,6 +476,13 @@ def _start_crafting_override(crafter, check_sim_inventory=True, check_fridge_sha
 autonomous_log = BBLogRegistry().register_log(ModIdentity(), 'rci_ingredients_autonomously')
 
 
+# @BBInjectionUtils.inject(ModIdentity(), StartCraftingAutonomouslySuperInteraction, StartCraftingAutonomouslySuperInteraction._run_interaction_gen.__name__)
+def _rci_override_autonomous_crafting_run_interaction_gen(original, self, timeline):
+    original_result = original(self, timeline)
+    autonomous_log.debug('Got original result', me=self, source_sim=self.sim, original_result=original_result)
+    return original_result
+
+
 @BBInjectionUtils.inject(ModIdentity(), StartCraftingAutonomouslySuperInteraction, StartCraftingAutonomouslySuperInteraction._autonomous_test.__name__)
 def _rci_override_autonomous_crafting_interaction(original, cls, target, context, who):
     # original_result = original(target, context, who)
@@ -475,22 +492,25 @@ def _rci_override_autonomous_crafting_interaction(original, cls, target, context
     # autonomous_log.debug('Got it', clas=cls, interaction_id=interaction_id)
     if interaction_id not in _NewRecipeClass.INCLUDED_INTERACTION_IDS:
         return original(target, context, who)
-    food_restriction_tracker = who.sim_info.food_restriction_tracker
+    source_sim_info = who.sim_info
+    food_restriction_tracker = source_sim_info.food_restriction_tracker
     candidate_ingredients = cls._get_ingredient_candidates(who, crafting_target=target)
     for recipe in cls.recipes:
         if food_restriction_tracker is not None and food_restriction_tracker.recipe_has_restriction(recipe):
+            # autonomous_log.debug('Food has food restriction.', clas=cls, source_sim_info=source_sim_info, recipe=recipe)
             pass
         else:
             result = CraftingProcess.recipe_test(target, context, recipe, who, 0, build_error_list=False, from_autonomy=True, check_bucks_costs=False)
             if cls.ingredient_cost_only and not recipe.all_ingredients_available(candidate_ingredients, cls.ingredient_cost_only):
-                # autonomous_log.debug('Did autonomous test, but not all ingredients were available.', ingredient_cost_only=cls.ingredient_cost_only, recipe=recipe)
+                # autonomous_log.debug('Did autonomous test, but not all ingredients were available.', clas=cls, source_sim_info=source_sim_info, ingredient_cost_only=cls.ingredient_cost_only, recipe=recipe, candidate_ingredients=candidate_ingredients)
                 pass
             elif result:
-                # autonomous_log.debug('Dis autonomous test, success', recipe=recipe)
+                autonomous_log.debug('Dis autonomous test, success', clas=cls, source_sim_info=source_sim_info, recipe=recipe)
                 return TestResult.TRUE
             else:
-                # autonomous_log.debug('Did autonomous test, result failed', recipe=recipe, result=result)
+                # autonomous_log.debug('Did autonomous test, result failed', clas=cls, source_sim_info=source_sim_info, recipe=recipe, result=result)
                 pass
+    # autonomous_log.debug('Got candidate ingredients', clas=cls, sim_info=source_sim_info, candidate_ingredients=candidate_ingredients, recipes=cls.recipes)
     return TestResult(False, 'There are no autonomously completable recipes.')
     # original_result = original(target, context, who)
     #
@@ -498,8 +518,9 @@ def _rci_override_autonomous_crafting_interaction(original, cls, target, context
 
 
 @BBInjectionUtils.inject(ModIdentity(), StartCraftingMixin, StartCraftingMixin.find_best_recipe.__name__)
-def _rci_handle_begin_crafting(original, self, valid_recipes: List[Recipe]):
+def _rci_handle_find_best_recipe(original, self, valid_recipes: List[Recipe]):
     weights = []
+    autonomous_log.debug('Got valid recipes.', valid_recipes=valid_recipes)
     for recipe in valid_recipes:
         result = CraftingProcess.recipe_test(self.target, self.context, recipe, self.sim, 0, build_error_list=autonomous_log.is_enabled(), from_autonomy=True, check_bucks_costs=False)
         if result:
@@ -510,6 +531,7 @@ def _rci_handle_begin_crafting(original, self, valid_recipes: List[Recipe]):
     if not weights:
         autonomous_log.debug('Unable to "find best recipe".', valid_recipes=valid_recipes)
         return
+    autonomous_log.debug('Got recipe weights', recipe_weights=weights)
     import sims4.random
     recipe = sims4.random.pop_weighted(weights)
     return recipe

@@ -1094,7 +1094,7 @@ class BBDramaNodeDisabler:
 
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_drama_node_disabler')
-log.enable()
+# log.enable()
 
 
 @BBInjectionUtils.inject(ModIdentity(), BaseDramaNode, BaseDramaNode._test.__name__)
@@ -1102,5 +1102,5 @@ def _bbs_disable_drama_nodes(original, self, *_, **__) -> TestResult:
     drama_node_id = getattr(self, 'guid64')
     if drama_node_id in BBDramaNodeDisabler.DISABLED_DRAMA_NODE_IDS:
         log.debug('Preventing BaseDramaNode Drama Node from starting.', drama_node=self, drama_node_id=drama_node_id)
-        return False
+        return TestResult.NONE
     return original(self, *_, **__)

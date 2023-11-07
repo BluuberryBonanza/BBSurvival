@@ -37,7 +37,7 @@ class BBSScavengingUtils(BBLogMixin):
     }
 
     ITEM_CHANCE = {
-        BBSScavengedItemType.SEED: 0.5,
+        BBSScavengedItemType.SEED: 0.1,
         BBSScavengedItemType.FRUIT: 0.5,
         BBSScavengedItemType.ANIMAL: 0.1,
         BBSScavengedItemType.INGREDIENT: 0.5,
