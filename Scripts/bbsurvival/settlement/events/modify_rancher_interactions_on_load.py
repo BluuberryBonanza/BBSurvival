@@ -8,6 +8,7 @@ Copyright (c) BLUUBERRYBONANZA
 from typing import Any
 
 from bbsurvival.bb_lib.utils.bb_instance_utils import BBInstanceUtils
+from bbsurvival.bb_lib.utils.bb_object_statistic_utils import BBObjectStatisticUtils
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
 from bluuberrylibrary.events.event_dispatchers.zone.events.bb_on_zone_load_end_event import BBOnZoneLoadEndEvent
@@ -22,10 +23,8 @@ from interactions import ParticipantType
 from objects.part import ObjectPart
 from sims.sim_info_tests import TraitTest
 from sims4.resources import Types
-from statistics.statistic import Statistic
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_change_rancher_interactions')
-log.enable()
 
 
 class _BBSIsAnimalObjectHungryTest(BaseTest):
@@ -44,11 +43,7 @@ class _BBSIsAnimalObjectHungryTest(BaseTest):
 
         game_object = next(iter(target), None)
         stat_id = 256986  # commodity_AnimalObjects_Motive_Hunger
-        statistic = BBInstanceUtils.get_instance(Types.STATISTIC, stat_id, return_type=Statistic)
-        statistic_tracker = game_object.get_tracker(statistic)
-        if statistic_tracker is None:
-            return TestResult.TRUE
-        stat_value = statistic_tracker.get_value(statistic)
+        stat_value = BBObjectStatisticUtils.get_statistic_value(game_object, stat_id)
         # log.debug('Got hungry value', stat_value=stat_value)
         if stat_value <= 150:
             return TestResult.TRUE
@@ -70,11 +65,7 @@ class _BBSIsAnimalObjectDirtyTest(BaseTest):
             return TestResult.TRUE
         game_object = next(iter(target), None)
         stat_id = 256988  # commodity_AnimalObjects_Motive_Hygiene
-        statistic = BBInstanceUtils.get_instance(Types.STATISTIC, stat_id, return_type=Statistic)
-        statistic_tracker = game_object.get_tracker(statistic)
-        if statistic_tracker is None:
-            return TestResult.TRUE
-        stat_value = statistic_tracker.get_value(statistic)
+        stat_value = BBObjectStatisticUtils.get_statistic_value(game_object, stat_id)
 
         # log.debug('Got hygiene value', stat_value=stat_value)
         if stat_value <= 150:
@@ -98,11 +89,7 @@ class _BBSIsAnimalObjectLonelyTest(BaseTest):
 
         game_object = next(iter(target), None)
         stat_id = 256987  # commodity_AnimalObjects_Motive_Activity
-        statistic = BBInstanceUtils.get_instance(Types.STATISTIC, stat_id, return_type=Statistic)
-        statistic_tracker = game_object.get_tracker(statistic)
-        if statistic_tracker is None:
-            return TestResult.TRUE
-        stat_value = statistic_tracker.get_value(statistic)
+        stat_value = BBObjectStatisticUtils.get_statistic_value(game_object, stat_id)
 
         # log.debug('Got lonely value', stat_value=stat_value)
         if stat_value <= 150:

@@ -50,7 +50,7 @@ class BBZoneModifierUtils:
         zone_modifier_instance = cls.load_zone_modifier_by_guid(zone_modifier)
         if zone_modifier_instance is None:
             return TestResult(False, f'The Zone Modifier specified {zone_modifier} does not exist.')
-        zone_modifier_id = zone_modifier_instance.guid64
+        zone_modifier_id = getattr(zone_modifier_instance, 'guid64')
         if zone_modifier_id in zone_data.lot_traits:
             return TestResult(False, f'The Zone {zone_data} already had Modifier {zone_modifier_instance}.')
         zone_data.lot_traits.append(zone_modifier_id)

@@ -7,7 +7,7 @@ Copyright (c) BLUUBERRYBONANZA
 """
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
-from bbsurvival.settlement.settlement_context_manager import BBSSettlementContextManager
+from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
 from bluuberrylibrary.classes.bb_test_result import BBTestResult
 from bluuberrylibrary.interactions.classes.bb_social_mixer_interaction import BBSocialMixerInteraction
 from bluuberrylibrary.mod_registration.bb_mod_identity import BBModIdentity

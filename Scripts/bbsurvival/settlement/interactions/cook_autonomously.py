@@ -22,7 +22,6 @@ from interactions.context import InteractionContext
 from objects.game_object import GameObject
 from sims.sim import Sim
 from sims.sim_info import SimInfo
-from sims4.utils import classproperty
 
 
 class BBSSettlementCookAutonomouslyInteraction(StartCraftingAutonomouslySuperInteraction, BBSuperInteraction):

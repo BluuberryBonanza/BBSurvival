@@ -5,7 +5,7 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 
 Copyright (c) BLUUBERRYBONANZA
 """
-from typing import Dict, Any, TypeVar, Type, Union
+from typing import Dict, Any, TypeVar, Type
 
 BBJSONSerializableType = TypeVar('BBJSONSerializableType', bound="BBJSONSerializable")
 

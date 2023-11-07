@@ -56,7 +56,7 @@ class BBSAssignToJobLootOp(BaseTargetedLootOperation):
                 return test_result
         target_sim = resolver.get_participant(self.target)
         target_sim_info = BBSimUtils.to_sim_info(target_sim)
-        from bbsurvival.settlement.settlement_context_manager import BBSSettlementContextManager
+        from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
         settlement_context = BBSSettlementContextManager().settlement_context
         if settlement_context is None:
             return
@@ -100,7 +100,7 @@ class BBSUnassignFromJobLootOp(BaseTargetedLootOperation):
                 return test_result
         target_sim = resolver.get_participant(self.target)
         target_sim_info = BBSimUtils.to_sim_info(target_sim)
-        from bbsurvival.settlement.settlement_context_manager import BBSSettlementContextManager
+        from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
         settlement_context = BBSSettlementContextManager().settlement_context
         if settlement_context is None:
             return
@@ -146,7 +146,7 @@ class BBSAddToSettlementLootOp(BaseTargetedLootOperation):
         if not BBSimTraitUtils.has_trait(target_sim_info, BBSSettlementTraitId.SETTLEMENT_HEAD):
             BBSimTraitUtils.add_trait(target_sim_info, BBSSettlementTraitId.SETTLEMENT_HEAD)
 
-        from bbsurvival.settlement.settlement_context_manager import BBSSettlementContextManager
+        from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
         add_result = BBSSettlementContextManager().add_settlement_member_context(sim_info, head_of_settlement_sim_info=target_sim_info)
         log.debug('Add context result', add_result=add_result)
 

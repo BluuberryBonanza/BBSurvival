@@ -9,7 +9,7 @@ import services
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
-from bbsurvival.settlement.settlement_context_manager import BBSSettlementContextManager
+from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
 from bluuberrylibrary.classes.bb_run_result import BBRunResult
 from bluuberrylibrary.events.event_dispatchers.sim.events.bb_on_sim_spawned_event import BBOnSimSpawnedEvent
 from bluuberrylibrary.events.event_dispatchers.zone.events.bb_on_zone_load_end_event import BBOnZoneLoadEndEvent

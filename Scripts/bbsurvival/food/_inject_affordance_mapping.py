@@ -8,8 +8,6 @@ Copyright (c) BLUUBERRYBONANZA
 from bbsurvival.bb_lib.utils.bb_instance_utils import BBInstanceUtils
 from bbsurvival.mod_identity import ModIdentity
 from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
-from bluuberrylibrary.utils.debug.bb_injection_utils import BBInjectionUtils
-from objects.components.affordance_tuning import AffordanceTuningComponent
 from sims4.resources import Types
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_override_affordance_tuning')

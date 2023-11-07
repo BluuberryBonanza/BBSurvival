@@ -1,3 +1,10 @@
+"""
+This mod is licensed under the Creative Commons Attribution 4.0 International public license (CC BY 4.0).
+https://creativecommons.org/licenses/by/4.0/
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+Copyright (c) BLUUBERRYBONANZA
+"""
 from typing import Iterable, Union
 
 import services
@@ -5,8 +12,8 @@ from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
-from bbsurvival.settlement.settlement_context import BBSSettlementContext
-from bbsurvival.settlement.settlement_member_context import BBSSettlementMemberContext
+from bbsurvival.settlement.contexts.settlement_context import BBSSettlementContext
+from bbsurvival.settlement.contexts.settlement_member_context import BBSSettlementMemberContext
 from bluuberrylibrary.classes.bb_run_result import BBRunResult
 from bluuberrylibrary.classes.bb_singleton import BBSingleton
 from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
@@ -76,6 +83,10 @@ class BBSSettlementContextManager(metaclass=BBSingleton):
 
         result = BBSimTraitUtils.add_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_MEMBER)
         log.debug('Trait add result as result of adding settlement member context', result=result, sim_info=sim_info)
+
+        if self.settlement_context.has_member_context(sim_info):
+            return BBRunResult(False, f'{sim_info} was already in the settlement context.')
+
         member_context = BBSSettlementMemberContext(
             sim_info,
             BBSSettlementMemberJobFlags.NONE,

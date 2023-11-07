@@ -5,16 +5,14 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 
 Copyright (c) BLUUBERRYBONANZA
 """
-from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
-from bluuberrylibrary.utils.debug.bb_injection_utils import BBInjectionUtils
 from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
 from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
 from interactions import ParticipantType
 from objects.components.utils.inventory_helpers import get_object_or_lot_inventory, \
     transfer_object_to_lot_or_object_inventory
 from objects.game_object import GameObject
-from objects.object_creation import ObjectCreationMixin, StateInitializationPreference
+from objects.object_creation import StateInitializationPreference
 
 
 # @BBInjectionUtils.inject(ModIdentity(), ObjectCreationMixin, ObjectCreationMixin._place_object.__name__)

@@ -11,12 +11,14 @@ import services
 from bbsurvival.bb_lib.classes.bb_serializable import BBJSONSerializable
 from bbsurvival.bb_lib.utils.bb_bitwise_utils import BBBitwiseUtils
 from bbsurvival.bb_lib.utils.bb_instance_utils import BBInstanceUtils
+from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
 from bbsurvival.settlement.enums.situation_ids import BBSSituationId
 from bbsurvival.settlement.enums.situation_job_ids import BBSSituationJobId
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
 from bbsurvival.settlement.situations.settlement_member_situation import BBSSettlementMemberSituation
 from bluuberrylibrary.classes.bb_run_result import BBRunResult
+from bluuberrylibrary.logs.bb_log_mixin import BBLogMixin
 from bluuberrylibrary.utils.instances.bb_situation_utils import BBSituationUtils
 from bluuberrylibrary.utils.sims.bb_sim_situation_utils import BBSimSituationUtils
 from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
@@ -27,18 +29,35 @@ from sims4.resources import Types
 from situations.situation_guest_list import SituationGuestList, SituationGuestInfo, SituationInvitationPurpose
 
 
-class BBSSettlementMemberContext(BBJSONSerializable):
+class BBSSettlementMemberContext(BBJSONSerializable, BBLogMixin):
+    @classmethod
+    def get_mod_identity(cls) -> ModIdentity:
+        return ModIdentity()
+
+    @classmethod
+    def get_log_name(cls) -> str:
+        return 'bbs_settlement_member'
+
     def __init__(
         self,
         sim_info: SimInfo,
         job_flags: BBSSettlementMemberJobFlags,
         is_head_of_settlement: bool
     ):
+        super().__init__()
+        BBLogMixin.__init__(self)
         self._sim_info = sim_info
         self._job_flags = job_flags
         self._is_head_of_settlement = is_head_of_settlement
         self._situation_id = None
         self._update_job_flags()
+
+        from bbsurvival.settlement.contexts.settlement_cook_component import BBSettlementMemberCookComponent
+        if self.has_any_jobs(BBSSettlementMemberJobFlags.COOK):
+            self.cook_component: BBSettlementMemberCookComponent = BBSettlementMemberCookComponent(self.sim_info)
+        else:
+            # noinspection PyTypeChecker
+            self.cook_component: BBSettlementMemberCookComponent = None
 
     @property
     def sim_info(self) -> SimInfo:
@@ -165,8 +184,14 @@ class BBSSettlementMemberContext(BBJSONSerializable):
     def setup(self):
         self._start_situation()
 
+        if self.cook_component is not None:
+            self.cook_component.setup()
+
     def teardown(self):
         self._stop_situation()
+
+        if self.cook_component is not None:
+            self.cook_component.teardown()
 
     def is_running_situation(self, sim_info: SimInfo) -> bool:
         sim_id = BBSimUtils.to_sim_id(sim_info)

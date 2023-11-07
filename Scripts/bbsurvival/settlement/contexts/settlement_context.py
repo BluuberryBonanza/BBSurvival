@@ -9,7 +9,7 @@ from typing import Tuple, List, Dict, Any, Type
 
 from bbsurvival.bb_lib.classes.bb_serializable import BBJSONSerializable
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
-from bbsurvival.settlement.settlement_member_context import BBSSettlementMemberContext
+from bbsurvival.settlement.contexts.settlement_member_context import BBSSettlementMemberContext
 from sims.sim_info import SimInfo
 
 

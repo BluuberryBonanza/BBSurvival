@@ -12,8 +12,6 @@ from bbsurvival.mod_identity import ModIdentity
 from bluuberrylibrary.events.event_dispatchers.zone.events.bb_on_zone_load_end_event import BBOnZoneLoadEndEvent
 from bluuberrylibrary.events.event_handling.bb_event_handler_registry import BBEventHandlerRegistry
 from event_testing.results import TestResult
-from objects.components.statistic_component import StatisticComponent
-from sims4.resources import Types
 
 
 @BBEventHandlerRegistry.register(ModIdentity(), BBOnZoneLoadEndEvent)

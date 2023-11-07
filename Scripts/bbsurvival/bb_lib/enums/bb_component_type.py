@@ -6,7 +6,6 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 Copyright (c) BLUUBERRYBONANZA
 """
 from typing import Any
-from bluuberrylibrary.enums.classes.bb_int import BBInt
 
 
 class BBComponentType:
