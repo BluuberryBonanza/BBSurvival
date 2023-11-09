@@ -17,11 +17,12 @@ from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.scavenging.bbs_scavenging_run_length import BBSScavengingRunLength
 from bluuberrylibrary.dialogs.notifications.bb_notification import BBNotification
 from bluuberrylibrary.enums.string_ids import BBStringId
+from bluuberrylibrary.dialogs.icons.bb_sim_icon_info import BBSimIconInfo
 from bluuberrylibrary.logs.bb_log_mixin import BBLogMixin
 from bluuberrylibrary.mod_registration.bb_mod_identity import BBModIdentity
 from bluuberrylibrary.utils.text.bb_localization_utils import BBLocalizationUtils
 from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
-from distributor.shared_messages import IconInfoData
+from bluuberrylibrary.utils.text.bb_localized_string_data import BBLocalizedStringData
 from objects.game_object import GameObject
 from sims.sim_info import SimInfo
 from sims4.common import Pack
@@ -574,9 +575,10 @@ class BBSScavengingUtils(BBLogMixin):
                 text = BBLocalizationUtils.combine_strings(received_item_strings, separator_text=BBStringId.BBL_STRING_NEWLINE_STRING)
 
                 BBNotification(
-                    BBSStringId.FOUND_WHILE_SCAVENGING,
-                    text
-                ).show(icon=IconInfoData(obj_instance=scavenging_sim), secondary_icon=IconInfoData(obj_instance=to_receive_sim) if scavenging_sim is not to_receive_sim else None)
+                    cls.get_mod_identity(),
+                    BBLocalizedStringData(BBSStringId.FOUND_WHILE_SCAVENGING),
+                    BBLocalizedStringData(text)
+                ).show(icon=BBSimIconInfo(scavenger_sim_info), secondary_icon=BBSimIconInfo(to_receive_sim_info) if scavenger_sim_info is not to_receive_sim_info else None)
         except Exception as ex:
             log.error('An error occurred displaying notification', exception=ex)
 

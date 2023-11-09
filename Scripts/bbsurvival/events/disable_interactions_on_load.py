@@ -195,6 +195,7 @@ class _InteractionDisabler:
         231894,  # Empty_Trash_Outdoor_TrashUpdate
         231893,  # trashUpdate_Collect_NoTargetRecyclables
         254791,  # collect_Trash_Compost_Aggregate
+        331478,  # interactionPickerSI_CommunityBoard_Jobs
     ]
 
 
