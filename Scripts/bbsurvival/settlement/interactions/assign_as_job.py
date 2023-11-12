@@ -8,11 +8,10 @@ Copyright (c) BLUUBERRYBONANZA
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
 from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
-from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
+from bbsurvival.settlement.utils.settlement_utils import BBSSettlementUtils
 from bluuberrylibrary.classes.bb_test_result import BBTestResult
 from bluuberrylibrary.interactions.classes.bb_social_mixer_interaction import BBSocialMixerInteraction
 from bluuberrylibrary.mod_registration.bb_mod_identity import BBModIdentity
-from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
 from interactions.context import InteractionContext
 from sims.sim_info import SimInfo
 from sims4.tuning.tunable import TunableEnumEntry
@@ -68,5 +67,8 @@ class BBSSettlementAssignAsJobInteraction(BBSocialMixerInteraction):
             return BBTestResult.NONE
         if cls.settlement_job not in cls.ENABLED_JOBS:
             log.debug('Job is not enabled yet.', settlement_job=cls.settlement_job)
+            return BBTestResult.NONE
+        if cls.settlement_job not in BBSSettlementUtils.get_allowed_jobs(interaction_target_sim_info):
+            log.debug('Job is not available for Sim.', job=cls.settlement_job, sim=interaction_target_sim_info)
             return BBTestResult.NONE
         return super().bbl_test(interaction_sim_info, interaction_target_sim_info, interaction_context, *args, **kwargs)

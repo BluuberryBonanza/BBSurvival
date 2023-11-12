@@ -127,3 +127,6 @@ class BBSSettlementMemberSituation(SituationComplexCommon):
     # noinspection PyMethodMayBeStatic
     def _get_remaining_time(self) -> TimeSpan:
         return clock.interval_in_sim_hours(999)
+
+    def on_ask_sim_to_leave(self, sim):
+        return False

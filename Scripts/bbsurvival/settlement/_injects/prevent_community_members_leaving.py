@@ -11,6 +11,7 @@ from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
 from bluuberrylibrary.events.event_dispatchers.zone.events.bb_on_zone_load_end_event import BBOnZoneLoadEndEvent
 from bluuberrylibrary.events.event_handling.bb_event_handler_registry import BBEventHandlerRegistry
+from bluuberrylibrary.utils.debug.bb_injection_utils import BBInjectionUtils
 from bluuberrylibrary.utils.instances.bb_interaction_utils import BBInteractionUtils
 from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
 from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
@@ -18,6 +19,7 @@ from event_testing.results import TestResult
 from event_testing.test_base import BaseTest
 from event_testing.tests import TestList
 from interactions import ParticipantType
+from situations.situation_manager import SituationManager
 
 
 class _BBSIsNotCommunityMemberTest(BaseTest):
@@ -124,3 +126,39 @@ def _bbs_disable_leave_interactions_for_community_members_on_zone_load(event: BB
         tests_list.insert(0, _BBSIsNotCommunityMemberTest())
         interaction.test_globals = TestList(tests_list)
     return TestResult.TRUE
+
+
+@BBInjectionUtils.inject(ModIdentity(), SituationManager, SituationManager.can_sim_be_sent_home_in_ss3.__name__)
+def _bbs_disable_leave_now_must_run(original, self, sim):
+    sim_info = BBSimUtils.to_sim_info(sim)
+    from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
+    if BBSSettlementContextManager().get_settlement_context_by_sim_info(sim_info) is not None:
+        return False
+    return original(self, sim)
+
+
+@BBInjectionUtils.inject(ModIdentity(), SituationManager, SituationManager.user_ask_sim_to_leave_now_must_run.__name__)
+def _bbs_disable_leave_now_must_run(original, self, sim):
+    sim_info = BBSimUtils.to_sim_info(sim)
+    from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
+    if BBSSettlementContextManager().get_settlement_context_by_sim_info(sim_info) is not None:
+        return
+    return original(self, sim)
+
+
+@BBInjectionUtils.inject(ModIdentity(), SituationManager, SituationManager.make_sim_leave_now_must_run.__name__)
+def _bbs_disable_leave_now_must_run(original, self, sim):
+    sim_info = BBSimUtils.to_sim_info(sim)
+    from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
+    if BBSSettlementContextManager().get_settlement_context_by_sim_info(sim_info) is not None:
+        return
+    return original(self, sim)
+
+
+@BBInjectionUtils.inject(ModIdentity(), SituationManager, SituationManager.make_sim_leave.__name__)
+def _bbs_disable_leave_now_must_run(original, self, sim):
+    sim_info = BBSimUtils.to_sim_info(sim)
+    from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
+    if BBSSettlementContextManager().get_settlement_context_by_sim_info(sim_info) is not None:
+        return
+    return original(self, sim)

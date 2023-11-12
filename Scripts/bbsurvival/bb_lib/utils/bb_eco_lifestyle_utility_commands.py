@@ -14,7 +14,7 @@ from sims.household_utilities.utility_types import Utilities
 from sims4.commands import CommandType, Command
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbl_print_utilities')
-log.enable()
+# log.enable()
 
 
 @Command(

@@ -4,7 +4,7 @@ from bluuberrylibrary.utils.debug.bb_injection_utils import BBInjectionUtils
 from sims.household_utilities.utilities_manager import UtilityInfo
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_utilities_effect_all_lots')
-log.enable()
+# log.enable()
 
 
 # @BBInjectionUtils.inject(ModIdentity(), UtilityInfo, UtilityInfo.add_shutoff_reason.__name__)

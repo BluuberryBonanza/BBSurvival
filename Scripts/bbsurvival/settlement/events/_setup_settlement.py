@@ -22,7 +22,7 @@ from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
 from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_settlement_events')
-log.enable()
+# log.enable()
 
 
 @BBEventHandlerRegistry.register(ModIdentity(), BBOnZoneLoadEndEvent)

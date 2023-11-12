@@ -29,7 +29,7 @@ from interactions.utils.loot_basic_op import BaseTargetedLootOperation
 from sims4.tuning.tunable import TunableList, TunableEnumEntry
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_loot_actions')
-log.enable()
+# log.enable()
 
 
 class BBSAssignCookTimeLootOp(BaseTargetedLootOperation):

@@ -22,7 +22,7 @@ from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
 from sims.sim_info import SimInfo
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_settlement_context_manager')
-log.enable()
+# log.enable()
 
 
 class BBSSettlementContextManager(metaclass=BBSingleton):

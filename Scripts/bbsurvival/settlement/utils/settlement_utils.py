@@ -5,6 +5,8 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 
 Copyright (c) BLUUBERRYBONANZA
 """
+from typing import Tuple
+
 import services
 from bbsurvival.bb_lib.utils.bb_sim_age_utils import BBSimAgeUtils
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
@@ -14,6 +16,7 @@ from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.contexts.settlement_context import BBSSettlementContext
 from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
 from bbsurvival.settlement.enums.relationship_bit_ids import BBSSettlementRelationshipBitId
+from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
 from bluuberrylibrary.classes.bb_run_result import BBRunResult
 from bluuberrylibrary.classes.bb_test_result import BBTestResult
@@ -23,7 +26,7 @@ from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
 from sims.sim_info import SimInfo
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_settlement_utils')
-log.enable()
+# log.enable()
 
 
 class BBSSettlementUtils:
@@ -169,3 +172,40 @@ class BBSSettlementUtils:
         if current_zone_id != home_zone_id:
             return BBTestResult(False, f'{sim_info} is not the owner of the current lot. Thus they cannot be Head of Settlement.')
         return BBTestResult.TRUE
+
+    @classmethod
+    def get_allowed_jobs(cls, sim_info: SimInfo) -> Tuple[BBSSettlementMemberJobFlags]:
+        if BBSimSpeciesUtils.is_human(sim_info):
+            if BBSimAgeUtils.is_child(sim_info):
+                # noinspection PyTypeChecker
+                return (
+                    BBSSettlementMemberJobFlags.GARDENER,
+                    BBSSettlementMemberJobFlags.SANITATION,
+                    BBSSettlementMemberJobFlags.MAINTENANCE,
+                    BBSSettlementMemberJobFlags.RANCHER
+                )
+            elif BBSimAgeUtils.is_teen(sim_info)\
+                    or BBSimAgeUtils.is_young_adult(sim_info)\
+                    or BBSimAgeUtils.is_adult(sim_info)\
+                    or BBSimAgeUtils.is_elder(sim_info):
+                # noinspection PyTypeChecker
+                return (
+                    BBSSettlementMemberJobFlags.COOK,
+                    BBSSettlementMemberJobFlags.NANNY,
+                    BBSSettlementMemberJobFlags.GARDENER,
+                    BBSSettlementMemberJobFlags.GUARD,
+                    BBSSettlementMemberJobFlags.DOCTOR,
+                    BBSSettlementMemberJobFlags.SCOUT,
+                    BBSSettlementMemberJobFlags.SANITATION,
+                    BBSSettlementMemberJobFlags.MAINTENANCE,
+                    BBSSettlementMemberJobFlags.TEACHER,
+                    BBSSettlementMemberJobFlags.GATHERER,
+                    BBSSettlementMemberJobFlags.RANCHER,
+                )
+        elif not BBSimSpeciesUtils.is_horse(sim_info):
+            # noinspection PyTypeChecker
+            return (
+                BBSSettlementMemberJobFlags.GUARD,
+                BBSSettlementMemberJobFlags.SCOUT
+            )
+        return tuple()

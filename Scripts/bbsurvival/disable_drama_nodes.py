@@ -10,7 +10,7 @@ from sims4.commands import Command, CommandType
 from sims4.resources import Types
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbl_drama_nodes')
-log.enable()
+# log.enable()
 
 
 @Command(
