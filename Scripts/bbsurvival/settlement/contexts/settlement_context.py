@@ -68,14 +68,22 @@ class BBSSettlementContext(BBJSONSerializable):
 
     def add_member_context(self, member_context: BBSSettlementMemberContext):
         if self.has_member_context(member_context.sim_info):
+            member_context.setup()
             return
         self._member_contexts.append(member_context)
+        member_context.setup()
 
     def remove_member_context(self, member_context: BBSSettlementMemberContext):
         if not self.has_member_context(member_context.sim_info):
             return
+        member_context.teardown()
         if member_context in self._member_contexts:
             self._member_contexts.remove(member_context)
+
+    def get_head_of_settlement_context(self) -> BBSSettlementMemberContext:
+        for member_context in self.member_contexts:
+            if member_context.is_head_of_settlement:
+                return member_context
 
     def get_member_context(self, sim_info: SimInfo) -> BBSSettlementMemberContext:
         for member_context in self.member_contexts:
@@ -83,8 +91,6 @@ class BBSSettlementContext(BBJSONSerializable):
                 return member_context
 
     def setup(self) -> None:
-        for member_context in self.member_contexts:
-            member_context.setup()
         self._is_running = True
 
     def teardown(self) -> None:

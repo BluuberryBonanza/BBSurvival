@@ -7,8 +7,11 @@ Copyright (c) BLUUBERRYBONANZA
 """
 from typing import Dict, Any, Type
 
+import clock
 import services
+from bbsurvival.bb_lib.classes.bb_alarm_handle import BBAlarmHandle
 from bbsurvival.bb_lib.classes.bb_serializable import BBJSONSerializable
+from bbsurvival.bb_lib.utils.bb_alarm_utils import BBAlarmUtils
 from bbsurvival.bb_lib.utils.bb_bitwise_utils import BBBitwiseUtils
 from bbsurvival.bb_lib.utils.bb_instance_utils import BBInstanceUtils
 from bbsurvival.mod_identity import ModIdentity
@@ -49,15 +52,29 @@ class BBSSettlementMemberContext(BBJSONSerializable, BBLogMixin):
         self._sim_info = sim_info
         self._job_flags = job_flags
         self._is_head_of_settlement = is_head_of_settlement
+        self._is_setup = False
         self._situation_id = None
+        from bbsurvival.settlement.contexts.settlement_cook_component import BBSettlementMemberCookComponent
+        # noinspection PyTypeChecker
+        self.cook_component: BBSettlementMemberCookComponent = None
         self._update_job_flags()
 
-        from bbsurvival.settlement.contexts.settlement_cook_component import BBSettlementMemberCookComponent
-        if self.has_any_jobs(BBSSettlementMemberJobFlags.COOK):
-            self.cook_component: BBSettlementMemberCookComponent = BBSettlementMemberCookComponent(self.sim_info)
-        else:
-            # noinspection PyTypeChecker
-            self.cook_component: BBSettlementMemberCookComponent = None
+        def _ensure_setup(_context: BBSSettlementMemberContext, _alarm_handle: BBAlarmHandle):
+            if not _context.is_running_situation(_context._sim_info):
+                log = _context.get_log()
+                log.debug('Ensuring setup 1', sim=_context._sim_info)
+                _context._is_setup = False
+                _context.setup()
+
+        time_until_update = clock.interval_in_sim_minutes(2)
+        self._setup_check_alarm_handle = BBAlarmUtils.schedule_alarm(
+            self.get_mod_identity(),
+            self,
+            time_until_update,
+            _ensure_setup,
+            should_repeat=True,
+            time_until_repeat=time_until_update
+        )
 
     @property
     def sim_info(self) -> SimInfo:
@@ -105,6 +122,14 @@ class BBSSettlementMemberContext(BBJSONSerializable, BBLogMixin):
             job_flags = BBBitwiseUtils.add_bits(job_flags, BBSSettlementMemberJobFlags.SANITATION)
         if BBSimTraitUtils.has_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_COOK):
             job_flags = BBBitwiseUtils.add_bits(job_flags, BBSSettlementMemberJobFlags.COOK)
+            from bbsurvival.settlement.contexts.settlement_cook_component import BBSettlementMemberCookComponent
+            if self.cook_component is None:
+                self.cook_component: BBSettlementMemberCookComponent = BBSettlementMemberCookComponent(self.sim_info)
+        else:
+            if self.cook_component is not None:
+                self.cook_component.teardown()
+                # noinspection PyTypeChecker
+                self.cook_component = None
         if BBSimTraitUtils.has_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_NANNY):
             job_flags = BBBitwiseUtils.add_bits(job_flags, BBSSettlementMemberJobFlags.NANNY)
         if BBSimTraitUtils.has_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_GARDENER):
@@ -138,8 +163,15 @@ class BBSSettlementMemberContext(BBJSONSerializable, BBLogMixin):
 
         if BBBitwiseUtils.has_any_bits(self._job_flags, BBSSettlementMemberJobFlags.COOK):
             BBSimTraitUtils.add_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_COOK)
+            from bbsurvival.settlement.contexts.settlement_cook_component import BBSettlementMemberCookComponent
+            if self.cook_component is None:
+                self.cook_component: BBSettlementMemberCookComponent = BBSettlementMemberCookComponent(self.sim_info)
         else:
             BBSimTraitUtils.remove_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_COOK)
+            if self.cook_component is not None:
+                self.cook_component.teardown()
+                # noinspection PyTypeChecker
+                self.cook_component = None
 
         if BBBitwiseUtils.has_any_bits(self._job_flags, BBSSettlementMemberJobFlags.NANNY):
             BBSimTraitUtils.add_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_NANNY)
@@ -182,6 +214,26 @@ class BBSSettlementMemberContext(BBJSONSerializable, BBLogMixin):
             BBSimTraitUtils.remove_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_RANCHER)
 
     def setup(self):
+        if self._is_setup:
+            if self._setup_check_alarm_handle is None or not self._setup_check_alarm_handle.is_running:
+                def _ensure_setup(_context: BBSSettlementMemberContext, _alarm_handle: BBAlarmHandle):
+                    if not _context.is_running_situation(_context._sim_info):
+                        log = _context.get_log()
+                        log.debug('Ensuring setup 2', sim=_context._sim_info)
+                        _context._is_setup = False
+                        _context.setup()
+
+                time_until_update = clock.interval_in_sim_minutes(2)
+                self._setup_check_alarm_handle = BBAlarmUtils.schedule_alarm(
+                    self.get_mod_identity(),
+                    self,
+                    time_until_update,
+                    _ensure_setup,
+                    should_repeat=True,
+                    time_until_repeat=time_until_update
+                )
+            return
+        self._is_setup = True
         self._start_situation()
 
         if self.cook_component is not None:
@@ -192,6 +244,9 @@ class BBSSettlementMemberContext(BBJSONSerializable, BBLogMixin):
 
         if self.cook_component is not None:
             self.cook_component.teardown()
+
+        self._is_setup = False
+        BBAlarmUtils.cancel_alarm(self._setup_check_alarm_handle)
 
     def is_running_situation(self, sim_info: SimInfo) -> bool:
         sim_id = BBSimUtils.to_sim_id(sim_info)

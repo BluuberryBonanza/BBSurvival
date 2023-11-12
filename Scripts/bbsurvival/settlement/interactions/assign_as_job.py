@@ -8,9 +8,11 @@ Copyright (c) BLUUBERRYBONANZA
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
 from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
+from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
 from bluuberrylibrary.classes.bb_test_result import BBTestResult
 from bluuberrylibrary.interactions.classes.bb_social_mixer_interaction import BBSocialMixerInteraction
 from bluuberrylibrary.mod_registration.bb_mod_identity import BBModIdentity
+from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
 from interactions.context import InteractionContext
 from sims.sim_info import SimInfo
 from sims4.tuning.tunable import TunableEnumEntry
@@ -53,9 +55,12 @@ class BBSSettlementAssignAsJobInteraction(BBSocialMixerInteraction):
     @classmethod
     def bbl_test(cls, interaction_sim_info: SimInfo, interaction_target_sim_info: SimInfo, interaction_context: InteractionContext, *args, **kwargs) -> BBTestResult:
         log = cls.get_log()
-        settlement_context = BBSSettlementContextManager().settlement_context
+        settlement_context = BBSSettlementContextManager().get_settlement_context_by_sim_info(interaction_target_sim_info)
         if settlement_context is None:
             log.debug('No settlement context.')
+            return BBTestResult.NONE
+        if not settlement_context.has_member_context(interaction_sim_info):
+            log.debug('Source Sim is not a part of the target Sims settlement.', sim=interaction_sim_info, target=interaction_target_sim_info)
             return BBTestResult.NONE
         target_context = settlement_context.get_member_context(interaction_target_sim_info)
         if target_context is None or target_context.has_any_jobs(cls.settlement_job):

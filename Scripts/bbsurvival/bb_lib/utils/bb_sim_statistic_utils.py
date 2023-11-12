@@ -36,7 +36,10 @@ class BBSimStatisticUtils:
         statistic_tracker: StatisticTracker = sim_info.get_tracker(statistic_instance)
         if statistic_tracker is None:
             return BBTestResult(False, f'{sim_info} does not have {statistic_instance} because {sim_info} does not have a Statistic Tracker.')
-        return statistic_tracker.has_statistic(statistic_instance)
+        result = statistic_tracker.has_statistic(statistic_instance)
+        if result:
+            return BBTestResult(True, f'{sim_info} had statistic {statistic_instance}.')
+        return BBTestResult(False, f'{sim_info} did not have statistic {statistic_instance}.')
 
     @classmethod
     def get_statistic_value(cls, sim_info: SimInfo, statistic: int) -> Union[float, None]:

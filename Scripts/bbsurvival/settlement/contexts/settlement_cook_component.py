@@ -19,7 +19,6 @@ from bbsurvival.settlement.enums.string_ids import BBSSettlementStringIds
 from bluuberrylibrary.dialogs.notifications.bb_notification import BBNotification
 from bluuberrylibrary.dialogs.icons.bb_sim_icon_info import BBSimIconInfo
 from bluuberrylibrary.logs.bb_log_mixin import BBLogMixin
-from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
 from bluuberrylibrary.utils.text.bb_localized_string_data import BBLocalizedStringData
 from objects.game_object import GameObject
 from sims.sim_info import SimInfo
@@ -55,12 +54,16 @@ class BBSettlementMemberCookComponent(BBLogMixin):
 
     def set_cook_time_slot(self, time_slot: BBSSettlementCookTimeSlot, new_hour: int, new_minute: int):
         hour_statistic = BBSSettlementCookTimeSlot.get_hour_statistic(time_slot)
-        BBSimStatisticUtils.set_statistic_value(self.sim_info, hour_statistic, new_hour)
+        hour_result = BBSimStatisticUtils.set_statistic_value(self.sim_info, hour_statistic, new_hour)
+        log = self.get_log()
+        log.debug('Set hour result', hour_result=hour_result)
+        minute_statistic = BBSSettlementCookTimeSlot.get_minute_statistic(time_slot)
+        BBSimStatisticUtils.set_statistic_value(self.sim_info, minute_statistic, new_minute)
+        log.debug('Set minute result', hour_result=hour_result)
 
         self._setup_cook_times()
 
     def _trigger_cook(self, sim_info: SimInfo, alarm_handle: BBAlarmHandle):
-        sim = BBSimUtils.to_sim_instance(sim_info)
         log = self.get_log()
         log.debug(f'Triggering Sim to cook. {sim_info}.')
         fridge_object = self._find_fridge_object()
@@ -114,14 +117,18 @@ class BBSettlementMemberCookComponent(BBLogMixin):
         for time_slot in (BBSSettlementCookTimeSlot.SLOT_ONE, BBSSettlementCookTimeSlot.SLOT_TWO, BBSSettlementCookTimeSlot.SLOT_THREE):
             hour_statistic = BBSSettlementCookTimeSlot.get_hour_statistic(time_slot)
             cook_hour = BBSimStatisticUtils.get_statistic_value(self.sim_info, hour_statistic)
-            cook_minute = 0
+            minute_statistic = BBSSettlementCookTimeSlot.get_minute_statistic(time_slot)
+            if BBSimStatisticUtils.has_statistic(self.sim_info, minute_statistic):
+                cook_minute = BBSimStatisticUtils.get_statistic_value(self.sim_info, minute_statistic)
+            else:
+                cook_minute = 0
 
             if cook_hour is not None and cook_hour != -1.0:
                 cook_alarm = BBAlarmUtils.schedule_daily_alarm(
                     ModIdentity(),
                     self.sim_info,
                     int(cook_hour),
-                    cook_minute,
+                    int(cook_minute),
                     self._trigger_cook,
                     keep_running_on_zone_transition=False
                 )
@@ -131,22 +138,16 @@ class BBSettlementMemberCookComponent(BBLogMixin):
 
         if not has_cook_time:
             log.debug(f'{self.sim_info} had no predefined cook times specified. Setting them to default cook times.')
-            time_slot_to_hour = {
-                BBSSettlementCookTimeSlot.SLOT_ONE: 6,
-                BBSSettlementCookTimeSlot.SLOT_TWO: 12,
-                BBSSettlementCookTimeSlot.SLOT_THREE: 18
-            }
-
             for time_slot in (BBSSettlementCookTimeSlot.SLOT_ONE, BBSSettlementCookTimeSlot.SLOT_TWO, BBSSettlementCookTimeSlot.SLOT_THREE):
-                cook_hour = time_slot_to_hour[time_slot]
-                cook_minute = 0
+                cook_hour = BBSSettlementCookTimeSlot.get_default_cook_hour(time_slot)
+                cook_minute = BBSSettlementCookTimeSlot.get_default_cook_minute(time_slot)
 
                 if cook_hour is not None and cook_hour != -1.0:
                     cook_alarm = BBAlarmUtils.schedule_daily_alarm(
                         ModIdentity(),
                         self.sim_info,
                         int(cook_hour),
-                        cook_minute,
+                        int(cook_minute),
                         self._trigger_cook,
                         keep_running_on_zone_transition=False
                     )
