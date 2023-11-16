@@ -14,7 +14,9 @@ from bbsurvival.bb_lib.classes.bb_serializable import BBJSONSerializable
 from bbsurvival.bb_lib.utils.bb_alarm_utils import BBAlarmUtils
 from bbsurvival.bb_lib.utils.bb_bitwise_utils import BBBitwiseUtils
 from bbsurvival.bb_lib.utils.bb_instance_utils import BBInstanceUtils
+from bbsurvival.bb_lib.utils.bb_sim_interaction_utils import BBSimInteractionUtils
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.settlement.enums.interaction_ids import BBSSettlementInteractionId
 from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
 from bbsurvival.settlement.enums.situation_ids import BBSSituationId
 from bbsurvival.settlement.enums.situation_job_ids import BBSSituationJobId
@@ -59,22 +61,13 @@ class BBSSettlementMemberContext(BBJSONSerializable, BBLogMixin):
         self.cook_component: BBSettlementMemberCookComponent = None
         self._update_job_flags()
 
-        def _ensure_setup(_context: BBSSettlementMemberContext, _alarm_handle: BBAlarmHandle):
-            if not _context.is_running_situation(_context._sim_info):
-                log = _context.get_log()
-                log.debug('Ensuring setup 1', sim=_context._sim_info)
-                _context._is_setup = False
-                _context.setup()
+        self._setup_check_alarm_handle = None
+        self._drop_off_supplies_alarm_handle = None
 
-        time_until_update = clock.interval_in_sim_minutes(2)
-        self._setup_check_alarm_handle = BBAlarmUtils.schedule_alarm(
-            self.get_mod_identity(),
-            self,
-            time_until_update,
-            _ensure_setup,
-            should_repeat=True,
-            time_until_repeat=time_until_update
-        )
+        self._setup_ensure_setup()
+
+        if not is_head_of_settlement:
+            self._setup_drop_off_supplies()
 
     @property
     def sim_info(self) -> SimInfo:
@@ -213,25 +206,60 @@ class BBSSettlementMemberContext(BBJSONSerializable, BBLogMixin):
         else:
             BBSimTraitUtils.remove_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_RANCHER)
 
+    def _setup_ensure_setup(self):
+        if self._setup_check_alarm_handle is None or not self._setup_check_alarm_handle.is_running:
+            def _ensure_setup(_context: BBSSettlementMemberContext, _alarm_handle: BBAlarmHandle):
+                if not _context.is_running_situation(_context._sim_info):
+                    _context._is_setup = False
+                    _context.setup()
+
+            time_until_update = clock.interval_in_sim_minutes(2)
+            self._setup_check_alarm_handle = BBAlarmUtils.schedule_alarm(
+                self.get_mod_identity(),
+                self,
+                time_until_update,
+                _ensure_setup,
+                should_repeat=True,
+                time_until_repeat=time_until_update
+            )
+
+    def _setup_drop_off_supplies(self):
+        if self.is_head_of_settlement or not self.sim_info.is_npc:
+            return
+
+        if self._drop_off_supplies_alarm_handle is None or not self._drop_off_supplies_alarm_handle.is_running:
+            def _drop_off_supplies(_context: BBSSettlementMemberContext, _alarm_handle: BBAlarmHandle):
+                if _context._is_head_of_settlement:
+                    return
+                log = _context.get_log()
+                from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
+                settlement_context = BBSSettlementContextManager().get_settlement_context_by_sim_info(_context.sim_info)
+                head_of_settlement_sim = settlement_context.get_head_of_settlement_context().sim
+                if head_of_settlement_sim is not None:
+                    enqueue_result_normal = BBSimInteractionUtils.push_interaction(
+                        _context.get_mod_identity(),
+                        _context.sim_info,
+                        BBSSettlementInteractionId.SETTLEMENT_SUPPLIES_DROP_OFF_INVENTORY,
+                        target=head_of_settlement_sim
+                    )
+                    log.debug('Queued drop off supplies interaction', sim=_context.sim_info, target=head_of_settlement_sim)
+
+            time_until_first_drop_off_supplies = clock.interval_in_sim_minutes(2)
+            time_until_drop_off_supplies = clock.interval_in_sim_minutes(180)
+
+            self._drop_off_supplies_alarm_handle = BBAlarmUtils.schedule_alarm(
+                self.get_mod_identity(),
+                self,
+                time_until_first_drop_off_supplies,
+                _drop_off_supplies,
+                should_repeat=True,
+                time_until_repeat=time_until_drop_off_supplies
+            )
+
     def setup(self):
         if self._is_setup:
-            if self._setup_check_alarm_handle is None or not self._setup_check_alarm_handle.is_running:
-                def _ensure_setup(_context: BBSSettlementMemberContext, _alarm_handle: BBAlarmHandle):
-                    if not _context.is_running_situation(_context._sim_info):
-                        log = _context.get_log()
-                        log.debug('Ensuring setup 2', sim=_context._sim_info)
-                        _context._is_setup = False
-                        _context.setup()
-
-                time_until_update = clock.interval_in_sim_minutes(2)
-                self._setup_check_alarm_handle = BBAlarmUtils.schedule_alarm(
-                    self.get_mod_identity(),
-                    self,
-                    time_until_update,
-                    _ensure_setup,
-                    should_repeat=True,
-                    time_until_repeat=time_until_update
-                )
+            self._setup_ensure_setup()
+            self._setup_drop_off_supplies()
             return
         self._is_setup = True
         self._start_situation()
@@ -246,7 +274,10 @@ class BBSSettlementMemberContext(BBJSONSerializable, BBLogMixin):
             self.cook_component.teardown()
 
         self._is_setup = False
-        BBAlarmUtils.cancel_alarm(self._setup_check_alarm_handle)
+        if self._setup_check_alarm_handle is not None:
+            BBAlarmUtils.cancel_alarm(self._setup_check_alarm_handle)
+        if self._drop_off_supplies_alarm_handle is not None:
+            BBAlarmUtils.cancel_alarm(self._drop_off_supplies_alarm_handle)
 
     def is_running_situation(self, sim_info: SimInfo) -> bool:
         sim_id = BBSimUtils.to_sim_id(sim_info)

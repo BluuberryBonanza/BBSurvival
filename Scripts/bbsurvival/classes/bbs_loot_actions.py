@@ -12,6 +12,7 @@ from bbsurvival.bb_lib.dialog.bb_input_dialog import BBInputDialog
 from bbsurvival.bb_lib.dialog.bb_ok_cancel_dialog import BBOkCancelDialog
 from bbsurvival.bb_lib.dialog.fields.bb_integer_field import BBIntegerField
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
+from bbsurvival.bb_lib.utils.bb_sim_inventory_utils import BBSimInventoryUtils
 from bbsurvival.bb_lib.utils.bb_sim_statistic_utils import BBSimStatisticUtils
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.cook_time_slot import BBSSettlementCookTimeSlot
@@ -29,7 +30,41 @@ from interactions.utils.loot_basic_op import BaseTargetedLootOperation
 from sims4.tuning.tunable import TunableList, TunableEnumEntry
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_loot_actions')
-# log.enable()
+log.enable()
+
+
+class BBSTransferInventoryLootOp(BaseTargetedLootOperation):
+    FACTORY_TUNABLES = {
+        'subject': TunableEnumEntry(
+            description='\n            The Sim we want to transfer the inventory of.\n            ',
+            tunable_type=ParticipantType,
+            default=ParticipantType.Actor
+        ),
+        'target': TunableEnumEntry(
+            description='\n            The Sim we want to receive the inventory items.\n            ',
+            tunable_type=ParticipantType,
+            default=ParticipantType.TargetSim
+        ),
+    }
+
+    __slots__ = {'subject', 'target'}
+
+    def __init__(self, *_, subject=ParticipantType.Actor, target=ParticipantType.TargetSim, **__) -> None:
+        super().__init__(*_, **__)
+        self.subject = subject
+        self.target = target
+
+    def _apply_to_subject_and_target(self, subject, target, resolver) -> None:
+        if self._tests:
+            test_result = self._tests.run_tests(resolver)
+            if not test_result:
+                return test_result
+        sim_info = BBSimUtils.to_sim_info(subject)
+        target_sim = resolver.get_participant(self.target)
+        target_sim_info = BBSimUtils.to_sim_info(target_sim)
+        result = BBSimInventoryUtils.transfer_inventory_to_sim(sim_info, target_sim_info)
+        if not result:
+            log.debug('Failed to transfer inventory.', sim=sim_info, target_sim=target_sim_info, result=result)
 
 
 class BBSAssignCookTimeLootOp(BaseTargetedLootOperation):
@@ -344,6 +379,12 @@ class BBSLootActionVariant(LootActionVariant):
                 }
             ),
             assign_cook_time=BBSAssignCookTimeLootOp.TunableFactory(
+                target_participant_type_options={
+                    'description': '\n                    The participant of the interaction\n                    ',
+                    'default_participant': ParticipantType.Object
+                }
+            ),
+            transfer_inventory=BBSTransferInventoryLootOp.TunableFactory(
                 target_participant_type_options={
                     'description': '\n                    The participant of the interaction\n                    ',
                     'default_participant': ParticipantType.Object

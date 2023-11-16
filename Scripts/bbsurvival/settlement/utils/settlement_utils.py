@@ -32,6 +32,23 @@ log = BBLogRegistry().register_log(ModIdentity(), 'bbs_settlement_utils')
 class BBSSettlementUtils:
     """Utilities for managing the settlement."""
     @classmethod
+    def is_head_of_settlement(cls, sim_info: SimInfo) -> bool:
+        return BBSimTraitUtils.has_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_HEAD)
+
+    @classmethod
+    def is_settlement_member(cls, sim_info: SimInfo) -> bool:
+        return BBSimTraitUtils.has_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_MEMBER)
+
+    @classmethod
+    def is_member_of_active_settlement(cls, sim_info: SimInfo) -> bool:
+        settlement_context = BBSSettlementContextManager().get_settlement_context_by_sim_info(sim_info)
+        if settlement_context is None:
+            return False
+        active_sim_info = BBSimUtils.get_active_sim_info()
+        active_sim_household = BBSimHouseholdUtils.get_household(active_sim_info)
+        return active_sim_household.home_zone_id == settlement_context.home_zone_id
+
+    @classmethod
     def add_head_of_settlement_relationship(cls, head_of_settlement_sim_info: SimInfo, settlement_member_sim_info: SimInfo):
         return BBSimRelationshipUtils.add_relationship_bit(
             head_of_settlement_sim_info,
@@ -171,6 +188,12 @@ class BBSSettlementUtils:
         home_zone_id = sim_household.home_zone_id
         if current_zone_id != home_zone_id:
             return BBTestResult(False, f'{sim_info} is not the owner of the current lot. Thus they cannot be Head of Settlement.')
+        # This is to fix npcs that are not living on the home lot.
+        for _sim_info in BBSimUtils.get_all_sim_info_gen():
+            if BBSSettlementUtils.has_head_of_settlement_relationship(_sim_info, sim_info):
+                other_sim_household = BBSimHouseholdUtils.get_household(_sim_info)
+                if current_zone_id != other_sim_household.home_zone_id:
+                    return BBTestResult(False, f'{sim_info} is already part of another Settlement.')
         return BBTestResult.TRUE
 
     @classmethod

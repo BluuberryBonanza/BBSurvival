@@ -116,6 +116,7 @@ class BBSSettlementContextManager(metaclass=BBSingleton):
         return BBRunResult.TRUE
 
     def _find_or_create_settlement_head_sim_info(self) -> Union[SimInfo, None]:
+        from bbsurvival.settlement.utils.settlement_utils import BBSSettlementUtils
         current_zone_id = services.current_zone_id()
         for sim_info in BBSimUtils.get_all_sim_info_gen():
             if BBSimTraitUtils.has_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_HEAD):
@@ -124,7 +125,6 @@ class BBSSettlementContextManager(metaclass=BBSingleton):
                 if current_zone_id == home_zone_id:
                     return sim_info
 
-        from bbsurvival.settlement.utils.settlement_utils import BBSSettlementUtils
         # If we can't find a Sim with Settlement head trait for the current lot, we'll make one.
         for sim_info in BBSimUtils.get_all_sim_info_gen():
             if BBSSettlementUtils.is_allowed_as_head_of_settlement(sim_info):

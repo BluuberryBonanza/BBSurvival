@@ -6,6 +6,8 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 Copyright (c) BLUUBERRYBONANZA
 """
 import services
+from bbsurvival.bb_lib.enums.bb_component_type import BBComponentType
+from bbsurvival.bb_lib.utils.bb_component_utils import BBComponentUtils
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
@@ -20,6 +22,7 @@ from bluuberrylibrary.events.event_dispatchers.zone.events.bb_on_zone_unload_sta
 from bluuberrylibrary.events.event_handling.bb_event_handler_registry import BBEventHandlerRegistry
 from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
 from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
+from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_settlement_events')
 # log.enable()
@@ -50,6 +53,18 @@ def _bbs_add_member_context_on_sim_spawned(event: BBOnSimSpawnedEvent) -> BBRunR
     current_zone_id = services.current_zone_id()
     home_zone_id = sim_household.home_zone_id
     if current_zone_id == home_zone_id:
+        if sim_info.is_npc:
+            settlement_context = BBSSettlementContextManager().get_settlement_context_by_sim_info(sim_info)
+            if settlement_context is not None:
+                if settlement_context.home_zone_id != current_zone_id:
+                    return BBRunResult.TRUE
+            else:
+                # This is to fix npcs that are not living on the home lot.
+                for _sim_info in BBSimUtils.get_all_sim_info_gen():
+                    if BBSSettlementUtils.has_head_of_settlement_relationship(_sim_info, sim_info):
+                        other_sim_household = BBSimHouseholdUtils.get_household(_sim_info)
+                        if current_zone_id != other_sim_household.home_zone_id:
+                            return BBRunResult.TRUE
         BBSSettlementContextManager().add_settlement_member_context(sim_info)
         return BBRunResult.TRUE
 

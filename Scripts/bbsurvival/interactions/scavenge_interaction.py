@@ -7,6 +7,7 @@ Copyright (c) BLUUBERRYBONANZA
 """
 from typing import Any
 
+from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bbsurvival.bb_lib.utils.bb_sim_rabbit_hole_utils import BBSimRabbitHoleUtils
 from bbsurvival.enums.rabbit_hole_ids import BBSRabbitHoleId
 from bbsurvival.mod_identity import ModIdentity
@@ -64,7 +65,20 @@ class BBSScavengeInteraction(BBSuperInteraction):
             if cancelled:
                 return
             try:
-                BBSScavengingUtils.give_scavenge_rewards(_sim_info, self.run_length, to_receive_sim_info=BBSimUtils.get_active_sim_info())
+                from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
+                settlement_context = BBSSettlementContextManager().get_settlement_context_by_sim_info(_sim_info)
+                if settlement_context is None:
+                    to_receive_sim_info = BBSimUtils.get_active_sim_info()
+                    from bbsurvival.bb_lib.utils.bb_sim_species_utils import BBSimSpeciesUtils
+                    if not BBSimSpeciesUtils.is_human(to_receive_sim_info):
+                        household = BBSimHouseholdUtils.get_household(to_receive_sim_info)
+                        for sim_info in household.sim_infos:
+                            if BBSimSpeciesUtils.is_human(sim_info):
+                                to_receive_sim_info = sim_info
+                                break
+                else:
+                    to_receive_sim_info = settlement_context.get_head_of_settlement_context().sim_info
+                BBSScavengingUtils.give_scavenge_rewards(_sim_info, self.run_length, to_receive_sim_info=to_receive_sim_info)
             except Exception as ex:
                 self.get_log().error('An error occurred while giving scavenging rewards.', exception=ex)
 

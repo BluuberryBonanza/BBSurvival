@@ -1,4 +1,4 @@
-from typing import Callable, Union
+from typing import Callable, Union, Iterable
 
 import services
 from bbsurvival.bb_lib.enums.bb_component_type import BBComponentType
@@ -29,6 +29,51 @@ class BBSimInventoryUtils:
         return cls.get_inventory(sim_info) is not None
 
     @classmethod
+    def has_any_inventory_items(cls, sim_info: SimInfo) -> bool:
+        """has_any_inventory_items(sim_info)
+
+        Check if a Sim has any items in their inventory.
+
+        :param sim_info: The info of a Sim.
+        :type sim_info: SimInfo
+        :return: True, if the Sim has any items in their inventory. False, if not.
+        :rtype: bool
+        """
+        for _ in cls.get_inventory_items_gen(sim_info):
+            return True
+        return False
+
+    @classmethod
+    def transfer_inventory_to_sim(cls, sim_info_a: SimInfo, sim_info_b: SimInfo) -> BBRunResult:
+        """transfer_inventory_to_sim(sim_info_a, sim_info_b)
+
+        Transfer all inventory items of Sim A to the inventory of Sim B.
+
+        :param sim_info_a: The info of a Sim. The items of this Sim will be transferred.
+        :type sim_info_a: SimInfo
+        :param sim_info_b: The info of a Sim. This Sim will receive all items from Sim A.
+        """
+        sim_b_inventory = cls.get_inventory(sim_info_b)
+        if sim_b_inventory is None:
+            return BBRunResult(False, f'{sim_info_b} does not have an inventory to transfer to.')
+        sim_a_inventory = cls.get_inventory(sim_info_a)
+        if sim_a_inventory is None:
+            return BBRunResult(False, f'{sim_info_a} does not have an inventory to transfer from.')
+        sim_a_visible_storage = sim_a_inventory.visible_storage
+        if sim_a_visible_storage is not None:
+            for visible_inventory_item in tuple(sim_a_visible_storage):
+                sim_a_inventory.visible_storage.remove(visible_inventory_item, count=visible_inventory_item.stack_count())
+                sim_b_inventory.visible_storage.insert(visible_inventory_item, sim_b_inventory.owner)
+
+        sim_a_hidden_storage = sim_a_inventory.hidden_storage
+        if sim_a_hidden_storage is not None:
+            for hidden_inventory_item in tuple(sim_a_hidden_storage):
+                sim_a_inventory.hidden_storage.remove(hidden_inventory_item, count=hidden_inventory_item.stack_count())
+                sim_b_inventory.visible_storage.insert(hidden_inventory_item, sim_b_inventory.owner)
+        # sim_a_inventory.purge_inventory()
+        return BBRunResult.TRUE
+
+    @classmethod
     def get_inventory(cls, sim_info: SimInfo) -> Union[SimInventoryComponent, None]:
         """get_inventory(sim_info)
 
@@ -43,6 +88,23 @@ class BBSimInventoryUtils:
         if sim is None:
             return None
         return BBComponentUtils.get_component(sim, BBComponentType.INVENTORY)
+
+    @classmethod
+    def get_inventory_items_gen(cls, sim_info: SimInfo) -> Iterable[GameObject]:
+        """get_inventory_items_gen(sim_info)
+
+        Get the items in the inventory of a Sim.
+
+        :param sim_info: The info of a Sim.
+        :type sim_info: SimInfo
+        :return: An iterable of Game Objects in the inventory of a Sim.
+        :rtype: Iterable[GameObject]
+        """
+        inventory = cls.get_inventory(sim_info)
+        if inventory is None:
+            return tuple()
+        for item in inventory:
+            yield item
 
     @classmethod
     def create_in_inventory(
