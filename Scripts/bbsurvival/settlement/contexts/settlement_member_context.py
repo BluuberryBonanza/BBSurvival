@@ -15,6 +15,7 @@ from bbsurvival.bb_lib.utils.bb_alarm_utils import BBAlarmUtils
 from bbsurvival.bb_lib.utils.bb_bitwise_utils import BBBitwiseUtils
 from bbsurvival.bb_lib.utils.bb_instance_utils import BBInstanceUtils
 from bbsurvival.bb_lib.utils.bb_sim_interaction_utils import BBSimInteractionUtils
+from bbsurvival.bb_lib.utils.bb_sim_inventory_utils import BBSimInventoryUtils
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.interaction_ids import BBSSettlementInteractionId
 from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
@@ -231,7 +232,11 @@ class BBSSettlementMemberContext(BBJSONSerializable, BBLogMixin):
             def _drop_off_supplies(_context: BBSSettlementMemberContext, _alarm_handle: BBAlarmHandle):
                 if _context._is_head_of_settlement:
                     return
+
                 log = _context.get_log()
+                if not BBSimInventoryUtils.has_any_inventory_items(_context.sim_info):
+                    log.debug('Settlement Member has no items in their inventory.', source_sim=_context.sim_info)
+                    return
                 from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
                 settlement_context = BBSSettlementContextManager().get_settlement_context_by_sim_info(_context.sim_info)
                 head_of_settlement_sim = settlement_context.get_head_of_settlement_context().sim
@@ -242,10 +247,10 @@ class BBSSettlementMemberContext(BBJSONSerializable, BBLogMixin):
                         BBSSettlementInteractionId.SETTLEMENT_SUPPLIES_DROP_OFF_INVENTORY,
                         target=head_of_settlement_sim
                     )
-                    log.debug('Queued drop off supplies interaction', sim=_context.sim_info, target=head_of_settlement_sim)
+                    log.debug('Queued drop off supplies interaction', sim=_context.sim_info, target=head_of_settlement_sim, enqueue_result_normal=enqueue_result_normal)
 
             time_until_first_drop_off_supplies = clock.interval_in_sim_minutes(2)
-            time_until_drop_off_supplies = clock.interval_in_sim_minutes(180)
+            time_until_drop_off_supplies = clock.interval_in_sim_minutes(1440)
 
             self._drop_off_supplies_alarm_handle = BBAlarmUtils.schedule_alarm(
                 self.get_mod_identity(),
