@@ -5,13 +5,15 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 
 Copyright (c) BLUUBERRYBONANZA
 """
-from typing import Iterable, Union
+from typing import Iterable, Union, Tuple
 
 import clock
 import services
+from bbsurvival.bb_lib.dialog.picker_rows.bb_sim_picker_row import BBSimPickerRow
 from bbsurvival.bb_lib.utils.bb_alarm_utils import BBAlarmUtils
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
 from bbsurvival.settlement.contexts.settlement_context import BBSSettlementContext
@@ -21,6 +23,7 @@ from bluuberrylibrary.classes.bb_singleton import BBSingleton
 from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
 from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
 from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
+from bluuberrylibrary.utils.text.bb_localized_string_data import BBLocalizedStringData
 from sims.household import Household
 from sims.sim_info import SimInfo
 
@@ -144,8 +147,43 @@ class BBSSettlementContextManager(metaclass=BBSingleton):
         )
 
     def create_head_of_settlement(self):
-        # TODO: Ask which Sim the head of settlement should be.
-        pass
+        from bbsurvival.settlement.utils.settlement_utils import BBSSettlementUtils
+        current_zone_id = services.current_zone_id()
+        sim_rows = list()
+        for sim_info in BBSimUtils.get_all_sim_info_gen():
+            if BBSSettlementUtils.is_allowed_as_head_of_settlement(sim_info):
+                sim_household = BBSimHouseholdUtils.get_household(sim_info)
+                home_zone_id = sim_household.home_zone_id
+                if current_zone_id == home_zone_id:
+                    sim_rows.append(
+                        BBSimPickerRow(
+                            sim_info,
+                        )
+                    )
+
+        def _on_submit(_sim_info_list: Tuple[SimInfo]):
+            first_sim_info = _sim_info_list[0]
+            BBSimTraitUtils.add_trait(first_sim_info, BBSSettlementTraitId.SETTLEMENT_HEAD)
+            BBSPrologueData().start_prologue(first_sim_info)
+            self.setup_settlement_context_for_current_zone()
+
+        def _on_close():
+            self._set_head_of_settlement_alarm = None
+            self._setup_alarm_for_set_head_of_settlement()
+
+        if not sim_rows:
+            log.debug('No Sims were found to be valid as the Head of Settlement on the current lot!')
+            self._set_head_of_settlement_alarm = None
+            self._setup_alarm_for_set_head_of_settlement()
+            return
+
+        from bbsurvival.bb_lib.dialog.bb_sim_dialog import BBSimDialog
+        BBSimDialog(
+            ModIdentity(),
+            BBLocalizedStringData('Choose a Sim to become Head of Settlement'),
+            BBLocalizedStringData('The chosen Sim will become the Head of Settlement.'),
+            tuple(sim_rows)
+        ).display(BBSimUtils.get_active_sim_info(), _on_submit, on_closed=_on_close)
 
     def _has_sims_living_at_current_zone(self) -> bool:
         current_zone_id = services.current_zone_id()

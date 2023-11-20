@@ -19,6 +19,7 @@ class BBSSchoolTuningOverride:
             _school_career_type = _school_data.school_career
             sim_info.career_tracker.remove_career(_school_career_type.guid64, post_quit_msg=False)
 
+
 @BBInjectionUtils.inject(ModIdentity(), SchoolTuning, SchoolTuning.update_school_data.__name__)
 def _bbs_override_school_tuning_update_school_data(original, self, sim_info, *_, **__):
     if not BBSPrologueData().is_mod_fully_active():

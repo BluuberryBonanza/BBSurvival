@@ -85,3 +85,25 @@ class BBSimStatisticUtils:
             return BBRunResult(False, f'Cannot set Statistic value. No Statistic Tracker existed on {sim_info}.')
         statistic_tracker.set_value(statistic_instance, value, add=True)
         return BBRunResult.TRUE
+
+    @classmethod
+    def remove_statistic(cls, sim_info: SimInfo, statistic: int) -> BBRunResult:
+        """remove_statistic(sim_info, statistic, value)
+
+        Remove a Statistic from a Sim.
+
+        :param sim_info: The info of a Sim.
+        :type sim_info: SimInfo
+        :param statistic: The statistic to remove.
+        :type statistic: int
+        :return: The result of running. True, if successful. False, if not.
+        :rtype: BBRunResult
+        """
+        statistic_instance = BBStatisticUtils.load_statistic_by_guid(statistic)
+        if statistic_instance is None:
+            return BBRunResult(False, f'Cannot remove Statistic. No Statistic exists with id {statistic}.')
+        statistic_tracker: StatisticTracker = sim_info.get_tracker(statistic_instance)
+        if statistic_tracker is None:
+            return BBRunResult(False, f'Cannot remove Statistic. No Statistic Tracker existed on {sim_info}.')
+        statistic_tracker.remove_statistic(statistic_instance)
+        return BBRunResult.TRUE

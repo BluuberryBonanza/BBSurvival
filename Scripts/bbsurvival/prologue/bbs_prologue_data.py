@@ -32,6 +32,7 @@ class BBSPrologueData(metaclass=BBSingleton):
     def __init__(self):
         super().__init__()
         self._on_activate_callbacks = list()
+        self._on_deactivate_callbacks = list()
         self._setup_prologue_alarm = None
 
     def is_mod_fully_active(self):
@@ -45,6 +46,11 @@ class BBSPrologueData(metaclass=BBSingleton):
             return
         self._on_activate_callbacks.append(func)
 
+    def register_on_deactivate(self, func: Callable[[], None]):
+        if func in self._on_deactivate_callbacks:
+            return
+        self._on_deactivate_callbacks.append(func)
+
     def set_mod_fully_active(self):
         if self.is_mod_fully_active():
             return
@@ -55,6 +61,24 @@ class BBSPrologueData(metaclass=BBSingleton):
 
         for on_activate_func in self._on_activate_callbacks:
             on_activate_func()
+
+    def set_mod_fully_inactive(self):
+        if not self.is_mod_fully_active():
+            return
+
+        for sim_info in BBSimUtils.get_all_sim_info_gen():
+            BBSimTraitUtils.remove_trait(sim_info, BBSPrologueTraitId.PROLOGUE_COMPLETED)
+            BBSimTraitUtils.remove_trait(sim_info, BBSPrologueTraitId.RUNNING_PROLOGUE)
+            BBSimStatisticUtils.remove_statistic(sim_info, BBSPrologueStatisticId.PROLOGUE_STAGE)
+
+        from bbsurvival.settlement.utils.settlement_utils import BBSSettlementUtils
+        BBSSettlementUtils.remove_all_settlement_related_things()
+
+        for on_deactivate_func in self._on_deactivate_callbacks:
+            on_deactivate_func()
+
+        from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
+        BBSSettlementContextManager().teardown_settlement_context()
 
     def start_prologue(self, sim_info: SimInfo):
         if self.is_mod_fully_active():
@@ -160,5 +184,22 @@ def _bbs_command_activate(_connection: int = None):
         output('Done')
     except Exception as ex:
         output(f'An error occurred {ex}')
-        log = BBLogRegistry().register_log(ModIdentity(), 'bbs_prologue')
-        log.error('An error occurred while activating BBS', exception=ex)
+        _log = BBLogRegistry().register_log(ModIdentity(), 'bbs_prologue')
+        _log.error('An error occurred while activating BBS', exception=ex)
+
+
+@Command(
+    'bbs.deactivate',
+    command_type=CommandType.Live
+)
+def _bbs_command_deactivate(_connection: int = None):
+    from sims4.commands import CheatOutput
+    output = CheatOutput(_connection)
+    try:
+        output('Deactivating BB Survival')
+        BBSPrologueData().set_mod_fully_inactive()
+        output('Done')
+    except Exception as ex:
+        output(f'An error occurred {ex}')
+        _log = BBLogRegistry().register_log(ModIdentity(), 'bbs_prologue')
+        _log.error('An error occurred while deactivating BBS', exception=ex)

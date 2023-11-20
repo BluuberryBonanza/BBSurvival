@@ -36,6 +36,25 @@ class _BBSLotChallenges:
         if current_water_amount < -1:
             BBEcoLifestyleUtilityUtils.set_water_level(zone_id, -1.0)
 
+    @classmethod
+    def remove_lot_challenges(cls, zone_id: int):
+        zone_modifier_ids = (
+            206665,  # zoneModifier_lotTrait_OffTheGrid (Off-the-grid)
+            230867,  # zoneModifier_LotTrait_TrashUpdate (Reduce and Recycle)
+            258836,  # zoneModifiers_lotTrait_RequiredIngredients (Simple Living)
+        )
+        for zone_modifier_id in zone_modifier_ids:
+            BBZoneModifierUtils.remove_zone_modifier(zone_id, zone_modifier_id)
+
+        # We set the power and water to -1 if it was below that because we don't want it to drop too far.
+        current_power_amount = BBEcoLifestyleUtilityUtils.get_power_level(zone_id)
+        if current_power_amount < -1:
+            BBEcoLifestyleUtilityUtils.set_power_level(zone_id, -1.0)
+
+        current_water_amount = BBEcoLifestyleUtilityUtils.get_water_level(zone_id)
+        if current_water_amount < -1:
+            BBEcoLifestyleUtilityUtils.set_water_level(zone_id, -1.0)
+
 
 @BBEventHandlerRegistry.register(ModIdentity(), BBOnZoneLoadEndEvent)
 def _bbs_add_off_the_grid_on_zone_load(event: BBOnZoneLoadEndEvent):
@@ -48,6 +67,14 @@ def _bbs_add_off_the_grid_on_zone_load(event: BBOnZoneLoadEndEvent):
 
         BBSPrologueData().register_on_activate(_add_lot_challenges(event.zone))
         return BBRunResult.TRUE
+
+    def _remove_lot_challenges(_zone: Zone):
+        def _remove():
+            zone_id = _zone.id
+            _BBSLotChallenges.remove_lot_challenges(zone_id)
+        return _remove
+
+    BBSPrologueData().register_on_deactivate(_remove_lot_challenges(event.zone))
 
     _BBSLotChallenges.add_lot_challenges(event.zone.id)
     return BBRunResult.TRUE

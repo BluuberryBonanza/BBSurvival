@@ -12,7 +12,7 @@ from bluuberrylibrary.utils.text.bb_localized_tooltip_data import BBLocalizedToo
 
 
 class BBIntegerField(BBTextField):
-    """BBTextField(\
+    """BBIntegerField(\
         identifier,\
         title,\
         initial_value,\

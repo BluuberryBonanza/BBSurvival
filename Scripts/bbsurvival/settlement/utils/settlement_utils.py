@@ -232,3 +232,26 @@ class BBSSettlementUtils:
                 BBSSettlementMemberJobFlags.SCOUT
             )
         return tuple()
+
+    @classmethod
+    def remove_all_settlement_related_things(cls):
+        sim_info_list_one = tuple(BBSimUtils.get_all_sim_info_gen())
+        for sim_info in sim_info_list_one:
+            for sim_info_b in sim_info_list_one:
+                if sim_info is sim_info_b:
+                    continue
+                cls.remove_head_of_settlement_relationship(sim_info, sim_info_b)
+                cls.remove_head_of_settlement_relationship(sim_info_b, sim_info)
+            BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_HEAD)
+            BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_MEMBER)
+            BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_SCOUT)
+            BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_SANITATION)
+            BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_MAINTENANCE)
+            BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_COOK)
+            BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_NANNY)
+            BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_GARDENER)
+            BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_GUARD)
+            BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_DOCTOR)
+            BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_TEACHER)
+            BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_GATHERER)
+            BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_RANCHER)
