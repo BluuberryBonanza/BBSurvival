@@ -8,6 +8,7 @@ Copyright (c) BLUUBERRYBONANZA
 from typing import Any, List, Union
 
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
 from bluuberrylibrary.classes.bb_test_result import BBTestResult
 from bluuberrylibrary.interactions.classes.bb_super_interaction import BBSuperInteraction
@@ -41,6 +42,8 @@ class BBSSettlementCookAutonomouslyInteraction(StartCraftingAutonomouslySuperInt
 
     @classmethod
     def bbl_test(cls, interaction_sim_info: SimInfo, interaction_target: GameObject, interaction_context: InteractionContext, *args, **kwargs) -> BBTestResult:
+        if not BBSPrologueData().is_mod_fully_active():
+            return BBTestResult.NONE
         log = cls.get_log()
         if not BBSimTraitUtils.has_trait(interaction_sim_info, BBSSettlementTraitId.SETTLEMENT_COOK):
             return BBTestResult.NONE
@@ -91,7 +94,7 @@ class BBSSettlementCookAutonomouslyInteraction(StartCraftingAutonomouslySuperInt
             if result:
                 log.debug('Tested recipe and passed.', recipe=recipe, result=result)
                 # The "or 1" part is to fix recipes that SHOULD be able to be done autonomously, but for some reason EA set the autonomy_weight to zero!
-                weights.append((recipe.calculate_autonomy_weight(self.sim) or 1, recipe))
+                weights.append(((recipe.calculate_autonomy_weight(self.sim) or 0) + 1, recipe))
             else:
                 log.debug('Failed recipe', recipe=recipe, result=result, result_errors=result.errors)
         if not weights:

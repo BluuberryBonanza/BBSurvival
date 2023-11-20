@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="BBSLootActions" i="action" m="bbsurvival.classes.bbs_loot_actions" n="BBS_Settlement_LootActions_AssignToNanny" s="7808787500561702385">
+  <L n="loot_actions">
+    <V t="assign_to_job">
+      <U n="assign_to_job">
+        <E n="subject">Actor</E>
+        <E n="target">TargetSim</E>
+        <E n="settlement_job">NANNY</E>
+      </U>
+    </V>
+  </L>
+</I>

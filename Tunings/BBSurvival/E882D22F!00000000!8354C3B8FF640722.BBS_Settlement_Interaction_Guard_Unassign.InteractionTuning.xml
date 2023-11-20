@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="BBSSettlementUnassignFromJobInteraction" i="interaction" m="bbsurvival.settlement.interactions.unassign_from_job" n="BBS_Settlement_Interaction_Guard_Unassign" s="9463403916338399010">
+  <E n="settlement_job">GUARD</E>
+  <V n="_icon" t="resource_key">
+    <U n="resource_key">
+      <T n="key" p="InGame\UI\Icons\InteractionQueueSubInteractions\icon_queuesubinteraction_friendly.png">2f7d0004:00000000:8baf7893abd95bda</T>
+    </U>
+  </V>
+  <L n="_static_commodities">
+    <U>
+      <T n="desire">2</T>
+      <T n="static_commodity">120613<!--staticCommodity_InHotTub--></T>
+    </U>
+    <U>
+      <T n="static_commodity">136762<!--staticCommodity_FriendlySocials--></T>
+    </U>
+  </L>
+  <T n="allow_autonomous">False</T>
+  <T n="allow_user_directed">True</T>
+  <L n="basic_extras">
+    <V t="loot">
+      <U n="loot">
+        <L n="loot_list">
+          <T>162659<!--loot_Commodity_Culling_GhostAdd_target--></T>
+        </L>
+      </U>
+    </V>
+    <V t="loot">
+      <U n="loot">
+        <L n="loot_list">
+          <T>165621<!--loot_ChildhoodPhase_Clingy_SocialBuffs--></T>
+        </L>
+        <V n="timing" t="at_beginning" />
+      </U>
+    </V>
+    <V t="broadcaster">
+      <U n="broadcaster">
+        <L n="broadcaster_types">
+          <U>
+            <T n="item">125441<!--broadcaster_Reaction_Jealousy_Trait--></T>
+          </U>
+        </L>
+      </U>
+    </V>
+    <V t="broadcaster">
+      <U n="broadcaster">
+        <L n="broadcaster_types">
+          <U>
+            <T n="item">125441<!--broadcaster_Reaction_Jealousy_Trait--></T>
+          </U>
+        </L>
+        <E n="participant">TargetSim</E>
+      </U>
+    </V>
+    <V t="loot">
+      <U n="loot">
+        <L n="loot_list">
+          <T>268592<!--loot_VillagerHelp_DiscoveryTracker_OfferHelp_Start--></T>
+        </L>
+      </U>
+    </V>
+    <V t="loot">
+      <U n="loot">
+        <L n="loot_list">
+          <T>269000<!--loot_VillagerHelp_DiscoveryTracker_NPCVillager_SocialTNS--></T>
+        </L>
+        <U n="success_chance">
+          <T n="base_chance">20</T>
+        </U>
+      </U>
+    </V>
+    <V t="loot">
+      <U n="loot">
+        <L n="loot_list">
+          <T>269002<!--loot_VillagerHelp_DiscoveryTracker_OfferHelp_Day3_AskingTNS--></T>
+        </L>
+        <U n="success_chance">
+          <T n="base_chance">20</T>
+        </U>
+      </U>
+    </V>
+    <V t="loot">
+      <U n="loot">
+        <L n="loot_list">
+          <T>269001<!--loot_VillagerHelp_DiscoveryTracker_OfferHelp_Day1_WishingTNS--></T>
+        </L>
+        <U n="success_chance">
+          <T n="base_chance">20</T>
+        </U>
+      </U>
+    </V>
+    <V t="adventure">
+      <U n="adventure">
+        <L n="_adventure_moments">
+          <U>
+            <E n="key">Career_ChanceCard_01</E>
+            <U n="value">
+              <V n="adventure_moment" t="reference">
+                <T n="reference">308101<!--adventureMoment_FamilyTrope_close--></T>
+              </V>
+            </U>
+          </U>
+        </L>
+        <L n="_initial_moments">
+          <U>
+            <E n="adventure_moment_key">Career_ChanceCard_01</E>
+          </U>
+        </L>
+        <U n="success_chance">
+          <T n="base_chance">25</T>
+          <L n="multipliers">
+            <U>
+              <T n="multiplier">0</T>
+              <L n="tests">
+                <L>
+                  <V t="relationship">
+                    <U n="relationship">
+                      <U n="prohibited_relationship_bits">
+                        <L n="match_any">
+                          <T>8809<!--family_parent--></T>
+                          <T>8805<!--family_son_daughter--></T>
+                          <T>8802<!--family_brother_sister--></T>
+                          <T>8824<!--family_stepsibling--></T>
+                          <T>8808<!--family_grandparent--></T>
+                          <T>8807<!--family_grandchild--></T>
+                          <T>8829<!--family_aunt_uncle--></T>
+                          <T>9989<!--family_niece_nephew--></T>
+                          <T>8826<!--family_cousin--></T>
+                          <T>24490<!--family_husband_wife--></T>
+                          <T>15822<!--romantic-Married--></T>
+                        </L>
+                      </U>
+                    </U>
+                  </V>
+                </L>
+              </L>
+            </U>
+            <U>
+              <T n="multiplier">0</T>
+              <L n="tests">
+                <L>
+                  <V t="buff">
+                    <U n="buff">
+                      <V n="whitelist" t="enabled">
+                        <L n="enabled">
+                          <T>306626<!--buff_FamilyDynamics_FamilyTropeAdventureCooldown--></T>
+                        </L>
+                      </V>
+                    </U>
+                  </V>
+                </L>
+              </L>
+            </U>
+            <U>
+              <T n="multiplier">0</T>
+              <L n="tests">
+                <L>
+                  <V t="relationship">
+                    <U n="relationship">
+                      <U n="required_relationship_bits">
+                        <L n="match_any">
+                          <T>306293<!--familyTrope_close--></T>
+                          <T>308100<!--familyTrope_NotClose--></T>
+                        </L>
+                      </U>
+                    </U>
+                  </V>
+                </L>
+              </L>
+            </U>
+            <U>
+              <T n="multiplier">0</T>
+              <L n="tests">
+                <L>
+                  <V t="relationship">
+                    <U n="relationship">
+                      <U n="relationship_score_interval">
+                        <T n="upper_bound">75</T>
+                      </U>
+                      <T n="track">16650<!--LTR_Friendship_Main--></T>
+                    </U>
+                  </V>
+                </L>
+              </L>
+            </U>
+            <U>
+              <T n="multiplier">0.25</T>
+              <L n="tests">
+                <L>
+                  <V t="relationship">
+                    <U n="relationship">
+                      <U n="required_relationship_bits">
+                        <L n="match_any">
+                          <T>306291<!--familyTrope_compliant_authority--></T>
+                          <T>306294<!--familyTrope_compliant_subordinate--></T>
+                          <T>310888<!--familyTrope_difficult--></T>
+                          <T>306282<!--familyTrope_distant--></T>
+                          <T>306279<!--familyTrope_Jokesters--></T>
+                          <T>306356<!--familyTrope_loving_authority--></T>
+                          <T>306357<!--familyTrope_loving_subordinate--></T>
+                          <T>306289<!--familyTrope_permissive_authority--></T>
+                          <T>306296<!--familyTrope_permissive_subordinate--></T>
+                        </L>
+                      </U>
+                    </U>
+                  </V>
+                  <V t="relationship">
+                    <U n="relationship">
+                      <U n="relationship_score_interval">
+                        <T n="lower_bound">75</T>
+                      </U>
+                      <T n="track">24099<!--SocialContext_Friendship--></T>
+                    </U>
+                  </V>
+                </L>
+              </L>
+            </U>
+            <U>
+              <T n="multiplier">0</T>
+              <L n="tests">
+                <L>
+                  <V t="relationship">
+                    <U n="relationship">
+                      <U n="relationship_score_interval">
+                        <T n="lower_bound">-100</T>
+                        <T n="upper_bound">74</T>
+                      </U>
+                      <T n="track">24099<!--SocialContext_Friendship--></T>
+                    </U>
+                  </V>
+                  <V t="relationship">
+                    <U n="relationship">
+                      <U n="required_relationship_bits">
+                        <L n="match_any">
+                          <T>306356<!--familyTrope_loving_authority--></T>
+                          <T>306357<!--familyTrope_loving_subordinate--></T>
+                          <T>306293<!--familyTrope_close--></T>
+                          <T>306291<!--familyTrope_compliant_authority--></T>
+                          <T>306294<!--familyTrope_compliant_subordinate--></T>
+                          <T>310888<!--familyTrope_difficult--></T>
+                          <T>306282<!--familyTrope_distant--></T>
+                          <T>306289<!--familyTrope_permissive_authority--></T>
+                          <T>306296<!--familyTrope_permissive_subordinate--></T>
+                        </L>
+                      </U>
+                    </U>
+                  </V>
+                </L>
+              </L>
+            </U>
+            <U>
+              <T n="multiplier">0</T>
+              <L n="tests">
+                <L>
+                  <V t="sim_info">
+                    <U n="sim_info">
+                      <V n="npc" t="enabled">
+                        <T n="enabled">True</T>
+                      </V>
+                    </U>
+                  </V>
+                  <V t="sim_info">
+                    <U n="sim_info">
+                      <V n="npc" t="enabled">
+                        <T n="enabled">True</T>
+                      </V>
+                      <E n="who">TargetSim</E>
+                    </U>
+                  </V>
+                </L>
+              </L>
+            </U>
+          </L>
+        </U>
+      </U>
+    </V>
+  </L>
+  <T n="category">7339618667456571786<!--BBS_Settlement_Pie_Responsibility--></T>
+  <V n="content_score" t="disabled" />
+  <T n="display_name">0xE252C3F2<!--Unassign from Guard--></T>
+  <T n="display_name_target">0x8C71C8F7<!--Listen to {1.SimFirstName}'s Question--></T>
+  <U n="display_name_text_tokens">
+    <L n="tokens">
+      <V t="participant_type">
+        <U n="participant_type">
+          <V n="objects" t="from_participant">
+            <U n="from_participant">
+              <E n="participant">Actor</E>
+            </U>
+          </V>
+        </U>
+      </V>
+      <V t="participant_type">
+        <U n="participant_type">
+          <V n="objects" t="from_participant">
+            <U n="from_participant">
+              <E n="participant">Object</E>
+            </U>
+          </V>
+        </U>
+      </V>
+    </L>
+  </U>
+  <L n="interaction_category_tags">
+    <E>Interaction_Friendly</E>
+    <E>Interaction_Chat</E>
+    <E>Interaction_Mixer</E>
+    <E>Interaction_All</E>
+    <E>Interaction_SocialAll</E>
+    <E>Interaction_SocialMixer</E>
+    <E>Interaction_Social_Contagious</E>
+    <E>Interaction_Skill_Child_Social</E>
+  </L>
+  <V n="outcome" t="test_based">
+    <U n="test_based">
+      <L n="fallback_outcomes">
+        <U>
+          <U n="outcome">
+            <V n="animation_ref" t="enabled">
+              <U n="enabled">
+                <T n="factory">11854<!--Soc_Friendly_NT_askQuestionFriendly_success_basic--></T>
+              </U>
+            </V>
+            <V n="cancel_si" t="enabled">
+              <L n="enabled">
+                <E>Actor</E>
+                <E>TargetSim</E>
+              </L>
+            </V>
+            <L n="loot_list">
+              <T>15346214083368875208<!--BBS_Settlement_LootActions_UnassignFromGuard--></T>
+              <T>11036<!--Rel_Gain_Small--></T>
+              <T>24123<!--Loot_SocialContext_Friendship_Gain--></T>
+              <T>36121<!--Skill_Loot_Dynamic_Small_ChildrenOnly_Social--></T>
+              <T>10954<!--Loot_ForSocialsSocialMotiveMedium--></T>
+              <T>109228<!--loot_Commodity_CareerBenefit_Agent_Main_Level--></T>
+              <T>104567<!--loot_Relationship_Bit_KnowsIsAlien--></T>
+              <T>216556<!--randomWeightedLoot_Cauldron_Potion_Luck_RandomBenefit_Social_Friendly--></T>
+              <T>294094<!--lootActions_TeenRelationshipDrama_AddCrush_LowChance--></T>
+            </L>
+          </U>
+        </U>
+      </L>
+      <L n="tested_outcomes">
+        <U>
+          <L n="potential_outcomes">
+            <U>
+              <U n="outcome">
+                <V n="animation_ref" t="enabled">
+                  <U n="enabled">
+                    <T n="factory">11854<!--Soc_Friendly_NT_askQuestionFriendly_success_basic--></T>
+                  </U>
+                </V>
+                <V n="cancel_si" t="enabled">
+                  <L n="enabled">
+                    <E>Actor</E>
+                    <E>TargetSim</E>
+                  </L>
+                </V>
+                <L n="loot_list">
+              	  <T>15346214083368875208<!--BBS_Settlement_LootActions_UnassignFromGuard--></T>
+                  <T>10954<!--Loot_ForSocialsSocialMotiveMedium--></T>
+                  <T>11032<!--Rel_Gain_Medium--></T>
+                  <T>24123<!--Loot_SocialContext_Friendship_Gain--></T>
+                  <T>36121<!--Skill_Loot_Dynamic_Small_ChildrenOnly_Social--></T>
+                  <T>109228<!--loot_Commodity_CareerBenefit_Agent_Main_Level--></T>
+                  <T>104567<!--loot_Relationship_Bit_KnowsIsAlien--></T>
+                  <T>216556<!--randomWeightedLoot_Cauldron_Potion_Luck_RandomBenefit_Social_Friendly--></T>
+                  <T>294094<!--lootActions_TeenRelationshipDrama_AddCrush_LowChance--></T>
+                </L>
+              </U>
+              <U n="weight">
+                <T n="base_value">3</T>
+              </U>
+            </U>
+          </L>
+          <L n="tests">
+            <L>
+              <V t="test_based_score_threshold">
+                <U n="test_based_score_threshold">
+                  <T n="test_based_score">314813<!--scores_socialoutcomes_friendly_deepthoughts--></T>
+                  <U n="threshold">
+                    <T n="value">15</T>
+                  </U>
+                </U>
+              </V>
+            </L>
+          </L>
+        </U>
+        <U>
+          <L n="potential_outcomes">
+            <U>
+              <U n="outcome">
+                <V n="animation_ref" t="enabled">
+                  <U n="enabled">
+                    <T n="factory">11853<!--Soc_Friendly_NT_askQuestionFriendly_fail_basic--></T>
+                  </U>
+                </V>
+                <L n="loot_list">
+                  <T>10954<!--Loot_ForSocialsSocialMotiveMedium--></T>
+                  <T>11042<!--Rel_Loss_Small--></T>
+                  <T>24124<!--Loot_SocialContext_Friendship_Loss--></T>
+                  <T>36121<!--Skill_Loot_Dynamic_Small_ChildrenOnly_Social--></T>
+                  <T>258936<!--loot_Trait_Mean_ReactBroadcaster--></T>
+                  <T>99714<!--Loot_DidNegativeSocial--></T>
+                  <T>109228<!--loot_Commodity_CareerBenefit_Agent_Main_Level--></T>
+                  <T>104567<!--loot_Relationship_Bit_KnowsIsAlien--></T>
+                  <T>311364<!--loot_SelfDiscovery_Progress_Social_Min_Small--></T>
+                </L>
+                <E n="outcome_result">FAILURE</E>
+              </U>
+              <U n="weight">
+                <T n="base_value">2</T>
+              </U>
+            </U>
+          </L>
+          <L n="tests">
+            <L>
+              <V t="test_based_score_threshold">
+                <U n="test_based_score_threshold">
+                  <T n="test_based_score">314813<!--scores_socialoutcomes_friendly_deepthoughts--></T>
+                  <U n="threshold">
+                    <E n="comparison">LESS_OR_EQUAL</E>
+                    <T n="value">-10</T>
+                  </U>
+                </U>
+              </V>
+            </L>
+          </L>
+        </U>
+        <U>
+          <L n="potential_outcomes">
+            <U>
+              <U n="outcome">
+                <V n="animation_ref" t="enabled">
+                  <U n="enabled">
+                    <T n="factory">11853<!--Soc_Friendly_NT_askQuestionFriendly_fail_basic--></T>
+                  </U>
+                </V>
+                <L n="loot_list">
+                  <T>10954<!--Loot_ForSocialsSocialMotiveMedium--></T>
+                  <T>11042<!--Rel_Loss_Small--></T>
+                  <T>24124<!--Loot_SocialContext_Friendship_Loss--></T>
+                  <T>36121<!--Skill_Loot_Dynamic_Small_ChildrenOnly_Social--></T>
+                  <T>258936<!--loot_Trait_Mean_ReactBroadcaster--></T>
+                  <T>99714<!--Loot_DidNegativeSocial--></T>
+                  <T>109228<!--loot_Commodity_CareerBenefit_Agent_Main_Level--></T>
+                  <T>104567<!--loot_Relationship_Bit_KnowsIsAlien--></T>
+                  <T>273714<!--loot_Trait_SociallyAwkward_PushIdle--></T>
+                  <T>311364<!--loot_SelfDiscovery_Progress_Social_Min_Small--></T>
+                </L>
+                <E n="outcome_result">FAILURE</E>
+              </U>
+              <U n="weight">
+                <T n="base_value">1</T>
+              </U>
+            </U>
+          </L>
+          <L n="tests">
+            <L>
+              <V t="test_based_score_threshold">
+                <U n="test_based_score_threshold">
+                  <T n="test_based_score">314813<!--scores_socialoutcomes_friendly_deepthoughts--></T>
+                  <U n="threshold">
+                    <E n="comparison">LESS_OR_EQUAL</E>
+                    <T n="value">-20</T>
+                  </U>
+                </U>
+              </V>
+            </L>
+          </L>
+        </U>
+        <U>
+          <L n="potential_outcomes">
+            <U>
+              <U n="outcome">
+                <V n="animation_ref" t="enabled">
+                  <U n="enabled">
+                    <T n="factory">11853<!--Soc_Friendly_NT_askQuestionFriendly_fail_basic--></T>
+                  </U>
+                </V>
+                <L n="loot_list">
+                  <T>36121<!--Skill_Loot_Dynamic_Small_ChildrenOnly_Social--></T>
+                  <T>11042<!--Rel_Loss_Small--></T>
+                  <T>10954<!--Loot_ForSocialsSocialMotiveMedium--></T>
+                  <T>31828<!--Loot_SocialContect_Fun_Loss_conditionalBoring--></T>
+                  <T>109228<!--loot_Commodity_CareerBenefit_Agent_Main_Level--></T>
+                  <T>104567<!--loot_Relationship_Bit_KnowsIsAlien--></T>
+                  <T>273714<!--loot_Trait_SociallyAwkward_PushIdle--></T>
+                  <T>311364<!--loot_SelfDiscovery_Progress_Social_Min_Small--></T>
+                </L>
+                <E n="outcome_result">FAILURE</E>
+                <V n="response" t="enabled">
+                  <V n="enabled" t="individual">
+                    <U n="individual">
+                      <L n="animations">
+                        <U>
+                          <E n="target">Actor</E>
+                          <U n="animation">
+                            <T n="factory">28356<!--Socials_Responses_Embarrassed_LowIntensity--></T>
+                          </U>
+                        </U>
+                        <U>
+                          <E n="target">Listeners</E>
+                          <U n="animation">
+                            <T n="factory">28354<!--Socials_Responses_Bored_HighIntensity--></T>
+                          </U>
+                        </U>
+                      </L>
+                    </U>
+                  </V>
+                </V>
+              </U>
+              <U n="weight">
+                <T n="base_value">999</T>
+              </U>
+            </U>
+          </L>
+          <L n="tests">
+            <L>
+              <V t="test_set_reference">
+                <T n="test_set_reference">31850<!--testSet_SocialBoredom_Low--></T>
+              </V>
+            </L>
+          </L>
+        </U>
+      </L>
+    </U>
+  </V>
+  <U n="posture_preferences">
+    <T n="apply_posture_costs">False</T>
+  </U>
+  <U n="progress_bar_enabled">
+    <T n="bar_enabled">False</T>
+  </U>
+  <U n="skill_loot_data">
+    <V n="level_range" t="enabled">
+      <U n="enabled">
+        <T n="lower_bound">1</T>
+        <T n="upper_bound">10</T>
+      </U>
+    </V>
+    <T n="stat">16699<!--statistic_Skill_AdultMajor_Charisma--></T>
+  </U>
+  <U n="sub_action">
+    <T n="base_weight">2</T>
+  </U>
+  <E n="target_type">TARGET</E>
+  <L n="test_autonomous" />
+  <L n="test_globals">
+    <V t="buff">
+      <U n="buff">
+        <L n="blacklist">
+          <T>99711<!--buff_GettingMarried--></T>
+        </L>
+        <E n="subject">TargetSim</E>
+      </U>
+    </V>
+    <V t="trait">
+      <U n="trait">
+        <L n="blacklist_traits">
+          <T>133798<!--trait_Hidden_IsEventNPC_Challenge--></T>
+        </L>
+        <E n="subject">TargetSim</E>
+      </U>
+    </V>
+    <V t="test_set_reference">
+      <T n="test_set_reference">98923<!--TestSet_TargetNOTGettingMarried--></T>
+    </V>
+    <V t="user_running_interaction">
+      <U n="user_running_interaction">
+        <L n="affordances">
+          <T>106223<!--interrogate_Interrogate--></T>
+        </L>
+        <E n="participant">Actor</E>
+        <T n="test_for_not_running">True</T>
+      </U>
+    </V>
+    <V t="sim_info">
+      <U n="sim_info">
+        <V n="species" t="specified">
+          <U n="specified">
+            <L n="species">
+              <E>HUMAN</E>
+            </L>
+          </U>
+        </V>
+        <E n="who">Actor</E>
+      </U>
+    </V>
+    <V t="sim_info">
+      <U n="sim_info">
+        <V n="species" t="specified">
+          <U n="specified">
+            <L n="species">
+              <E>HUMAN</E>
+            </L>
+          </U>
+        </V>
+        <E n="who">TargetSim</E>
+      </U>
+    </V>
+    <V t="relationship">
+      <U n="relationship">
+        <T n="num_relations">0</T>
+        <U n="required_relationship_bits">
+          <L n="match_all">
+            <T>15803<!--has_met--></T>
+          </L>
+        </U>
+        <L n="subject">
+          <E>Actor</E>
+        </L>
+      </U>
+    </V>
+    <V t="relationship">
+      <U n="relationship">
+        <T n="num_relations">1</T>
+        <U n="required_relationship_bits">
+          <L n="match_all">
+            <T>15803<!--has_met--></T>
+          </L>
+        </U>
+        <L n="target_sim">
+          <E>Listeners</E>
+        </L>
+      </U>
+    </V>
+  </L>
+  <T n="visible">True</T>
+</I>

@@ -11,6 +11,7 @@ from collections import Counter
 import build_buy
 import element_utils
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bbsurvival.settlement.utils.settlement_utils import BBSSettlementUtils
 from bluuberrylibrary.utils.debug.bb_injection_utils import BBInjectionUtils
 from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
@@ -26,6 +27,8 @@ from sims4.localization import LocalizationHelperTuning
 
 @BBInjectionUtils.inject(ModIdentity(), ObjectRewardsOperation, ObjectRewardsOperation._apply_to_subject_and_target.__name__)
 def _bbs_override_object_rewards_operation(original, self, subject: Sim, target, resolver, placement_override_func=None, post_object_create_func=None):
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self, subject, target, resolver, placement_override_func=placement_override_func, post_object_create_func=post_object_create_func)
     if not subject.is_npc:
         return original(self, subject, target, resolver, placement_override_func=placement_override_func, post_object_create_func=post_object_create_func)
 
@@ -56,6 +59,8 @@ def _bbs_override_object_rewards_operation(original, self, subject: Sim, target,
 
 @BBInjectionUtils.inject(ModIdentity(), FishingCatchMixerInteractionMixin, FishingCatchMixerInteractionMixin.create_object_and_add_to_inventory.__name__)
 def _bbs_override_create_object_and_add_to_inventory(original, self, sim, object_to_create, is_fish):
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self, sim, object_to_create, is_fish)
     sim = sim
     if not sim.is_npc:
         return original(self, sim, object_to_create, is_fish)
@@ -81,6 +86,8 @@ def _bbs_override_create_object_and_add_to_inventory(original, self, sim, object
 
 @BBInjectionUtils.inject(ModIdentity(), FishingLocationCatchMixerInteraction, FishingLocationCatchMixerInteraction._build_outcome_sequence.__name__)
 def _bbs_fishing_location_catch_build_outcome_sequence(original, self):
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self)
     sim = self.sim
     if not sim.is_npc:
         return original(self)
@@ -164,6 +171,8 @@ def _bbs_fishing_location_catch_build_outcome_sequence(original, self):
 
 @BBInjectionUtils.inject(ModIdentity(), FishingTrapCatchMixerInteraction, FishingTrapCatchMixerInteraction._build_outcome_sequence.__name__)
 def _bbs_override_fishing_rewards(original, self):
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self)
     sim = self.sim
     if not sim.is_npc:
         return original(self)
@@ -172,62 +181,58 @@ def _bbs_override_fishing_rewards(original, self):
     if not BBSSettlementUtils.is_settlement_member(sim_info) and not BBSSettlementUtils.is_head_of_settlement(sim_info):
         return original(self)
 
-    return _build_elements(self)
-
-
-def _build_elements(the_interaction: FishingTrapCatchMixerInteraction):
-    (min_catch, max_catch) = the_interaction._get_min_max_catch()
+    (min_catch, max_catch) = self._get_min_max_catch()
     if min_catch <= 0:
         return
     actual_catch = random.randint(min_catch, max_catch)
-    sim = the_interaction.sim
+    sim = self.sim
     junk_count = 0
     fish_caught = []
     treasure_caught = []
-    weighted_outcomes = the_interaction._get_weighted_choices()
+    weighted_outcomes = self._get_weighted_choices()
     import sims4.random
     while len(fish_caught) + len(treasure_caught) + junk_count < actual_catch:
         outcome_actions = sims4.random.weighted_random_item(weighted_outcomes)
-        if outcome_actions is the_interaction.fishing_outcomes.catch_junk_outcome_actions:
+        if outcome_actions is self.fishing_outcomes.catch_junk_outcome_actions:
             junk_count += 1
-        elif outcome_actions is the_interaction.fishing_outcomes.catch_fish_outcome_actions:
-            fish = the_interaction._get_individual_fish_catch()
+        elif outcome_actions is self.fishing_outcomes.catch_fish_outcome_actions:
+            fish = self._get_individual_fish_catch()
             if fish is not None:
                 fish_caught.append(fish)
-                if outcome_actions is the_interaction.fishing_outcomes.catch_treasure_outcome_actions:
-                    treasure = the_interaction._get_individual_treasure_catch()
+                if outcome_actions is self.fishing_outcomes.catch_treasure_outcome_actions:
+                    treasure = self._get_individual_treasure_catch()
                     if treasure is not None:
                         treasure_caught.append(treasure)
-        elif outcome_actions is the_interaction.fishing_outcomes.catch_treasure_outcome_actions:
-            treasure = the_interaction._get_individual_treasure_catch()
+        elif outcome_actions is self.fishing_outcomes.catch_treasure_outcome_actions:
+            treasure = self._get_individual_treasure_catch()
             if treasure is not None:
                 treasure_caught.append(treasure)
     if treasure_caught:
-        outcome = InteractionOutcomeSingle(the_interaction.fishing_outcomes.catch_treasure_outcome_actions)
+        outcome = InteractionOutcomeSingle(self.fishing_outcomes.catch_treasure_outcome_actions)
     elif fish_caught:
-        outcome = InteractionOutcomeSingle(the_interaction.fishing_outcomes.catch_fish_outcome_actions)
+        outcome = InteractionOutcomeSingle(self.fishing_outcomes.catch_fish_outcome_actions)
     elif junk_count:
-        outcome = InteractionOutcomeSingle(the_interaction.fishing_outcomes.catch_junk_outcome_actions)
+        outcome = InteractionOutcomeSingle(self.fishing_outcomes.catch_junk_outcome_actions)
     else:
-        outcome = InteractionOutcomeSingle(the_interaction.fishing_outcomes.catch_nothing_outcome_actions)
+        outcome = InteractionOutcomeSingle(self.fishing_outcomes.catch_nothing_outcome_actions)
 
     def end(_):
-        resolver = the_interaction.get_resolver()
+        resolver = self.get_resolver()
         fish_objects = []
         treasure_objects = []
         for _treasure in treasure_caught:
-            treasure_object = the_interaction.create_object_and_add_to_inventory(sim, _treasure, False)
+            treasure_object = self.create_object_and_add_to_inventory(sim, _treasure, False)
             if treasure_object is not None:
-                the_interaction._apply_loots(the_interaction.per_item_loots.each_treasure_loot, resolver)
+                self._apply_loots(self.per_item_loots.each_treasure_loot, resolver)
                 treasure_objects.append(treasure_object)
         for _fish in fish_caught:
-            fish_object = the_interaction.create_object_and_add_to_inventory(sim, _fish, True)
+            fish_object = self.create_object_and_add_to_inventory(sim, _fish, True)
             if fish_object is not None:
-                the_interaction._apply_loots(the_interaction.per_item_loots.each_fish_loot, resolver)
-                FishingTuning.add_bait_notebook_entry(the_interaction.sim, _fish, the_interaction.get_bait())
+                self._apply_loots(self.per_item_loots.each_fish_loot, resolver)
+                FishingTuning.add_bait_notebook_entry(self.sim, _fish, self.get_bait())
                 fish_objects.append(fish_object)
         for _ in range(junk_count):
-            the_interaction._apply_loots(the_interaction.per_item_loots.each_junk_loot, resolver)
-        the_interaction._trap_catch_notification(fish_objects, treasure_objects, junk_count)
+            self._apply_loots(self.per_item_loots.each_junk_loot, resolver)
+        self._trap_catch_notification(fish_objects, treasure_objects, junk_count)
 
-    return element_utils.build_critical_section_with_finally(outcome.build_elements(the_interaction, update_global_outcome_result=True), end)
+    return element_utils.build_critical_section_with_finally(outcome.build_elements(self, update_global_outcome_result=True), end)

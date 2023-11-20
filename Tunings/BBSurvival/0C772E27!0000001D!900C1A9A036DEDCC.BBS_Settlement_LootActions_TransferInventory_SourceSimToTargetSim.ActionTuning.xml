@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="BBSLootActions" i="action" m="bbsurvival.classes.bbs_loot_actions" n="BBS_Settlement_LootActions_TransferInventory_SourceSimToTargetSim" s="10379700489966972364">
+  <L n="loot_actions">
+    <V t="transfer_inventory">
+      <U n="transfer_inventory">
+        <E n="subject">Actor</E>
+        <E n="target">TargetSim</E>
+      </U>
+    </V>
+  </L>
+</I>

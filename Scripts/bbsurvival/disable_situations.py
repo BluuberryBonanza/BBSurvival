@@ -2,6 +2,7 @@ from typing import Tuple, List
 
 from bbsurvival.bb_lib.utils.bb_instance_utils import BBInstanceUtils
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
 from bluuberrylibrary.utils.debug.bb_injection_utils import BBInjectionUtils
 from bluuberrylibrary.utils.instances.bb_situation_utils import BBSituationUtils
@@ -1761,6 +1762,8 @@ log = BBLogRegistry().register_log(ModIdentity(), 'bbs_situation_disabler')
 
 @BBInjectionUtils.inject(ModIdentity(), _AmbientSourceStreet, _AmbientSourceStreet._start_specific_situation.__name__)
 def _bbs_disable_ambiet_source_street_walk_bys(original, self, situation_type, *_, **__):
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self, situation_type, *_, **__)
     situation_id = BBSituationUtils.get_situation_guid(situation_type)
     if situation_id in BBSituationDisabler.DISABLED_SITUATION_IDS:
         log.debug('Preventing AmbientSourceStreet Situation from starting.', situation=situation_type, situation_id=situation_id)
@@ -1770,6 +1773,8 @@ def _bbs_disable_ambiet_source_street_walk_bys(original, self, situation_type, *
 
 @BBInjectionUtils.inject(ModIdentity(), SchedulingZoneDirectorMixin, SchedulingZoneDirectorMixin.can_schedule_situation.__name__)
 def _bbs_disable_certain_situations_can_schedule(original, self, situation, *_, **__):
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self, situation, *_, **__)
     situation_id = BBSituationUtils.get_situation_guid(situation)
     if situation_id in BBSituationDisabler.DISABLED_SITUATION_IDS:
         log.debug('Preventing SchedulingZoneDirectorMixin Situation from starting.', situation=situation, situation_id=situation_id)
@@ -1779,12 +1784,16 @@ def _bbs_disable_certain_situations_can_schedule(original, self, situation, *_, 
 
 @BBInjectionUtils.inject(ModIdentity(), FanSituationManager, FanSituationManager.request_situations.__name__)
 def _bbs_disable_fan_situations(original, self, *_, **__):
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self, *_, **__)
     if self._fan_situation_ids:
         self._destroy_fan_situations()
 
 
 @BBInjectionUtils.inject(ModIdentity(), Buff, Buff._start_auto_situation.__name__)
 def _bbs_disable_buff_situations(original, self, *_, **__):
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self, *_, **__)
     if self.auto_situation is None:
         return original(self, *_, **__)
     situation = self.auto_situation.situation

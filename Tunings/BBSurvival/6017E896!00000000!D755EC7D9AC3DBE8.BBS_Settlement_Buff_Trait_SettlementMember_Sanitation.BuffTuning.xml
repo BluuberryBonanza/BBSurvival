@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="Buff" i="buff" m="buffs.buff" n="BBS_Settlement_Buff_Trait_SettlementMember_Sanitation" s="15516568115386506216">
+  <T n="audio_sting_on_add" p="InGame\Audio\Stings\sting_buff_gain.propx">39b2aa4a:00000000:8af8b916cf64c646</T>
+  <T n="audio_sting_on_remove" p="InGame\Audio\Stings\sting_buff_loss.propx">39b2aa4a:00000000:3bf33216a25546ea</T>
+  <T n="icon" p="InGame\UI\Icons\Debug\missing_image.png">2f7d0004:00000000:30f0846c783606f9</T>
+  <T n="show_timeout">False</T>
+  <T n="visible">False</T>
+  <L n="static_commodity_to_add">
+	<T>175358<!--StaticCommodity_Collect_Laundry--></T>
+	<T>16440<!--StaticCommodity_Tidy--></T>
+    <T>33808<!--StaticCommodity_MaidClean--></T>
+    <T>16423<!--StaticCommodity_Collect_Trash--></T>
+    <T>16426<!--StaticCommodity_EmptyTrash--></T>
+    <T>168585<!--staticCommodity_CleanUpMess--></T>
+	<T>109782<!--staticCommodity_Retail_Employee_Clean--></T>
+	<T>134406<!--staticCommodity_Restaurants_WaitStaff_Clean--></T>
+	<T>141996<!--staticCommodity_Nanny_CleanUp--></T>
+    <T>106473<!--staticCommodity_SimRay_MindControl_Clean--></T>
+    <T>27059<!--StaticCommodity_CleanBar--></T>
+    <T>27372<!--StaticCommodity_CleanGlasses--></T>
+    <T>27373<!--StaticCommodity_CleanPlates--></T>
+    <T>37820<!--StaticCommodity_CleanUpBooks--></T>
+    <T>76844<!--StaticCommodity_ToyBox_CleanUp--></T>
+    <T>234689<!--staticCommodity_DumpsterScrounger--></T>
+    <T>239026<!--staticCommodity_InsectFarm_FeedCompost--></T>
+    <T>234859<!--staticCommodity_TrashUpdate_ClearPests--></T>
+  </L>
+</I>

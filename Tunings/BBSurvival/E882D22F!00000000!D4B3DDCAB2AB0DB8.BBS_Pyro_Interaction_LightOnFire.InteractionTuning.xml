@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<I c="BBSLightOnFireInteraction" i="interaction" m="bbsurvival.interactions.burn_trash_can" n="BBS_Pyro_Interaction_LightOnFire" s="15326837819522616760">
+<I c="LOFLightOnFireInteraction" i="interaction" m="lightonfire.interactions.light_on_fire" n="BBS_Pyro_Interaction_LightOnFire" s="15326837819522616760">
 <!--bonfire_light-->
   <L n="_constraints">
     <U>
@@ -38,13 +38,6 @@
       </L>
     </U>
   </L>
-  <L n="_false_advertisements">
-    <V t="statistic_set_max">
-      <U n="statistic_set_max">
-        <T n="stat">211718<!--commodity_Motive_Role_IslandEvent_BeachBonfire_Bonfire--></T>
-      </U>
-    </V>
-  </L>
   <V n="_icon" t="participant">
     <U n="participant">
       <L n="participant_type">
@@ -53,11 +46,6 @@
     </U>
   </V>
   <V n="_saveable" t="enabled" />
-  <L n="_static_commodities">
-    <U>
-      <T n="static_commodity">126415<!--StaticCommodity_UseBonfire--></T>
-    </U>
-  </L>
   <T n="_super_affordance_can_share_target">True</T>
   <T n="attention_cost">0.5</T>
   <V n="basic_content" t="one_shot" />
@@ -251,7 +239,7 @@
         <V n="species" t="specified">
           <U n="specified">
             <L n="species">
-              <E />
+              <E>HUMAN</E>
             </L>
           </U>
         </V>

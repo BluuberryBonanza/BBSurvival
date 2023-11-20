@@ -11,6 +11,7 @@ from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bbsurvival.bb_lib.utils.bb_sim_rabbit_hole_utils import BBSimRabbitHoleUtils
 from bbsurvival.enums.rabbit_hole_ids import BBSRabbitHoleId
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bbsurvival.scavenging.bbs_scavenging_run_length import BBSScavengingRunLength
 from bbsurvival.scavenging.scavenging_utils import BBSScavengingUtils
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
@@ -52,6 +53,9 @@ class BBSScavengeInteraction(BBSuperInteraction):
 
     @classmethod
     def bbl_test(cls, interaction_sim_info: SimInfo, interaction_target_sim_info: SimInfo, interaction_context: InteractionContext, *args, **kwargs) -> BBTestResult:
+        if not BBSPrologueData().is_mod_fully_active():
+            cls.get_log().debug('Mod is not fully activated yet. No scavenging for you.', sim=interaction_sim_info)
+            return BBTestResult.NONE
         if interaction_sim_info is not interaction_target_sim_info:
             cls.get_log().debug('Sim is not target', interaction_sim=interaction_sim_info, target=interaction_target_sim_info)
             return BBTestResult.NONE

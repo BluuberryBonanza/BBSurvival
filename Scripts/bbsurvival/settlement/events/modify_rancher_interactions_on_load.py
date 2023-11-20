@@ -188,6 +188,7 @@ def _bbs_disable_leave_interactions_for_community_members_on_zone_load(event: BB
                         a_test.whitelist_traits = (*a_test.whitelist_traits, rancher_trait)
                     # log.debug('a test', a_test=a_test)
 
+    # Trying to get Collect Eggs to work properly, since the interaction is on the Object Part itself.
     chicken_coop_object_part = BBInstanceUtils.get_instance(Types.OBJECT_PART, 270077, return_type=ObjectPart)  # objectPart_AnimalObject_AnimalHomes_SimNest
     if chicken_coop_object_part is not None:
         # log.debug('Chicken coop part', chicken_coop_object_part=chicken_coop_object_part, affordance_data=chicken_coop_object_part.supported_affordance_data)

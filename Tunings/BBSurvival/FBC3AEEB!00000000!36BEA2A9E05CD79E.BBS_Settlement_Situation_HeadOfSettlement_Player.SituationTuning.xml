@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="BBSSettlementHeadSituation" i="situation" m="bbsurvival.settlement.situations.settlement_head_situation" n="BBS_Settlement_Situation_HeadOfSettlement_Player" s="3944769174120486814">
+  <L n="tags">
+    <E>Situation_Retail_Employee</E>
+  </L>
+  <T n="_survives_active_household_change">True</T>
+  <T n="_implies_greeted_status">True</T>
+  <E n="creation_ui_option">NOT_AVAILABLE</E>
+  <E n="exclusivity">VENUE_EMPLOYEE</E>
+  <T n="duration">0</T>
+  <T n="situation_job">15096417108711184779<!--BBS_Settlement_Job_HeadOfSettlement_Player--></T>
+  <U n="working_state">
+    <T n="role_state">1232479629914033416<!--BBS_Settlement_Role_HeadOfSettlement_Player--></T>
+  </U>
+</I>

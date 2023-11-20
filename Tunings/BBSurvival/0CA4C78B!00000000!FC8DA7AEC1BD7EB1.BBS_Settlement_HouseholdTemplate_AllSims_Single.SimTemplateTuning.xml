@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="HouseholdTemplate" i="sim_template" m="filters.household_template" n="BBS_Settlement_HouseholdTemplate_AllSims_Single" s="18198386038290611889">
+  <L n="_household_members">
+    <U>
+      <T n="sim_template">8272287289908888021<!--BBS_Settlement_TunableSimTemplate_AllSims--></T>
+    </U>
+  </L>
+</I>

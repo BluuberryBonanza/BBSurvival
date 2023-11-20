@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="LootActions" i="action" m="interactions.utils.loot" n="BBS_Settlement_Cook_Loot_Buff_CookingFatigue" s="2499574207196311770">
+  <L n="loot_actions">
+    <V t="buff">
+      <U n="buff">
+        <U n="buff">
+          <T n="buff_type">4283280805445964853<!--BBS_Settlement_Cook_Buff_CookingFatigue--></T>
+        </U>
+      </U>
+    </V>
+  </L>
+</I>

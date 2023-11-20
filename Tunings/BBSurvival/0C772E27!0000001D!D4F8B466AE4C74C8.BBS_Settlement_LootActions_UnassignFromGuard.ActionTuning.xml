@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="BBSLootActions" i="action" m="bbsurvival.classes.bbs_loot_actions" n="BBS_Settlement_LootActions_UnassignFromGuard" s="15346214083368875208">
+  <L n="loot_actions">
+    <V t="unassign_from_job">
+      <U n="unassign_from_job">
+        <E n="subject">Actor</E>
+        <E n="target">TargetSim</E>
+        <E n="settlement_job">GUARD</E>
+      </U>
+    </V>
+  </L>
+</I>

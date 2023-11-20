@@ -1,4 +1,5 @@
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
 from bluuberrylibrary.utils.debug.bb_injection_utils import BBInjectionUtils
 from sims.household_utilities.utilities_manager import UtilityInfo
@@ -25,11 +26,15 @@ def _bbs_remove_reason(original, self, *_, **__):
 @BBInjectionUtils.inject(ModIdentity(), UtilityInfo, 'active')
 def _bbs_utility_info_active(original, self, *_, **__):
     # We override this so that power and water being active only applies when there is a surplus of power.
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self, *_, **__)
     return self.surplus
 
 
 @BBInjectionUtils.inject(ModIdentity(), UtilityInfo, UtilityInfo.get_priority_shutoff_tooltip.__name__)
 def _bbs_fix_priority_shutoff_tooltip(original, self, shutoff_tooltip_override, *_, **__):
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self, shutoff_tooltip_override, *_, **__)
     if self.active:
         return
     valid_reasons = [reason for reason in self._shutoff_reasons if reason is not None]

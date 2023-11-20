@@ -11,10 +11,18 @@
     <E>ELDER</E>
   </L>
   <T n="buffs_add_on_spawn_only">False</T>
+  <L n="buffs">
+    <U>
+      <T n="buff_type">5470313015702367230<!--BBS_Settlement_Buff_Trait_HeadOfSettlement--></T>
+    </U>
+  </L>
   <T n="display_name">0x049383B1<!--Head Of Community--></T>
   <T n="display_name_gender_neutral">0x049383B1<!--Head Of Community--></T>
   <T n="icon" p="EventGoal_Friendly">2f7d0004:00000000:cdd3c75256b4c308</T>
   <T n="trait_description">0xFC0EDEA2<!--This trait indicates this Sim is the head of a Community.--></T>
   <T n="trait_origin_description">0x3453D99B<!--(From Being A Community Head)--></T>
-  <E n="trait_type">GAMEPLAY</E>
+  <L n="super_affordances">
+  	<T>2796117207037952394<!--BBS_Settlement_Supplies_Interaction_DropOffInventory--></T>
+  </L>
+  <E n="trait_type">HIDDEN</E>
 </I>

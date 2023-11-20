@@ -17,6 +17,7 @@ from bbsurvival.bb_lib.utils.bb_instance_utils import BBInstanceUtils
 from bbsurvival.bb_lib.utils.bb_sim_interaction_utils import BBSimInteractionUtils
 from bbsurvival.bb_lib.utils.bb_sim_inventory_utils import BBSimInventoryUtils
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bbsurvival.settlement.enums.interaction_ids import BBSSettlementInteractionId
 from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
 from bbsurvival.settlement.enums.situation_ids import BBSSituationId
@@ -208,6 +209,9 @@ class BBSSettlementMemberContext(BBJSONSerializable, BBLogMixin):
             BBSimTraitUtils.remove_trait(self.sim_info, BBSSettlementTraitId.SETTLEMENT_RANCHER)
 
     def _setup_ensure_setup(self):
+        if self.is_head_of_settlement:
+            BBSPrologueData().start_prologue(self.sim_info)
+
         if self._setup_check_alarm_handle is None or not self._setup_check_alarm_handle.is_running:
             def _ensure_setup(_context: BBSSettlementMemberContext, _alarm_handle: BBAlarmHandle):
                 if not _context.is_running_situation(_context._sim_info):

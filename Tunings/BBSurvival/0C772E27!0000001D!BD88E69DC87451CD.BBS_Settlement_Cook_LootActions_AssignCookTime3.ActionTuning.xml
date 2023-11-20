@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="BBSLootActions" i="action" m="bbsurvival.classes.bbs_loot_actions" n="BBS_Settlement_Cook_LootActions_AssignCookTime3" s="13657419435348349389">
+  <L n="loot_actions">
+    <V t="assign_cook_time">
+      <U n="assign_cook_time">
+        <E n="subject">Actor</E>
+        <E n="target">TargetSim</E>
+        <E n="cook_time_slot">SLOT_THREE</E>
+      </U>
+    </V>
+  </L>
+</I>

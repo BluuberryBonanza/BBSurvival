@@ -6,8 +6,6 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 Copyright (c) BLUUBERRYBONANZA
 """
 import services
-from bbsurvival.bb_lib.enums.bb_component_type import BBComponentType
-from bbsurvival.bb_lib.utils.bb_component_utils import BBComponentUtils
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
@@ -39,6 +37,8 @@ def _bbs_add_member_context_on_sim_spawned(event: BBOnSimSpawnedEvent) -> BBRunR
     settlement_context = BBSSettlementContextManager().get_settlement_context_for_current_zone()
     if settlement_context is None:
         settlement_context = BBSSettlementContextManager().setup_settlement_context_for_current_zone()
+        if settlement_context is None:
+            return BBRunResult.TRUE
 
     settlement_member_context = settlement_context.get_member_context(sim_info)
     if settlement_member_context is not None:

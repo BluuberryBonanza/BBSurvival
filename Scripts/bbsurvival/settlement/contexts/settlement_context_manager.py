@@ -7,7 +7,9 @@ Copyright (c) BLUUBERRYBONANZA
 """
 from typing import Iterable, Union
 
+import clock
 import services
+from bbsurvival.bb_lib.utils.bb_alarm_utils import BBAlarmUtils
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
@@ -19,16 +21,18 @@ from bluuberrylibrary.classes.bb_singleton import BBSingleton
 from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
 from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
 from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
+from sims.household import Household
 from sims.sim_info import SimInfo
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_settlement_context_manager')
-# log.enable()
+log.enable()
 
 
 class BBSSettlementContextManager(metaclass=BBSingleton):
     def __init__(self):
         super().__init__()
         self._settlement_context_by_zone_id = dict()
+        self._set_head_of_settlement_alarm = None
 
     def setup_settlement_context_for_current_zone(self) -> Union[BBSSettlementContext, None]:
         current_zone_context = self.get_settlement_context_for_current_zone()
@@ -40,6 +44,7 @@ class BBSSettlementContextManager(metaclass=BBSingleton):
         head_of_settlement_sim_info = self._find_or_create_settlement_head_sim_info()
         if head_of_settlement_sim_info is None:
             log.debug('No head of settlement was found for the current zone. (That probably means noone lives here)')
+            self._setup_alarm_for_set_head_of_settlement()
             return None
         log.debug('Setting up settlement context with Head of Settlement Sim', sim=head_of_settlement_sim_info)
         BBSimTraitUtils.add_trait(head_of_settlement_sim_info, BBSSettlementTraitId.SETTLEMENT_HEAD)
@@ -115,6 +120,42 @@ class BBSSettlementContextManager(metaclass=BBSingleton):
             )
         return BBRunResult.TRUE
 
+    def _setup_alarm_for_set_head_of_settlement(self):
+        current_zone_id = services.current_zone_id()
+        active_household: Household = services.active_household()
+        if current_zone_id != active_household.home_zone_id:
+            return None
+
+        if self._set_head_of_settlement_alarm is not None:
+            return
+
+        def _set_head_of_settlement_callback(manager, __):
+            self._set_head_of_settlement_alarm = None
+            if not self._has_sims_living_at_current_zone():
+                self._setup_alarm_for_set_head_of_settlement()
+            manager.create_head_of_settlement()
+
+        time_until_run = clock.interval_in_sim_minutes(2)
+        self._set_head_of_settlement_alarm = BBAlarmUtils.schedule_alarm(
+            ModIdentity(),
+            self,
+            time_until_run,
+            _set_head_of_settlement_callback
+        )
+
+    def create_head_of_settlement(self):
+        # TODO: Ask which Sim the head of settlement should be.
+        pass
+
+    def _has_sims_living_at_current_zone(self) -> bool:
+        current_zone_id = services.current_zone_id()
+        for sim_info in BBSimUtils.get_all_sim_info_gen():
+            sim_household = BBSimHouseholdUtils.get_household(sim_info)
+            home_zone_id = sim_household.home_zone_id
+            if current_zone_id == home_zone_id:
+                return True
+        return False
+
     def _find_or_create_settlement_head_sim_info(self) -> Union[SimInfo, None]:
         from bbsurvival.settlement.utils.settlement_utils import BBSSettlementUtils
         current_zone_id = services.current_zone_id()
@@ -125,6 +166,10 @@ class BBSSettlementContextManager(metaclass=BBSingleton):
                 if current_zone_id == home_zone_id:
                     return sim_info
 
+        active_household: Household = services.active_household()
+        if current_zone_id == active_household.home_zone_id:
+            # The active lot is the home zone id of the active Household, we need the player to choose a Head of Settlement for their lot.
+            return None
         # If we can't find a Sim with Settlement head trait for the current lot, we'll make one.
         for sim_info in BBSimUtils.get_all_sim_info_gen():
             if BBSSettlementUtils.is_allowed_as_head_of_settlement(sim_info):

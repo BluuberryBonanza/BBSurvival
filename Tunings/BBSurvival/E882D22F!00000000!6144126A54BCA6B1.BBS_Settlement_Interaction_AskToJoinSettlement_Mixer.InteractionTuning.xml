@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<I c="SocialMixerInteraction" i="interaction" m="interactions.social.social_mixer_interaction" n="BBS_Settlement_Interaction_AskToJoinSettlement_Mixer" s="7008747167992817329">
+<I c="BBSSettlementRecruitInteraction" i="interaction" m="bbsurvival.settlement.interactions.recruit_into_settlement" n="BBS_Settlement_Interaction_AskToJoinSettlement_Mixer" s="7008747167992817329">
   <V n="_icon" t="resource_key">
     <U n="resource_key">
       <T n="key" p="InGame\UI\Icons\InteractionQueueSubInteractions\icon_queuesubinteraction_friendly.png">2f7d0004:00000000:8baf7893abd95bda</T>

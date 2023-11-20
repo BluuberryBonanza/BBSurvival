@@ -2,6 +2,7 @@ from typing import Tuple, List
 
 from bbsurvival.bb_lib.utils.bb_instance_utils import BBInstanceUtils
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
 from bluuberrylibrary.utils.debug.bb_injection_utils import BBInjectionUtils
 from drama_scheduler.drama_node import BaseDramaNode
@@ -36,11 +37,6 @@ def _bbs_command_print_drama_nodes(_connection: int = None):
     except Exception as ex:
         output('Error occurred.')
         log.error('Problem occurred', exception=ex)
-
-
-# @BBInjectionUtils.inject(ModIdentity(), Situation, Situation.start_situation.__name__)
-def _bbs_disable_walkby_ambient(original, self, *_, **__):
-    pass
 
 
 class BBDramaNodeDisabler:
@@ -1093,14 +1089,22 @@ class BBDramaNodeDisabler:
     )
 
 
-log = BBLogRegistry().register_log(ModIdentity(), 'bbs_drama_node_disabler')
-# log.enable()
+# @BBInjectionUtils.inject(ModIdentity(), Situation, Situation.start_situation.__name__)
+def _bbs_disable_walkby_ambient(original, self, *_, **__):
+    pass
 
 
+drama_node_disable_log = BBLogRegistry().register_log(ModIdentity(), 'bbs_drama_node_disabler')
+# drama_node_disable_log.enable()
+
+
+# noinspection PyProtectedMember
 @BBInjectionUtils.inject(ModIdentity(), BaseDramaNode, BaseDramaNode._test.__name__)
 def _bbs_disable_drama_nodes(original, self, *_, **__) -> TestResult:
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self, *_, **__)
     drama_node_id = getattr(self, 'guid64')
     if drama_node_id in BBDramaNodeDisabler.DISABLED_DRAMA_NODE_IDS:
-        log.debug('Preventing BaseDramaNode Drama Node from starting.', drama_node=self, drama_node_id=drama_node_id)
+        drama_node_disable_log.debug('Preventing BaseDramaNode Drama Node from starting.', drama_node=self, drama_node_id=drama_node_id)
         return TestResult.NONE
     return original(self, *_, **__)

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="Trait" i="trait" m="traits.traits" n="BBS_Settlement_Trait_SettlementMember_Maintenance" s="707738427511039521">
+  <L n="ages">
+    <E>INFANT</E>
+    <E>TODDLER</E>
+    <E>CHILD</E>
+    <E>TEEN</E>
+    <E>YOUNGADULT</E>
+    <E>ADULT</E>
+    <E>ELDER</E>
+  </L>
+  <T n="buffs_add_on_spawn_only">False</T>
+  <L n="buffs">
+    <U>
+      <T n="buff_type">15279886632110791297<!--BBS_Settlement_Buff_Trait_SettlementMember_Maintenance--></T>
+    </U>
+  </L>
+  <T n="display_name">0xEF199D25<!--Community Maintenance--></T>
+  <T n="display_name_gender_neutral">0xEF199D25<!--Community Maintenance--></T>
+  <T n="icon" p="EventGoal_Friendly">2f7d0004:00000000:cdd3c75256b4c308</T>
+  <T n="trait_description">0x23463CF2<!--This trait indicates this Sim will fix and upgrade objects.--></T>
+  <T n="trait_origin_description">0x0CC5D345<!--(From Being Community Maintenance)--></T>
+  <E n="trait_type">HIDDEN</E>
+</I>

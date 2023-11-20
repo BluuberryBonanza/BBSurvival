@@ -19,11 +19,11 @@
       <L name="conflicting_traits" />
       <T name="display_name">0x049383B1</T>
       <L name="genders" />
-      <T name="icon">2F7D0004-00000000-cdd3c75256b4c308</T>
+      <T name="icon">2F7D0004-00000000-CDD3C75256B4C308</T>
       <L name="tags" />
       <T name="trait_description">0xFC0EDEA2</T>
       <T name="trait_origin_description">0x3453D99B</T>
-      <T name="trait_type">1</T>
+      <T name="trait_type">4</T>
     </I>
   </Instances>
   <Schemas>

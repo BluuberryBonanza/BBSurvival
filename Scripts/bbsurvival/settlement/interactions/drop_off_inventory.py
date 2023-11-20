@@ -7,6 +7,7 @@ Copyright (c) BLUUBERRYBONANZA
 """
 from bbsurvival.bb_lib.utils.bb_sim_inventory_utils import BBSimInventoryUtils
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
 from bluuberrylibrary.classes.bb_run_result import BBRunResult
 from bluuberrylibrary.classes.bb_test_result import BBTestResult
@@ -29,6 +30,8 @@ class BBSSettlementDropOffInventoryInteraction(BBSocialSuperInteraction):
 
     @classmethod
     def bbl_test(cls, interaction_sim_info: SimInfo, interaction_target_sim_info: SimInfo, interaction_context: InteractionContext, *args, **kwargs) -> BBTestResult:
+        if not BBSPrologueData().is_mod_fully_active():
+            return BBTestResult.NONE
         is_autonomous = interaction_context.source == InteractionContext.SOURCE_AUTONOMY
         if is_autonomous:
             if not interaction_sim_info.is_npc:

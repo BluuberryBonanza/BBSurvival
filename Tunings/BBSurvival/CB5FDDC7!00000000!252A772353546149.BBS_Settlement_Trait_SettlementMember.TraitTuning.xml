@@ -11,10 +11,47 @@
     <E>ELDER</E>
   </L>
   <T n="buffs_add_on_spawn_only">False</T>
+  <L n="buffs">
+    <U>
+      <T n="buff_type">15466529443279570025<!--BBS_Settlement_Buff_Trait_SettlementMember--></T>
+    </U>
+  </L>
+  <L n="provided_mixers">
+    <U>
+      <T n="key">13998<!--sim_Chat--></T>
+      <L n="value">
+        <T>17108093756252703640<!--BBS_Settlement_Interaction_Scout_Assign--></T>
+        <T>92849745748745813<!--BBS_Settlement_Interaction_Scout_Unassign--></T>
+        <T>10648402894557387438<!--BBS_Settlement_Interaction_Sanitation_Assign--></T>
+        <T>9030878608800731879<!--BBS_Settlement_Interaction_Sanitation_Unassign--></T>
+        <T>3481842273168381853<!--BBS_Settlement_Interaction_Maintenance_Assign--></T>
+        <T>9448581351334616796<!--BBS_Settlement_Interaction_Maintenance_Unassign--></T>
+        <T>9949907862381567794<!--BBS_Settlement_Interaction_Nanny_Assign--></T>
+        <T>1307205325848081339<!--BBS_Settlement_Interaction_Nanny_Unassign--></T>
+        <T>11214252670983511152<!--BBS_Settlement_Interaction_Gardener_Assign--></T>
+        <T>3921743174564463325<!--BBS_Settlement_Interaction_Gardener_Unassign--></T>
+        <T>18256887516698843698<!--BBS_Settlement_Interaction_Gatherer_Assign--></T>
+        <T>10044418354373666491<!--BBS_Settlement_Interaction_Gatherer_Unassign--></T>
+        <T>15620720167586693720<!--BBS_Settlement_Interaction_Teacher_Assign--></T>
+        <T>2027662029759231253<!--BBS_Settlement_Interaction_Teacher_Unassign--></T>
+        <T>15040203897977176269<!--BBS_Settlement_Interaction_Doctor_Assign--></T>
+        <T>11921100359716567916<!--BBS_Settlement_Interaction_Doctor_Unassign--></T>
+        <T>6116801240246708991<!--BBS_Settlement_Interaction_Guard_Assign--></T>
+        <T>9463403916338399010<!--BBS_Settlement_Interaction_Guard_Unassign--></T>
+        <T>16433306298713971278<!--BBS_Settlement_Interaction_Cook_Assign--></T>
+        <T>9161096037870691975<!--BBS_Settlement_Interaction_Cook_Unassign--></T>
+        <T>16915903625588503903<!--BBS_Settlement_Interaction_Rancher_Assign--></T>
+        <T>7677471767469887874<!--BBS_Settlement_Interaction_Rancher_Unassign--></T>
+      </L>
+    </U>
+  </L>
   <T n="display_name">0x63BB9AEE<!--Community Member--></T>
   <T n="display_name_gender_neutral">0x63BB9AEE<!--Community Member--></T>
   <T n="icon" p="EventGoal_Friendly">2f7d0004:00000000:cdd3c75256b4c308</T>
   <T n="trait_description">0xAF6B32FB<!--This trait indicates this Sim is a part of a Community.--></T>
   <T n="trait_origin_description">0xEF412A46<!--(From Being Community Member)--></T>
-  <E n="trait_type">GAMEPLAY</E>
+  <L n="super_affordances">
+    <T>624277841368073624<!--BBS_Settlement_Supplies_Interaction_AskForInventory--></T>
+  </L>
+  <E n="trait_type">HIDDEN</E>
 </I>

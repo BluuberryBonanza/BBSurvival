@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="Trait" i="trait" m="traits.traits" n="BBS_Settlement_Trait_SettlementMember_Scout" s="10371721564874386778">
+  <L n="ages">
+    <E>INFANT</E>
+    <E>TODDLER</E>
+    <E>CHILD</E>
+    <E>TEEN</E>
+    <E>YOUNGADULT</E>
+    <E>ADULT</E>
+    <E>ELDER</E>
+  </L>
+  <T n="buffs_add_on_spawn_only">False</T>
+  <L n="buffs">
+    <U>
+      <T n="buff_type">12632685583467526842<!--BBS_Settlement_Buff_Trait_SettlementMember_Scout--></T>
+    </U>
+  </L>
+  <T n="display_name">0x8B7FD9FE<!--Community Scout--></T>
+  <T n="display_name_gender_neutral">0x8B7FD9FE<!--Community Scout--></T>
+  <T n="icon" p="EventGoal_Friendly">2f7d0004:00000000:cdd3c75256b4c308</T>
+  <T n="trait_description">0x451F612C<!--This trait indicates this Sim will scavenge for resources automatically and be a part of raiding parties.--></T>
+  <T n="trait_origin_description">0x0BF46558<!--(From Being Community Scout)--></T>
+  <E n="trait_type">HIDDEN</E>
+</I>

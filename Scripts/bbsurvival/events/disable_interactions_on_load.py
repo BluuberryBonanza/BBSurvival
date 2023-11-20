@@ -5,16 +5,31 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 
 Copyright (c) BLUUBERRYBONANZA
 """
+from typing import Any
+
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
+from bluuberrylibrary.classes.bb_run_result import BBRunResult
 from bluuberrylibrary.events.event_dispatchers.zone.events.bb_on_zone_load_end_event import BBOnZoneLoadEndEvent
 from bluuberrylibrary.events.event_handling.bb_event_handler_registry import BBEventHandlerRegistry
 from bluuberrylibrary.utils.instances.bb_interaction_utils import BBInteractionUtils
 from event_testing.results import TestResult
+from event_testing.test_base import BaseTest
 from event_testing.tests import TestList
-from interactions import ParticipantType
-from sims.sim_info_tests import SimInfoTest, MatchType
 
-class _InteractionDisabler:
+
+class _BBSIsNotActivatedTest(BaseTest):
+    # noinspection PyMissingOrEmptyDocstring
+    def get_expected_args(self) -> Any:
+        return {}
+
+    def __call__(self, *_, **__) -> TestResult:
+        if not BBSPrologueData().is_mod_fully_active():
+            return TestResult.TRUE
+        return TestResult.NONE
+
+
+class _BBSInteractionDisabler:
     interactions_disabled = False
 
     DISABLED_INTERACTION_IDS = [
@@ -198,26 +213,24 @@ class _InteractionDisabler:
         331478,  # interactionPickerSI_CommunityBoard_Jobs
     ]
 
+    @classmethod
+    def disable_interactions(cls):
+        if cls.interactions_disabled:
+            return
+        cls.interactions_disabled = True
+
+        for interaction_id in cls.DISABLED_INTERACTION_IDS:
+            interaction = BBInteractionUtils.load_interaction_by_guid(interaction_id)
+            if interaction is None:
+                continue
+            tests_list = list(interaction.test_globals)
+            tests_list.insert(0, _BBSIsNotActivatedTest())
+            interaction.test_globals = TestList(tests_list)
+
 
 @BBEventHandlerRegistry.register(ModIdentity(), BBOnZoneLoadEndEvent)
 def _bbs_disable_interactions_on_zone_load(event: BBOnZoneLoadEndEvent):
-    if _InteractionDisabler.interactions_disabled:
+    if _BBSInteractionDisabler.interactions_disabled:
         return
-    _InteractionDisabler.interactions_disabled = True
-
-    for interaction_id in _InteractionDisabler.DISABLED_INTERACTION_IDS:
-        interaction = BBInteractionUtils.load_interaction_by_guid(interaction_id)
-        if interaction is None:
-            continue
-        impossible_sim_info_test = SimInfoTest()
-        impossible_sim_info_test.who = ParticipantType.Actor
-        impossible_sim_info_test.gender = None
-        impossible_sim_info_test.ages = (0,)
-        impossible_sim_info_test.species = None
-        impossible_sim_info_test.can_age_up = None
-        impossible_sim_info_test.npc = False
-        impossible_sim_info_test.has_been_played = False
-        impossible_sim_info_test.is_active_sim = True
-        impossible_sim_info_test.match_type = MatchType.MATCH_ALL
-        interaction.test_globals = TestList((impossible_sim_info_test,))
-    return TestResult.TRUE
+    _BBSInteractionDisabler.disable_interactions()
+    return BBRunResult.TRUE

@@ -9,10 +9,12 @@
     </U>
   </L>
   <T n="always_active">True</T>
-  <E n="_autonomy_state_override">FULL</E>
+  <V n="_autonomy_state_override" t="enabled">
+    <E n="enabled">FULL</E>
+  </V>
   <E n="_crafting_process_override">LOT_OWNER</E>
   <U n="_off_lot_autonomy_buff">
-    <T n="buff_type">38292<!--buff_offLotAutonomyMod_OnLotOnly--></T>
+    <T n="buff_type">40411<!--buff_offLotAutonomyMod_All--></T>
   </U>
   <V n="_on_activate" t="autonomy_ping" />
   <L n="role_affordances">

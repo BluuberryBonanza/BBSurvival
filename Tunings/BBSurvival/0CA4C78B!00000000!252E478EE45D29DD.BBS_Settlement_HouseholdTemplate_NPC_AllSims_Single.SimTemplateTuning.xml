@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<I c="HouseholdTemplate" i="sim_template" m="filters.household_template" n="BBS_Settlement_HouseholdTemplate_NPC_AllSims_Single" s="2679157507374262749">
-  <L n="_household_members">
-    <U>
-      <T n="sim_template">2638727015577334733<!--BBS_Settlement_TunableSimTemplate_NPC_AllSims--></T>
-    </U>
-  </L>
-</I>

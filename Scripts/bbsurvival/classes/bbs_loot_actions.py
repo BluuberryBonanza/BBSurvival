@@ -15,6 +15,7 @@ from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bbsurvival.bb_lib.utils.bb_sim_inventory_utils import BBSimInventoryUtils
 from bbsurvival.bb_lib.utils.bb_sim_statistic_utils import BBSimStatisticUtils
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bbsurvival.settlement.enums.cook_time_slot import BBSSettlementCookTimeSlot
 from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
 from bbsurvival.settlement.enums.string_ids import BBSSettlementStringIds
@@ -30,7 +31,31 @@ from interactions.utils.loot_basic_op import BaseTargetedLootOperation
 from sims4.tuning.tunable import TunableList, TunableEnumEntry
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_loot_actions')
-log.enable()
+# log.enable()
+
+
+class BBSAdvancePrologueLootOp(BaseTargetedLootOperation):
+    FACTORY_TUNABLES = {
+        'subject': TunableEnumEntry(
+            description='\n            The Sim we are advancing the prologue for.\n            ',
+            tunable_type=ParticipantType,
+            default=ParticipantType.Actor
+        ),
+    }
+
+    __slots__ = {'subject'}
+
+    def __init__(self, *_, subject=ParticipantType.Actor, **__) -> None:
+        super().__init__(*_, **__)
+        self.subject = subject
+
+    def _apply_to_subject_and_target(self, subject, target, resolver) -> None:
+        if self._tests:
+            test_result = self._tests.run_tests(resolver)
+            if not test_result:
+                return test_result
+        sim_info = BBSimUtils.to_sim_info(subject)
+        BBSPrologueData().advance_prologue_stage(sim_info)
 
 
 class BBSTransferInventoryLootOp(BaseTargetedLootOperation):
@@ -385,6 +410,12 @@ class BBSLootActionVariant(LootActionVariant):
                 }
             ),
             transfer_inventory=BBSTransferInventoryLootOp.TunableFactory(
+                target_participant_type_options={
+                    'description': '\n                    The participant of the interaction\n                    ',
+                    'default_participant': ParticipantType.Object
+                }
+            ),
+            advance_prologue=BBSAdvancePrologueLootOp.TunableFactory(
                 target_participant_type_options={
                     'description': '\n                    The participant of the interaction\n                    ',
                     'default_participant': ParticipantType.Object

@@ -8,7 +8,9 @@ Copyright (c) BLUUBERRYBONANZA
 from typing import Any
 
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
+from bluuberrylibrary.classes.bb_run_result import BBRunResult
 from bluuberrylibrary.events.event_dispatchers.zone.events.bb_on_zone_load_end_event import BBOnZoneLoadEndEvent
 from bluuberrylibrary.events.event_handling.bb_event_handler_registry import BBEventHandlerRegistry
 from bluuberrylibrary.utils.debug.bb_injection_utils import BBInjectionUtils
@@ -32,6 +34,8 @@ class _BBSIsNotCommunityMemberTest(BaseTest):
         return {'subject': ParticipantType.Actor, 'target': ParticipantType.Object}
 
     def __call__(self, subject: Any = (), target: Any = ()) -> TestResult:
+        if not BBSPrologueData().is_mod_fully_active():
+            return TestResult.TRUE
         if not subject and not target:
             return TestResult.TRUE
         sim_info = BBSimUtils.to_sim_info(next(iter(subject), None))
@@ -49,6 +53,7 @@ class _BBSIsNotCommunityMemberTest(BaseTest):
 
 class _InteractionDisabler:
     interactions_disabled = False
+
     LEAVE_INTERACTION_IDS = (
         # Leave
         166360,  # NPCLeaveLotInteraction: npcLeaveLot_Pet
@@ -111,25 +116,33 @@ class _InteractionDisabler:
         223197,  # roommateNPC_GoHome
     )
 
+    @classmethod
+    def disable_interactions(cls):
+        if cls.interactions_disabled:
+            return BBRunResult.TRUE
+        cls.interactions_disabled = True
+
+        for interaction_id in cls.LEAVE_INTERACTION_IDS:
+            interaction = BBInteractionUtils.load_interaction_by_guid(interaction_id)
+            if interaction is None:
+                continue
+            tests_list = list(interaction.test_globals)
+            tests_list.insert(0, _BBSIsNotCommunityMemberTest())
+            interaction.test_globals = TestList(tests_list)
+
 
 @BBEventHandlerRegistry.register(ModIdentity(), BBOnZoneLoadEndEvent)
 def _bbs_disable_leave_interactions_for_community_members_on_zone_load(event: BBOnZoneLoadEndEvent):
     if _InteractionDisabler.interactions_disabled:
-        return
-    _InteractionDisabler.interactions_disabled = True
-
-    for interaction_id in _InteractionDisabler.LEAVE_INTERACTION_IDS:
-        interaction = BBInteractionUtils.load_interaction_by_guid(interaction_id)
-        if interaction is None:
-            continue
-        tests_list = list(interaction.test_globals)
-        tests_list.insert(0, _BBSIsNotCommunityMemberTest())
-        interaction.test_globals = TestList(tests_list)
-    return TestResult.TRUE
+        return BBRunResult.TRUE
+    _InteractionDisabler.disable_interactions()
+    return BBRunResult.TRUE
 
 
 @BBInjectionUtils.inject(ModIdentity(), SituationManager, SituationManager.can_sim_be_sent_home_in_ss3.__name__)
 def _bbs_disable_leave_now_must_run(original, self, sim):
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self, sim)
     sim_info = BBSimUtils.to_sim_info(sim)
     from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
     if BBSSettlementContextManager().get_settlement_context_by_sim_info(sim_info) is not None:
@@ -139,6 +152,8 @@ def _bbs_disable_leave_now_must_run(original, self, sim):
 
 @BBInjectionUtils.inject(ModIdentity(), SituationManager, SituationManager.user_ask_sim_to_leave_now_must_run.__name__)
 def _bbs_disable_leave_now_must_run(original, self, sim):
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self, sim)
     sim_info = BBSimUtils.to_sim_info(sim)
     from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
     if BBSSettlementContextManager().get_settlement_context_by_sim_info(sim_info) is not None:
@@ -148,6 +163,8 @@ def _bbs_disable_leave_now_must_run(original, self, sim):
 
 @BBInjectionUtils.inject(ModIdentity(), SituationManager, SituationManager.make_sim_leave_now_must_run.__name__)
 def _bbs_disable_leave_now_must_run(original, self, sim):
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self, sim)
     sim_info = BBSimUtils.to_sim_info(sim)
     from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
     if BBSSettlementContextManager().get_settlement_context_by_sim_info(sim_info) is not None:
@@ -157,6 +174,8 @@ def _bbs_disable_leave_now_must_run(original, self, sim):
 
 @BBInjectionUtils.inject(ModIdentity(), SituationManager, SituationManager.make_sim_leave.__name__)
 def _bbs_disable_leave_now_must_run(original, self, sim):
+    if not BBSPrologueData().is_mod_fully_active():
+        return original(self, sim)
     sim_info = BBSimUtils.to_sim_info(sim)
     from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
     if BBSSettlementContextManager().get_settlement_context_by_sim_info(sim_info) is not None:

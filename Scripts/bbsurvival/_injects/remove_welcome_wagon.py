@@ -7,12 +7,16 @@ Copyright (c) BLUUBERRYBONANZA
 """
 import services
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bluuberrylibrary.utils.debug.bb_injection_utils import BBInjectionUtils
 from situations.npc_hosted_situations import NPCHostedSituationService
 
 
 @BBInjectionUtils.inject(ModIdentity(), NPCHostedSituationService, NPCHostedSituationService._start_welcome_wagon.__name__)
 def _bbs_start_welcome_wagon(original, *_, **__):
+    # We always want to disable the welcome wagon.
+    # if not BBSPrologueData().is_mod_fully_active():
+    #     return original(*_, **__)
     active_household = services.active_household()
     active_household.needs_welcome_wagon = False
     return

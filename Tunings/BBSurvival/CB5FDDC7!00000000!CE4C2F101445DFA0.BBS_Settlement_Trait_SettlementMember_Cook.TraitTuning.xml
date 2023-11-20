@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="Trait" i="trait" m="traits.traits" n="BBS_Settlement_Trait_SettlementMember_Cook" s="14865308216149270432">
+  <L n="ages">
+    <E>INFANT</E>
+    <E>TODDLER</E>
+    <E>CHILD</E>
+    <E>TEEN</E>
+    <E>YOUNGADULT</E>
+    <E>ADULT</E>
+    <E>ELDER</E>
+  </L>
+  <T n="buffs_add_on_spawn_only">False</T>
+  <L n="buffs">
+    <U>
+      <T n="buff_type">5350016011002472064<!--BBS_Settlement_Buff_Trait_SettlementMember_Cook--></T>
+    </U>
+  </L>
+  <T n="display_name">0x3B950F14<!--Community Cook--></T>
+  <T n="display_name_gender_neutral">0x3B950F14<!--Community Cook--></T>
+  <T n="icon" p="EventGoal_Friendly">2f7d0004:00000000:cdd3c75256b4c308</T>
+  <T n="trait_description">0x096330AE<!--This trait indicates this Sim will cook food for the community and ensure all Sims are fed.--></T>
+  <T n="trait_origin_description">0x9A696AFC<!--(From Being Community Cook)--></T>
+  <E n="trait_type">HIDDEN</E>
+  <L n="provided_mixers">
+    <U>
+      <T n="key">13998<!--sim_Chat--></T>
+      <L n="value">
+        <T>9479707556413316416<!--BBS_Settlement_Cook_Interaction_AssignCookTime1--></T>
+        <T>9479707556413316419<!--BBS_Settlement_Cook_Interaction_AssignCookTime2--></T>
+        <T>9479707556413316418<!--BBS_Settlement_Cook_Interaction_AssignCookTime3--></T>
+      </L>
+    </U>
+  </L>
+  <L n="target_super_affordances">
+    <U>
+      <T n="affordance">293372703558580114<!--BBS_Settlement_Cook_Interaction_CookGroupMeal_Autonomously_JunkFood--></T>
+      <V n="object_filter" t="filter_by_tags">
+        <U n="filter_by_tags">
+          <L n="tags">
+            <E>Func_Fridge</E>
+          </L>
+        </U>
+      </V>
+    </U>
+    <U>
+      <T n="affordance">1268364330115466166<!--BBS_Settlement_Cook_Interaction_CookGroupMeal_Autonomously_JunkFood_RequiredIngredients--></T>
+      <V n="object_filter" t="filter_by_tags">
+        <U n="filter_by_tags">
+          <L n="tags">
+            <E>Func_Fridge</E>
+          </L>
+        </U>
+      </V>
+    </U>
+    <U>
+      <T n="affordance">814717969105474455<!--BBS_Settlement_Cook_Interaction_CookGroupMeal_Autonomously_HealthNut--></T>
+      <V n="object_filter" t="filter_by_tags">
+        <U n="filter_by_tags">
+          <L n="tags">
+            <E>Func_Fridge</E>
+          </L>
+        </U>
+      </V>
+    </U>
+    <U>
+      <T n="affordance">14110877983032746747<!--BBS_Settlement_Cook_Interaction_CookGroupMeal_Autonomously_HealthNut_RequiredIngredients--></T>
+      <V n="object_filter" t="filter_by_tags">
+        <U n="filter_by_tags">
+          <L n="tags">
+            <E>Func_Fridge</E>
+          </L>
+        </U>
+      </V>
+    </U>
+  </L>
+</I>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="Trait" i="trait" m="traits.traits" n="BBS_Settlement_Trait_SettlementMember_Sanitation" s="1407741935087811336">
+  <L n="ages">
+    <E>INFANT</E>
+    <E>TODDLER</E>
+    <E>CHILD</E>
+    <E>TEEN</E>
+    <E>YOUNGADULT</E>
+    <E>ADULT</E>
+    <E>ELDER</E>
+  </L>
+  <T n="buffs_add_on_spawn_only">False</T>
+  <L n="buffs">
+    <U>
+      <T n="buff_type">15516568115386506216<!--BBS_Settlement_Buff_Trait_SettlementMember_Sanitation--></T>
+    </U>
+  </L>
+  <T n="display_name">0xA8AC6744<!--Community Sanitation--></T>
+  <T n="display_name_gender_neutral">0xA8AC6744<!--Community Sanitation--></T>
+  <T n="icon" p="EventGoal_Friendly">2f7d0004:00000000:cdd3c75256b4c308</T>
+  <T n="trait_description">0x91798BAD<!--This trait indicates this Sim will clean the place and scavenge for resources through recycling trash.--></T>
+  <T n="trait_origin_description">0xAA126868<!--(From Being Community Sanitation)--></T>
+  <L n="super_affordances">
+    <T>232726<!--autonomous_ObjectPicker_RecycleDisciple_Swipe--></T>
+    <T>233403<!--Cheat_RecycleDesciple_LowerCommodity--></T>
+    <T>237778<!--recycleDisciple_TestAutonomy--></T>
+  </L>
+  <L n="target_super_affordances">
+    <U>
+      <T n="affordance">232718<!--recycleDisciple_RummageForAssemblage_Indoors--></T>
+      <V n="object_filter" t="filter_by_tags">
+        <U n="filter_by_tags">
+          <L n="tags">
+            <E>Func_TrashCan_Indoor</E>
+          </L>
+        </U>
+      </V>
+    </U>
+    <U>
+      <T n="affordance">233182<!--recycleDisciple_RummageForAssemblage_Outdoors--></T>
+      <V n="object_filter" t="filter_by_tags">
+        <U n="filter_by_tags">
+          <L n="tags">
+            <E>Func_TrashCan_Outdoor</E>
+          </L>
+        </U>
+      </V>
+    </U>
+  </L>
+  <E n="trait_type">HIDDEN</E>
+</I>

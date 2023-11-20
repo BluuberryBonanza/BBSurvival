@@ -6,6 +6,7 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 Copyright (c) BLUUBERRYBONANZA
 """
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
 from bluuberrylibrary.classes.bb_test_result import BBTestResult
 from bluuberrylibrary.interactions.classes.bb_social_mixer_interaction import BBSocialMixerInteraction
@@ -26,6 +27,8 @@ class BBSSettlementRecruitInteraction(BBSocialMixerInteraction):
 
     @classmethod
     def bbl_test(cls, interaction_sim_info: SimInfo, interaction_target_sim_info: SimInfo, interaction_context: InteractionContext, *args, **kwargs) -> BBTestResult:
+        if not BBSPrologueData().is_mod_fully_active():
+            return BBTestResult.NONE
         settlement_context = BBSSettlementContextManager().get_settlement_context_by_sim_info(interaction_target_sim_info)
         if settlement_context is not None:
             cls.get_log().debug(f'Target Sim {interaction_target_sim_info} is already in a Settlement.')
