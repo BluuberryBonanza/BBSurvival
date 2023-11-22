@@ -90,6 +90,24 @@ class BBSimInventoryUtils:
         return BBComponentUtils.get_component(sim, BBComponentType.INVENTORY)
 
     @classmethod
+    def has_inventory_item_by_definition(cls, sim_info: SimInfo, object_definition: int) -> bool:
+        """has_inventory_item_by_definition(sim_info, object_definition)
+
+        Check if an item exists in the inventory of a Sim by definition.
+
+        :param sim_info: The info of a Sim.
+        :type sim_info: SimInfo
+        :param object_definition: The Object Definition ID to look for.
+        :type object_definition: int
+        :return: True, if the Sim has the item in their inventory. False, if not.
+        :rtype: bool
+        """
+        for inventory_item in cls.get_inventory_items_gen(sim_info):
+            if inventory_item.definition.id == object_definition:
+                return True
+        return False
+
+    @classmethod
     def get_inventory_items_gen(cls, sim_info: SimInfo) -> Iterable[GameObject]:
         """get_inventory_items_gen(sim_info)
 

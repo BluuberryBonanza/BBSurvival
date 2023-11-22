@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SimData version="0x00000101" u="0x00000000">
+  <Instances>
+    <I name="BBS_Object_Book_SurvivalManual_Tuning" schema="GameObject" type="Object">
+      <U name="_components" schema="TunableTuple">
+        <V name="object_relationships" variant="0xF8CBBF4C" schema="TunableObjectRelationshipComponent">
+          <V name="icon_override" variant="0xC1A03855" />
+        </V>
+      </U>
+    </I>
+  </Instances>
+  <Schemas>
+    <Schema name="GameObject" schema_hash="0x1E75924B">
+      <Columns>
+        <Column name="_components" type="Object" flags="0x00000000" />
+      </Columns>
+    </Schema>
+    <Schema name="TunableTuple" schema_hash="0x63A92969">
+      <Columns>
+        <Column name="object_relationships" type="Variant" flags="0x00000000" />
+      </Columns>
+    </Schema>
+    <Schema name="TunableObjectRelationshipComponent" schema_hash="0x1EFFE208">
+      <Columns>
+        <Column name="icon_override" type="Variant" flags="0x00000000" />
+      </Columns>
+    </Schema>
+  </Schemas>
+</SimData>

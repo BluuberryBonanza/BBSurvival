@@ -5,9 +5,11 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 
 Copyright (c) BLUUBERRYBONANZA
 """
-from typing import Tuple
+from typing import Tuple, Any
 
 import services
+from bbsurvival.bb_lib.dialog.bb_button_dialog import BBButtonDialog
+from bbsurvival.bb_lib.dialog.fields.bb_button import BBButton
 from bbsurvival.bb_lib.utils.bb_sim_age_utils import BBSimAgeUtils
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bbsurvival.bb_lib.utils.bb_sim_relationship_utils import BBSimRelationshipUtils
@@ -20,9 +22,11 @@ from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMembe
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
 from bluuberrylibrary.classes.bb_run_result import BBRunResult
 from bluuberrylibrary.classes.bb_test_result import BBTestResult
+from bluuberrylibrary.dialogs.notifications.bb_notification import BBNotification
 from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
 from bluuberrylibrary.utils.sims.bb_sim_trait_utils import BBSimTraitUtils
 from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
+from bluuberrylibrary.utils.text.bb_localized_string_data import BBLocalizedStringData
 from sims.sim_info import SimInfo
 
 log = BBLogRegistry().register_log(ModIdentity(), 'bbs_settlement_utils')
@@ -255,3 +259,34 @@ class BBSSettlementUtils:
             BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_TEACHER)
             BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_GATHERER)
             BBSimTraitUtils.remove_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_RANCHER)
+
+    @classmethod
+    def open_survival_manual(cls, sim_info: SimInfo):
+
+        def _on_choose_read_the_basics(_: Any):
+            BBNotification(
+                ModIdentity(),
+                BBLocalizedStringData('The Basics'),
+                BBLocalizedStringData('The basics to surviving are to ensure you have enough food, enough power, and enough water. Buy a Generator or Solar Panels for power and a Dew Collector for water. Go scavenging for Food.')
+            ).show()
+
+        buttons = (
+            BBButton(
+                1,
+                BBLocalizedStringData('Read The Basics'),
+                _on_choose_read_the_basics,
+                value='Basics',
+                subtext=BBLocalizedStringData('Learn the basics of surviving.'),
+                tooltip_text=BBLocalizedStringData('Learn the basics of surviving.')
+            ),
+        )
+
+        def _on_closed():
+            pass
+
+        BBButtonDialog(
+            ModIdentity(),
+            BBLocalizedStringData(f'What will {sim_info} read?'),
+            BBLocalizedStringData('Choose a topic.'),
+            buttons
+        ).display(sim_info, on_closed=_on_closed)

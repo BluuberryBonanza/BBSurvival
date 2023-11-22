@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="Trait" i="trait" m="traits.traits" n="BBS_Prologue_Trait_PrologueCompleted" s="18317372100258006510">
+  <L n="ages">
+    <E>INFANT</E>
+    <E>TODDLER</E>
+    <E>CHILD</E>
+    <E>TEEN</E>
+    <E>YOUNGADULT</E>
+    <E>ADULT</E>
+    <E>ELDER</E>
+  </L>
+  <T n="buffs_add_on_spawn_only">False</T>
+  <E n="trait_type">HIDDEN</E>
+</I>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="BBSLootActions" i="action" m="bbsurvival.classes.bbs_loot_actions" n="BBS_Object_Book_LootActions_OpenSurvivalManual" s="7289272276455533243">
+  <L n="loot_actions">
+    <V t="open_survival_manual">
+      <U n="open_survival_manual">
+        <E n="subject">Actor</E>
+      </U>
+    </V>
+  </L>
+</I>

@@ -34,6 +34,31 @@ log = BBLogRegistry().register_log(ModIdentity(), 'bbs_loot_actions')
 # log.enable()
 
 
+class BBSOpenSurvivalManualLootOp(BaseTargetedLootOperation):
+    FACTORY_TUNABLES = {
+        'subject': TunableEnumEntry(
+            description='\n            The Sim opening the survival Manual.\n            ',
+            tunable_type=ParticipantType,
+            default=ParticipantType.Actor
+        ),
+    }
+
+    __slots__ = {'subject'}
+
+    def __init__(self, *_, subject=ParticipantType.Actor, **__) -> None:
+        super().__init__(*_, **__)
+        self.subject = subject
+
+    def _apply_to_subject_and_target(self, subject, target, resolver) -> None:
+        if self._tests:
+            test_result = self._tests.run_tests(resolver)
+            if not test_result:
+                return test_result
+        sim_info = BBSimUtils.to_sim_info(subject)
+        from bbsurvival.settlement.utils.settlement_utils import BBSSettlementUtils
+        BBSSettlementUtils.open_survival_manual(sim_info)
+
+
 class BBSAdvancePrologueLootOp(BaseTargetedLootOperation):
     FACTORY_TUNABLES = {
         'subject': TunableEnumEntry(
@@ -416,6 +441,12 @@ class BBSLootActionVariant(LootActionVariant):
                 }
             ),
             advance_prologue=BBSAdvancePrologueLootOp.TunableFactory(
+                target_participant_type_options={
+                    'description': '\n                    The participant of the interaction\n                    ',
+                    'default_participant': ParticipantType.Object
+                }
+            ),
+            open_survival_manual=BBSOpenSurvivalManualLootOp.TunableFactory(
                 target_participant_type_options={
                     'description': '\n                    The participant of the interaction\n                    ',
                     'default_participant': ParticipantType.Object

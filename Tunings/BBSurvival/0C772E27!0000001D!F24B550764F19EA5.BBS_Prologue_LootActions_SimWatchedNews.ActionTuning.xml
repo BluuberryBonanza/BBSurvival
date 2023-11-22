@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<I c="BBSLootActions" i="action" m="bbsurvival.classes.bbs_loot_actions" n="BBS_Prologue_LootActions_SimWatchedNews" s="17459141870678548133">
+  <L n="loot_actions">
+    <V t="advance_prologue">
+      <U n="advance_prologue">
+        <E n="subject">Actor</E>
+      </U>
+    </V>
+  </L>
+</I>

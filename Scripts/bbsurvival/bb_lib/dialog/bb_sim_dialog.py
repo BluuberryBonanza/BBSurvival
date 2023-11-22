@@ -78,6 +78,17 @@ class BBSimDialog:
         on_submit: Callable[[Tuple[SimInfo]], None],
         on_closed: Callable[[], None] = None
     ):
+        """display(owning_sim_info, on_submit, on_closed=None)
+
+        Display the dialog to the Player.
+
+        :param owning_sim_info: The Sim that owns the dialog.
+        :type owning_sim_info: SimInfo
+        :param on_submit: What to do when the dialog is submitted.
+        :type on_submit: Callable[[Tuple[SimInfo]], None]
+        :param on_closed: What to do when the dialog is closed. Default is no behavior.
+        :type on_closed: Callable[[], None], optional
+        """
         _log = BBLogRegistry().register_log(self.mod_identity, 'bb_sim_dialog')
         try:
             if len(self._rows) == 0:
