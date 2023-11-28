@@ -17,7 +17,7 @@ class BBSimPickerRow:
         select_as_default=False,\
     )
 
-    A field used in dialogs to display a Sim.
+    A row used in dialogs to display a Sim.
 
     :param sim_info: The info of a Sim.
     :type sim_info: SimInfo

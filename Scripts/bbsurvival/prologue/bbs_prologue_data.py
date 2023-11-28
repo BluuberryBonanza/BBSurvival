@@ -12,6 +12,7 @@ from bbsurvival.bb_lib.utils.bb_alarm_utils import BBAlarmUtils
 from bbsurvival.bb_lib.utils.bb_sim_statistic_utils import BBSimStatisticUtils
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.prologue.enums.statistic_ids import BBSPrologueStatisticId
+from bbsurvival.prologue.enums.string_ids import BBSPrologueStringId
 from bbsurvival.prologue.enums.trait_ids import BBSPrologueTraitId
 from bluuberrylibrary.classes.bb_singleton import BBSingleton
 from bluuberrylibrary.dialogs.icons.bb_sim_icon_info import BBSimIconInfo
@@ -69,16 +70,16 @@ class BBSPrologueData(metaclass=BBSingleton):
         for sim_info in BBSimUtils.get_all_sim_info_gen():
             BBSimTraitUtils.remove_trait(sim_info, BBSPrologueTraitId.PROLOGUE_COMPLETED)
             BBSimTraitUtils.remove_trait(sim_info, BBSPrologueTraitId.RUNNING_PROLOGUE)
-            BBSimStatisticUtils.remove_statistic(sim_info, BBSPrologueStatisticId.PROLOGUE_STAGE)
+            BBSimStatisticUtils.set_statistic_value(sim_info, BBSPrologueStatisticId.PROLOGUE_STAGE, 0)
+
+        from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
+        BBSSettlementContextManager().teardown_settlement_context()
 
         from bbsurvival.settlement.utils.settlement_utils import BBSSettlementUtils
         BBSSettlementUtils.remove_all_settlement_related_things()
 
         for on_deactivate_func in self._on_deactivate_callbacks:
             on_deactivate_func()
-
-        from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
-        BBSSettlementContextManager().teardown_settlement_context()
 
     def start_prologue(self, sim_info: SimInfo):
         if self.is_mod_fully_active():
@@ -96,8 +97,8 @@ class BBSPrologueData(metaclass=BBSingleton):
             BBSimStatisticUtils.set_statistic_value(sim_info, BBSPrologueStatisticId.PROLOGUE_STAGE, 0)
             BBNotification(
                 ModIdentity(),
-                BBLocalizedStringData('I Have a Bad Feeling'),
-                BBLocalizedStringData('I have a really bad feeling, I should watch the news on a Television immediately!')
+                BBLocalizedStringData(BBSPrologueStringId.PROLOGUE_THOUGHT_STAGE_0_TITLE),
+                BBLocalizedStringData(BBSPrologueStringId.PROLOGUE_THOUGHT_STAGE_0_DESCRIPTION)
             ).show(icon=BBSimIconInfo(sim_info))
         elif self._setup_prologue_alarm is None:
             log.debug('Failed to add running prologue to Sim, setting an alarm to set it up.', sim=sim_info)
@@ -133,32 +134,32 @@ class BBSPrologueData(metaclass=BBSingleton):
         if current_prologue_stage == 0:
             BBNotification(
                 ModIdentity(),
-                BBLocalizedStringData('Bad News'),
-                BBLocalizedStringData('Bad news on the television, sounds like trouble. I should wait for the next broadcast and watch again.')
+                BBLocalizedStringData(BBSPrologueStringId.PROLOGUE_NEWS_STAGE_0_TITLE),
+                BBLocalizedStringData(BBSPrologueStringId.PROLOGUE_NEWS_STAGE_0_DESCRIPTION)
             ).show()
         elif current_prologue_stage == 1:
             BBNotification(
                 ModIdentity(),
-                BBLocalizedStringData('Really Bad News'),
-                BBLocalizedStringData('The trouble got a whole lot worse! I should wait for the next broadcast and watch again.')
+                BBLocalizedStringData(BBSPrologueStringId.PROLOGUE_NEWS_STAGE_1_TITLE),
+                BBLocalizedStringData(BBSPrologueStringId.PROLOGUE_NEWS_STAGE_1_DESCRIPTION)
             ).show()
         elif current_prologue_stage == 2:
             BBNotification(
                 ModIdentity(),
-                BBLocalizedStringData('Really Really Bad News'),
-                BBLocalizedStringData('The television is telling me to prepare for the apocolypse. I should wait for the next broadcast and watch again.')
+                BBLocalizedStringData(BBSPrologueStringId.PROLOGUE_NEWS_STAGE_2_TITLE),
+                BBLocalizedStringData(BBSPrologueStringId.PROLOGUE_NEWS_STAGE_2_DESCRIPTION)
             ).show()
         elif current_prologue_stage == 3:
             BBNotification(
                 ModIdentity(),
-                BBLocalizedStringData('Worse News'),
-                BBLocalizedStringData('The news caster is freaking out. Telling Sims to stay indoors. I should wait for the next broadcast and watch again.')
+                BBLocalizedStringData(BBSPrologueStringId.PROLOGUE_NEWS_STAGE_3_TITLE),
+                BBLocalizedStringData(BBSPrologueStringId.PROLOGUE_NEWS_STAGE_3_DESCRIPTION)
             ).show()
         elif current_prologue_stage == 4:
             BBNotification(
                 ModIdentity(),
-                BBLocalizedStringData('Worst News'),
-                BBLocalizedStringData('The television cuts out in the middle of the broadcast. The power and water also went out! I dont think there will be anymore broadcasts. (BB Survival has begun)')
+                BBLocalizedStringData(BBSPrologueStringId.PROLOGUE_NEWS_STAGE_4_TITLE),
+                BBLocalizedStringData(BBSPrologueStringId.PROLOGUE_NEWS_STAGE_4_DESCRIPTION)
             ).show()
 
         next_prologue_stage = current_prologue_stage + 1

@@ -18,3 +18,4 @@ class BBComponentType:
             return args[0]
 
     INVENTORY: 'BBComponentType' = _get_component_type('INVENTORY_COMPONENT')
+    STATE: 'BBComponentType' = _get_component_type('STATE_COMPONENT')

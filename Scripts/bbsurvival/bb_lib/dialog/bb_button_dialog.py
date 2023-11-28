@@ -14,7 +14,6 @@ from bluuberrylibrary.mod_identity import ModIdentity
 from bluuberrylibrary.mod_registration.bb_mod_identity import BBModIdentity
 from bluuberrylibrary.utils.sims.bb_sim_utils import BBSimUtils
 from bluuberrylibrary.utils.text.bb_localized_string_data import BBLocalizedStringData
-from bluuberrylibrary.utils.text.bb_localized_tooltip_data import BBLocalizedTooltipData
 from protocolbuffers.Localization_pb2 import LocalizedString
 from sims.sim_info import SimInfo
 from sims4.commands import Command, CommandType

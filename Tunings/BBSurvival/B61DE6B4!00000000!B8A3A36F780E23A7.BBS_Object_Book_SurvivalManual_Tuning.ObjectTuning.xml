@@ -157,7 +157,7 @@
         <V n="put_down_tuning" t="reference">
           <L n="reference">
             <U>
-              <T n="value">77819<!--PutDownStrategy_Book--></T>
+              <T n="value">145512<!--putDownStrategy_Restricted_InventoryOnly--></T>
             </U>
           </L>
         </V>
@@ -178,13 +178,6 @@
         <E n="stack_scheme">DEFINITION</E>
         <L n="valid_inventory_types">
           <E>SIM</E>
-          <E>BOOKSHELF</E>
-          <E>RETAIL_SHELF</E>
-          <E>CRAFT_SALES_TABLE_EP03</E>
-          <E>STORAGE_CHEST</E>
-          <E>STORAGE_CHEST_DORM</E>
-          <E>BACKPACK</E>
-          <E>VENDING_MACHINE</E>
         </L>
       </U>
     </V>
@@ -362,16 +355,9 @@
     <T>13328<!--debug_Reset--></T>
     <T>13326<!--debug_ObjectDestroy--></T>
     <T>103888<!--cheat_set_as_head--></T>
-    <T>75798<!--book_study--></T>
     <T>122714<!--cancelReplacements_ReadtoCarry--></T>
-    <T>347255<!--book_CleanUp_UnownedOpenStreet--></T>
-    <T>28625<!--book_analyze--></T>
     <T>106859<!--simRay_Transform_Object--></T>
-    <T>29763<!--maid_PutAwayItem--></T>
-    <T>37819<!--Put_Away_Books--></T>
     <T>13116<!--book_Picker_Read_To_Children--></T>
-    <T>76988<!--book_read_browse--></T>
-    <T>34322<!--book_read_ReadForReference--></T>
   </L>
   <U n="recycling_data">
     <L n="recycling_values">

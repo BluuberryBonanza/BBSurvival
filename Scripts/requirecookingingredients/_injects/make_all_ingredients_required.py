@@ -8,20 +8,19 @@ Copyright (c) BLUUBERRYBONANZA
 import functools
 from typing import List
 
-import services
 from bluuberrylibrary.logs.bb_log_registry import BBLogRegistry
 from bluuberrylibrary.utils.debug.bb_injection_utils import BBInjectionUtils
 from crafting.crafting_ingredients import IngredientTuning
 from crafting.crafting_interactions import StartCraftingMixin, StartCraftingAutonomouslySuperInteraction, \
-    StartCraftingSuperInteraction, StartCraftingOrderSuperInteraction
+    StartCraftingSuperInteraction, StartCraftingOrderSuperInteraction, build_requirement_data, \
+    get_ingredient_requirements
 from crafting.crafting_process import CraftingProcess
-from crafting.crafting_tunable import CraftingTuning
 from crafting.recipe import Recipe
 from event_testing.results import TestResult
 from requirecookingingredients.mod_identity import ModIdentity
 from sims4.localization import LocalizationHelperTuning
-from sims4.utils import flexmethod
 from singletons import DEFAULT
+from ui.ui_dialog_picker import RowMapType, RecipePickerRow
 
 original_start_crafting_super_interaction_picker_rows_gen = StartCraftingSuperInteraction.picker_rows_gen
 
@@ -329,20 +328,11 @@ class _NewRecipeClass:
         1268364330115466166,  # BBS_Settlement_Cook_Interaction_CookGroupMeal_Autonomously_JunkFood_RequiredIngredients
     )
 
-    def all_ingredients_required(cls):  # cls here is actually "Recipe" and not "_NewRecipeClass
-        recipe_id = getattr(cls, 'guid64', None)
-        if recipe_id in _NewRecipeClass.excluded_recipes:
-            if cls.use_ingredients is None:
-                return False
-            from crafting.recipe import debug_ingredient_requirements
-            return cls.use_ingredients.all_ingredients_required and debug_ingredient_requirements
-        return True
-
     def rci_picker_rows_gen(cls: StartCraftingSuperInteraction, inst, target, context, crafter=DEFAULT, order_count=1, recipe_ingredients_map=None, funds_source=None, **kwargs):
         original_result = None
         try:
             interaction_id = getattr(cls, 'guid64', None)
-            log.debug('Got it', clas=cls, inst=inst, interaction_id=interaction_id)
+            log.debug('Got it pickers', clas=cls, inst=inst, interaction_id=interaction_id)
             kwargs_to_pass = original_start_crafting_super_interaction_picker_rows_gen.keywords
             original_result = original_start_crafting_super_interaction_picker_rows_gen.func(
                 cls,
@@ -391,8 +381,11 @@ class _NewRecipeClass:
                             ingredients_needed_count += ingredient_requirement.count_required
 
                         if ingredients_found_count < ingredients_needed_count:
+                            log.debug('Recipe is being disabled.', recipe=recipe, ingredients_found_count=ingredients_found_count, ingredients_needed_count=ingredients_needed_count)
                             has_required_ingredients = False
                             recipe_picker_row.is_enable = False
+                        else:
+                            log.debug('Recipe is not being disabled', recipe=recipe, ingredients_found_count=ingredients_found_count, ingredients_needed_count=ingredients_needed_count)
                         ingredients_display_data = tuple(ingredient_requirement.get_display_data() for ingredient_requirement in ingredient_requirements)
                         recipe_picker_row.ingredients = ingredients_display_data
                         tooltip_ingredients = [ingredient.ingredient_name for ingredient in recipe_picker_row.ingredients]
@@ -449,72 +442,261 @@ class _NewRecipeClass:
             return
         return ingredients_requirements_to_use
 
+    @staticmethod
+    def override_picker_rows_gen(interaction_class: StartCraftingSuperInteraction, inst, target, context, *args, crafter=DEFAULT, order_count=1, recipe_ingredients_map=None, funds_source=None, **kwargs):
+        try:
+            crafter = context.sim
+            inventory_target = target
+            subclass_of_order_interaction = issubclass(interaction_class, StartCraftingOrderSuperInteraction)
+            inventory_target = inst.get_participant(participant_type=interaction_class.ingredient_source)
+            candidate_ingredients = interaction_class._get_ingredient_candidates(crafter, crafting_target=inventory_target)
+            recipe_list = []
+            if crafter is DEFAULT and subclass_of_order_interaction and interaction_class.ingredient_source and inst is not None:
+                recipe_list = inst.get_valid_recipe_list()
+                resolver = inst.get_resolver()
+            else:
+                recipe_list = interaction_class.recipes
+                resolver = interaction_class.get_resolver(target=target, context=context)
+            is_ingredients_only = interaction_class.ingredient_cost_only
+            any_recipe_has_ingredients = False
+            hashable_recipe_list = tuple(recipe_list)
+            hashable_candidate_ingredients = tuple(candidate_ingredients)
+            (recipe_to_requirements_map, requirements_to_candidates_map) = _NewRecipeClass._prebuild_recipe_requirement_candidate_maps(hashable_recipe_list, hashable_candidate_ingredients, is_ingredients_only)
+            recipe_ingredients_map = {}
+            for recipe in recipe_list:
+                all_ingredients_required = is_ingredients_only or recipe.all_ingredients_required
+                requirements_for_recipe = interaction_class._try_build_ingredient_requirements_for_recipe(recipe, recipe_to_requirements_map, requirements_to_candidates_map)
+                (only_fresh_ingredients, only_prepped_ingredients, both_fresh_prepped_requirements) = get_ingredient_requirements(requirements_for_recipe, all_ingredients_required)
+                recipe_ingredients_map[recipe] = requirements_for_recipe
+                (enable_recipe_both_fresh_prepped, _, adjusted_ingredient_price_both_fresh_prepped) = build_requirement_data(both_fresh_prepped_requirements, all_ingredients_required)
+                (enable_recipe_only_prepped, _, adjusted_ingredient_price_only_prepped) = build_requirement_data(only_prepped_ingredients, all_ingredients_required)
+                (enable_recipe_only_fresh, has_required_ingredients, adjusted_ingredient_price_only_fresh) = build_requirement_data(only_fresh_ingredients, all_ingredients_required)
+                if not requirements_for_recipe is not None or recipe.use_ingredients is not None or not is_ingredients_only or (not all_ingredients_required or (has_required_ingredients or not crafter is not context.sim)) or not interaction_class.show_disabled_crafting_recipes:
+                    pass
+                else:
+                    is_order_interaction = False
+                    is_order_interaction = True
+                    (multiplier, discount_tooltip) = interaction_class.price_multiplier.get_multiplier_and_tooltip(resolver)
+                    (original_price, discounted_price, ingredients_price_both_fresh_prepped) = recipe.get_price(is_order_interaction, adjusted_ingredient_price_both_fresh_prepped, multiplier)
+                    (_, _, ingredients_price_only_prepped) = recipe.get_price(is_order_interaction, adjusted_ingredient_price_only_prepped, multiplier)
+                    (_, _, ingredients_price_only_fresh) = recipe.get_price(is_order_interaction, adjusted_ingredient_price_only_fresh, multiplier)
+                    original_price *= order_count
+                    discounted_price *= order_count
+                    ingredients_price_both_fresh_prepped *= order_count
+                    ingredients_price_only_prepped *= order_count
+                    ingredients_price_only_fresh *= order_count
+                    original_price = discounted_price = 0
+                    (ingredients_price_both_fresh_prepped, ingredients_price_only_prepped, ingredients_price_only_fresh) = (0, 0, 0)
+                    discounted_price = ingredients_price_only_fresh
+                    unresolved_multipliers = interaction_class.bucks_price_multipliers
+                    resolved_multipliers = {}
+                    for buck_type in unresolved_multipliers:
+                        (bucks_multiplier, bucks_discount_tooltip) = unresolved_multipliers[buck_type].get_multiplier_and_tooltip(resolver)
+                        resolved_multipliers[buck_type] = bucks_multiplier
+                    discounted_bucks_prices = recipe.get_bucks_prices(is_retail=is_order_interaction, multipliers=resolved_multipliers, order_count=order_count)
+                    from collections import namedtuple
+                    BucksCostsData = namedtuple('BucksCostsData', ('bucks_type', 'amount'))
+                    bucks_costs = []
+                    for (buck_type, cost_amount) in discounted_bucks_prices.items():
+                        costs = BucksCostsData(buck_type, cost_amount)
+                        bucks_costs.append(costs)
+                    funds_source = interaction_class.funds_source
+                    recipe_test_result_no_ingredients = CraftingProcess.recipe_test(target, context, recipe, crafter, original_price, paying_sim=context.sim, funds_source=funds_source, discounted_bucks_prices=discounted_bucks_prices, check_price=False)
+                    recipe_test_result_only_fresh = CraftingProcess.recipe_test_price(recipe_test_result_no_ingredients, recipe, crafter, ingredients_price_only_fresh, paying_sim=context.sim, funds_source=funds_source, discounted_bucks_prices=discounted_bucks_prices)
+                    recipe_test_result_only_prepped = CraftingProcess.recipe_test_price(recipe_test_result_no_ingredients, recipe, crafter, ingredients_price_only_prepped, paying_sim=context.sim, funds_source=funds_source, discounted_bucks_prices=discounted_bucks_prices)
+                    recipe_test_result_both_fresh_prepped = CraftingProcess.recipe_test_price(recipe_test_result_no_ingredients, recipe, crafter, ingredients_price_both_fresh_prepped, paying_sim=context.sim, funds_source=funds_source, discounted_bucks_prices=discounted_bucks_prices)
+                    if (not subclass_of_order_interaction or (not interaction_class.ingredient_source or has_required_ingredients) or not is_ingredients_only or not interaction_class.use_ingredients_default_value or funds_source is None) and recipe_test_result_only_fresh.visible or recipe_test_result_only_prepped.visible or not recipe_test_result_both_fresh_prepped.visible:
+                        pass
+                    else:
+                        row = RecipePickerRow(
+                            icon=recipe.icon_override,
+                            name=recipe.get_recipe_name(crafter),
+                            skill_level=recipe.required_skill_level,
+                            linked_recipe=recipe.base_recipe,
+                            display_name=recipe.get_recipe_picker_name(crafter),
+                            tag=recipe,
+                            tag_list=recipe.tuning_tags,
+                            mtx_id=recipe.entitlement,
+                            subrow_sort_id=recipe.subrow_sort_id,
+                            group_recipe_override=recipe.group_recipe_override,
+                            linked_recipe_override=recipe.linked_recipe_override,
+                            price=original_price,
+                            is_enable=recipe_test_result_no_ingredients.enabled and (not all_ingredients_required or enable_recipe_only_fresh),
+                            is_enable_fresh=enable_recipe_only_fresh & recipe_test_result_only_fresh.enabled,
+                            is_enable_prepped=enable_recipe_only_prepped & recipe_test_result_only_prepped.enabled,
+                            is_enable_both_fresh_prepped=enable_recipe_both_fresh_prepped & recipe_test_result_both_fresh_prepped.enabled,
+                            price_with_ingredients=ingredients_price_only_fresh,
+                            price_with_only_prepped_ingredients=ingredients_price_only_prepped,
+                            price_with_both_fresh_prepped_ingredients=ingredients_price_both_fresh_prepped,
+                            pie_menu_influence_by_active_mood=recipe_test_result_only_fresh.influence_by_active_mood,
+                            discounted_price=discounted_price,
+                            bucks_costs=bucks_costs,
+                            enable_speed_up_background=recipe.enable_speed_up_background,
+                            food_restriction_ingredients=recipe.food_restriction_ingredients
+                        )
+                        interaction_class._add_discount_info_to_recipe_picker_row(row, multiplier, subclass_of_order_interaction, has_required_ingredients)
+                        interaction_class._add_cas_info_to_recipe_picker_row(row, recipe, crafter)
+                        interaction_class._add_icon_info_to_recipe_picker_row(row, recipe)
+                        all_ingredient_requirements = tuple(ingredient_requirement for ingredient_requirement in recipe_ingredients_map.get(recipe, ()))
+                        row.both_fresh_prepped_ingredients = [ingredient_requirement.get_display_data() for ingredient_requirement in both_fresh_prepped_requirements]
+                        row.only_fresh_ingredients = [ingredient_requirement.get_display_data() for ingredient_requirement in only_fresh_ingredients]
+                        row.only_prepped_ingredients = [ingredient_requirement.get_display_data() for ingredient_requirement in only_prepped_ingredients]
+                        any_recipe_has_ingredients = True
+                        prepped_ingredients_satisfied = False
+                        for ingredient_requirement in all_ingredient_requirements:
+                            if not ingredient_requirement.has_tag(IngredientTuning.PREPPED_INGREDIENT_TAG) or ingredient_requirement.count_satisfied > 0:
+                                prepped_ingredients_satisfied = True
+                                break
+                        row.cooking_time_reduced = prepped_ingredients_satisfied
+                        interaction_class._add_description_and_tooltip_info_to_recipe_picker_row(row, recipe, crafter, multiplier, all_ingredients_required, has_required_ingredients, is_ingredients_only, recipe_test_result_only_fresh, recipe_test_result_only_prepped, recipe_test_result_both_fresh_prepped, discount_tooltip)
+                        yield row
+            if recipe_ingredients_map is None and inst is not None:
+                inst._recipe_ingredients_map = recipe_ingredients_map
+                if any_recipe_has_ingredients or RowMapType.INGREDIENTS not in inst._suppressed_picker_columns:
+                    inst._suppressed_picker_columns.append(RowMapType.INGREDIENTS)
+        except Exception as ex:
+            log.error('A problem occurred while generating picker rows.', exception=ex)
+            return tuple()
 
-StartCraftingSuperInteraction.picker_rows_gen = flexmethod(_NewRecipeClass.rci_picker_rows_gen)
+
+# StartCraftingSuperInteraction.picker_rows_gen = flexmethod(_NewRecipeClass.rci_picker_rows_gen)
 
 
-# Recipe.all_ingredients_required = classproperty(_NewRecipeClass.all_ingredients_required)
+@BBInjectionUtils.inject(ModIdentity(), StartCraftingSuperInteraction, 'picker_rows_gen')
+def _rci_override_picker_rows_gen(original, cls: StartCraftingSuperInteraction, inst, target, context, *args, crafter=DEFAULT, order_count=1, recipe_ingredients_map=None, funds_source=None, **kwargs):
+    interaction_id = getattr(cls, 'guid64', None)
+    log.debug('Got it pickers', clas=cls, inst=inst, interaction_id=interaction_id)
+    if interaction_id not in _NewRecipeClass.INCLUDED_INTERACTION_IDS:
+        yield from original(
+            target,
+            context,
+            *args,
+            crafter=crafter,
+            order_count=order_count,
+            recipe_ingredients_map=recipe_ingredients_map,
+            funds_source=funds_source,
+            **kwargs
+        )
+    else:
+        # yield from _NewRecipeClass.override_picker_rows_gen(cls, inst, target, context, *args, crafter=crafter, order_count=order_count, recipe_ingredients_map=recipe_ingredients_map, funds_source=funds_source, **kwargs)
+        original_result = original(
+            target,
+            context,
+            *args,
+            crafter=crafter,
+            order_count=order_count,
+            recipe_ingredients_map=recipe_ingredients_map,
+            funds_source=funds_source,
+            **kwargs
+        )
+        log.debug('original result', original_result=original_result)
 
-original_start_crafting_function = StartCraftingMixin.get_default_candidate_ingredients
+        crafter_other = context.sim
+        is_ingredients_only = cls.ingredient_cost_only
+        subclass_of_order_interaction = issubclass(cls, StartCraftingOrderSuperInteraction)
+        inventory_target = target
+        if crafter_other is DEFAULT and subclass_of_order_interaction and cls.ingredient_source and inst is not None:
+            recipe_list = inst.get_valid_recipe_list()
+        else:
+            recipe_list = cls.recipes
+        candidate_ingredients = cls._get_ingredient_candidates(crafter_other, crafting_target=inventory_target)
+        hashable_recipe_list = tuple(recipe_list)
+        hashable_candidate_ingredients = tuple(candidate_ingredients)
+        (recipe_to_requirements_map, requirements_to_candidates_map) = (_NewRecipeClass._prebuild_recipe_requirement_candidate_maps(
+                cls,
+                hashable_recipe_list,
+                hashable_candidate_ingredients,
+                is_ingredients_only
+            ))
+        recipe_ingredients_map_other = {}
+        for recipe_picker_row in original_result:
+            recipe = recipe_picker_row.tag
+            log.debug('Original val', original_result_val=recipe_picker_row, recipe=recipe)
+            has_required_ingredients = True
+            requirements_for_recipe = cls._try_build_ingredient_requirements_for_recipe(recipe,
+                                                                                        recipe_to_requirements_map,
+                                                                                        requirements_to_candidates_map)
+            recipe_ingredients_map_other[recipe] = requirements_for_recipe
+            if recipe.use_ingredients is not None or recipe.ingredient_cost_only_ingredients is not None or is_ingredients_only:
+                ingredient_requirements = tuple(ingredient_requirement() for ingredient_requirement in
+                                                recipe_to_requirements_map.get(recipe, tuple()))
+                ingredients_used = {}
+                ingredients_found_count = 0
+                ingredients_needed_count = 0
+                for ingredient_requirement in ingredient_requirements:
+                    ingredient_requirement._count_using = 0
+                    ingredient_requirement.attempt_satisfy_ingredients(candidate_ingredients, ingredients_used)
+                    ingredients_found_count += ingredient_requirement.count_satisfied
+                    ingredients_needed_count += ingredient_requirement.count_required
 
-
-def _start_crafting_override(crafter, check_sim_inventory=True, check_fridge_shared_inventory=True):
-    original_result = list(original_start_crafting_function(crafter, check_sim_inventory=check_sim_inventory, check_fridge_shared_inventory=check_fridge_shared_inventory))
-    # log.debug('Got things', crafter=crafter, check_sim_inventory=check_sim_inventory, check_fridge_shared_inventory=check_fridge_shared_inventory, original_ingredients=original_result)
-    if check_sim_inventory and check_fridge_shared_inventory:
-        fridge_inventory = services.active_lot().get_object_inventories(CraftingTuning.SHARED_FRIDGE_INVENTORY_TYPE)[0]
-        if fridge_inventory is not None:
-            for obj in fridge_inventory:
-                if obj.definition.has_build_buy_tag(IngredientTuning.INGREDIENT_TAG):
-                    original_result.append(obj)
-    return original_result
-
-
-# StartCraftingMixin.get_default_candidate_ingredients = _start_crafting_override
+                if ingredients_found_count < ingredients_needed_count:
+                    log.debug('Recipe is being disabled.', recipe=recipe, ingredients_found_count=ingredients_found_count, ingredients_needed_count=ingredients_needed_count)
+                    has_required_ingredients = False
+                    recipe_picker_row.is_enable = False
+                    recipe_picker_row.is_enable_fresh = False
+                    recipe_picker_row.is_enable_prepped = False
+                    recipe_picker_row.is_enable_both_fresh_prepped = False
+                else:
+                    log.debug('Recipe is not being disabled', recipe=recipe, ingredients_found_count=ingredients_found_count, ingredients_needed_count=ingredients_needed_count)
+                ingredients_display_data = tuple(
+                    ingredient_requirement.get_display_data() for ingredient_requirement in ingredient_requirements)
+                recipe_picker_row.ingredients = ingredients_display_data
+                tooltip_ingredients = [ingredient.ingredient_name for ingredient in recipe_picker_row.ingredients]
+                ingredients_comma_list = LocalizationHelperTuning.get_comma_separated_list(*tooltip_ingredients)
+                ingredients_list_string = LocalizationHelperTuning.get_bulleted_list((None,), *tooltip_ingredients)
+                tooltip = functools.partial(IngredientTuning.REQUIRED_INGREDIENT_LIST_STRING,
+                                            ingredients_list_string)
+                if not has_required_ingredients:
+                    tooltip_style = None
+                    if recipe.ingredient_cost_only_ingredients is not None:
+                        tooltip_style = recipe.ingredient_cost_only_ingredients.missing_ingredient_tooltip_style
+                    elif recipe.use_ingredients is not None:
+                        tooltip_style = recipe.use_ingredients.missing_ingredient_tooltip_style
+                    log.debug('Got tooltip style', tooltip_style=tooltip_style)
+                    recipe_picker_row.row_description = IngredientTuning.REQUIRED_INGREDIENT_LIST_STRING(
+                        ingredients_list_string)
+                if recipe.recipe_description:
+                    tooltip = functools.partial(LocalizationHelperTuning.RAW_TEXT,
+                                                LocalizationHelperTuning.get_new_line_separated_strings(
+                                                    recipe.recipe_description(crafter), tooltip()))
+                recipe_picker_row.row_tooltip = tooltip
+                recipe_picker_row.ingredients_list = ingredients_comma_list
+            else:
+                log.debug('Not making required', recipe=recipe)
+            yield recipe_picker_row
 
 
 autonomous_log = BBLogRegistry().register_log(ModIdentity(), 'rci_ingredients_autonomously')
 
 
-# @BBInjectionUtils.inject(ModIdentity(), StartCraftingAutonomouslySuperInteraction, StartCraftingAutonomouslySuperInteraction._run_interaction_gen.__name__)
-def _rci_override_autonomous_crafting_run_interaction_gen(original, self, timeline):
-    original_result = original(self, timeline)
-    autonomous_log.debug('Got original result', me=self, source_sim=self.sim, original_result=original_result)
-    return original_result
-
-
 @BBInjectionUtils.inject(ModIdentity(), StartCraftingAutonomouslySuperInteraction, StartCraftingAutonomouslySuperInteraction._autonomous_test.__name__)
 def _rci_override_autonomous_crafting_interaction(original, cls, target, context, who):
-    # original_result = original(target, context, who)
-    # autonomous_log.debug('Original result', clas=cls, original_result=original_result, target=target, context=context, who=who)
-    # return original_result
     interaction_id = getattr(cls, 'guid64', None)
-    # autonomous_log.debug('Got it', clas=cls, interaction_id=interaction_id)
+    autonomous_log.debug('Got it autonomous', clas=cls, interaction_id=interaction_id)
     if interaction_id not in _NewRecipeClass.INCLUDED_INTERACTION_IDS:
-        return original(target, context, who)
+        original_result = original(target, context, who)
+        autonomous_log.debug('Got autonomous result', clas=cls, original_result=original_result, sim=who.sim_info, target=target)
+        return original_result
     source_sim_info = who.sim_info
     food_restriction_tracker = source_sim_info.food_restriction_tracker
     candidate_ingredients = cls._get_ingredient_candidates(who, crafting_target=target)
     for recipe in cls.recipes:
         if food_restriction_tracker is not None and food_restriction_tracker.recipe_has_restriction(recipe):
-            # autonomous_log.debug('Food has food restriction.', clas=cls, source_sim_info=source_sim_info, recipe=recipe)
+            autonomous_log.debug('Food has food restriction.', clas=cls, source_sim_info=source_sim_info, recipe=recipe)
             pass
         else:
             result = CraftingProcess.recipe_test(target, context, recipe, who, 0, build_error_list=False, from_autonomy=True, check_bucks_costs=False)
             if cls.ingredient_cost_only and not recipe.all_ingredients_available(candidate_ingredients, cls.ingredient_cost_only):
-                # autonomous_log.debug('Did autonomous test, but not all ingredients were available.', clas=cls, source_sim_info=source_sim_info, ingredient_cost_only=cls.ingredient_cost_only, recipe=recipe, candidate_ingredients=candidate_ingredients)
+                autonomous_log.debug('Did autonomous test, but not all ingredients were available.', clas=cls, source_sim_info=source_sim_info, ingredient_cost_only=cls.ingredient_cost_only, recipe=recipe, candidate_ingredients=candidate_ingredients)
                 pass
             elif result:
                 autonomous_log.debug('Dis autonomous test, success', clas=cls, source_sim_info=source_sim_info, recipe=recipe)
                 return TestResult.TRUE
             else:
-                # autonomous_log.debug('Did autonomous test, result failed', clas=cls, source_sim_info=source_sim_info, recipe=recipe, result=result)
+                autonomous_log.debug('Did autonomous test, result failed', clas=cls, source_sim_info=source_sim_info, recipe=recipe, result=result)
                 pass
-    # autonomous_log.debug('Got candidate ingredients', clas=cls, sim_info=source_sim_info, candidate_ingredients=candidate_ingredients, recipes=cls.recipes)
+    autonomous_log.debug('Got candidate ingredients', clas=cls, sim_info=source_sim_info, candidate_ingredients=candidate_ingredients, recipes=cls.recipes)
     return TestResult(False, 'There are no autonomously completable recipes.')
-    # original_result = original(target, context, who)
-    #
-    # return original_result
 
 
 @BBInjectionUtils.inject(ModIdentity(), StartCraftingMixin, StartCraftingMixin.find_best_recipe.__name__)

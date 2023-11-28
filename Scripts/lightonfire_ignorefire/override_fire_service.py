@@ -26,9 +26,12 @@ def _lof_override_alert_all_sims(original, *_, **__):
     return
 
 
-@BBInjectionUtils.inject(ModIdentity(), FireService, 'fire_is_active')
+# @BBInjectionUtils.inject(ModIdentity(), FireService, 'fire_is_active')
 def _lof_override_fire_is_active(original, *_, **__):
     return False
+
+
+FireService.INTERACTION_UNAVAILABLE_DUE_TO_FIRE_TOOLTIP = lambda *_, **__: None
 
 
 @BBInjectionUtils.inject(ModIdentity(), Broadcaster, Broadcaster.can_affect.__name__)

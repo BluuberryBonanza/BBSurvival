@@ -114,11 +114,17 @@ class BBSScavengingUtils(BBLogMixin):
 
         if Pack.EP11 in available_packs:
             ep11_seed_definition_ids = {
-                272268: BBSItemRarity.COMMON,  # gardenSeedPacket_EP11GENcrop_set1_aubergine
-                272269: BBSItemRarity.COMMON,  # gardenSeedPacket_EP11GENcrop_set2_lettuce
-                272270: BBSItemRarity.UNCOMMON,  # gardenSeedPacket_EP11GENcrop_set3_pumpkin
-                272271: BBSItemRarity.RARE,  # gardenSeedPacket_EP11GENcrop_set4_watermelon
-                284142: BBSItemRarity.EXOTIC,  # gardenSeedPacket_EP11GENcrop_set5_mushroom
+                # 272268: BBSItemRarity.COMMON,  # gardenSeedPacket_EP11GENcrop_set1_aubergine
+                # 272269: BBSItemRarity.COMMON,  # gardenSeedPacket_EP11GENcrop_set2_lettuce
+                # 272270: BBSItemRarity.UNCOMMON,  # gardenSeedPacket_EP11GENcrop_set3_pumpkin
+                # 272271: BBSItemRarity.RARE,  # gardenSeedPacket_EP11GENcrop_set4_watermelon
+                # 284142: BBSItemRarity.EXOTIC,  # gardenSeedPacket_EP11GENcrop_set5_mushroom
+
+                271881: BBSItemRarity.COMMON,  # jar_EP11GENcropSeed_set1_aubergine
+                284571: BBSItemRarity.COMMON,  # jar_EP11GENcropSeed_set2_lettuce
+                284572: BBSItemRarity.UNCOMMON,  # jar_EP11GENcropSeed_set3_pumpkin
+                284573: BBSItemRarity.RARE,  # jar_EP11GENcropSeed_set4_watermelon
+                284574: BBSItemRarity.EXOTIC,  # jar_EP11GENcropSeed_set5_mushroom
             }
             seed_definition_ids.update(ep11_seed_definition_ids)
 

@@ -15,6 +15,7 @@ from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bbsurvival.bb_lib.utils.bb_sim_relationship_utils import BBSimRelationshipUtils
 from bbsurvival.bb_lib.utils.bb_sim_species_utils import BBSimSpeciesUtils
 from bbsurvival.mod_identity import ModIdentity
+from bbsurvival.prologue.enums.string_ids import BBSPrologueStringId
 from bbsurvival.settlement.contexts.settlement_context import BBSSettlementContext
 from bbsurvival.settlement.contexts.settlement_context_manager import BBSSettlementContextManager
 from bbsurvival.settlement.enums.relationship_bit_ids import BBSSettlementRelationshipBitId
@@ -266,18 +267,17 @@ class BBSSettlementUtils:
         def _on_choose_read_the_basics(_: Any):
             BBNotification(
                 ModIdentity(),
-                BBLocalizedStringData('The Basics'),
-                BBLocalizedStringData('The basics to surviving are to ensure you have enough food, enough power, and enough water. Buy a Generator or Solar Panels for power and a Dew Collector for water. Go scavenging for Food.')
+                BBLocalizedStringData(BBSPrologueStringId.SURVIVAL_MANUAL_CHAPTER_1_BASICS_TITLE),
+                BBLocalizedStringData(BBSPrologueStringId.SURVIVAL_MANUAL_CHAPTER_1_BASICS_DESCRIPTION)
             ).show()
 
         buttons = (
             BBButton(
                 1,
-                BBLocalizedStringData('Read The Basics'),
+                BBLocalizedStringData(BBSPrologueStringId.SURVIVAL_MANUAL_CHAPTER_1_BASICS_TITLE),
                 _on_choose_read_the_basics,
-                value='Basics',
-                subtext=BBLocalizedStringData('Learn the basics of surviving.'),
-                tooltip_text=BBLocalizedStringData('Learn the basics of surviving.')
+                value='Chapter1',
+                tooltip_text=BBLocalizedStringData(BBSPrologueStringId.SURVIVAL_MANUAL_CHAPTER_1_BASICS_TITLE)
             ),
         )
 
@@ -286,7 +286,7 @@ class BBSSettlementUtils:
 
         BBButtonDialog(
             ModIdentity(),
-            BBLocalizedStringData(f'What will {sim_info} read?'),
-            BBLocalizedStringData('Choose a topic.'),
+            BBLocalizedStringData(BBSPrologueStringId.WHAT_WILL_SIM_READ, tokens=(sim_info,)),
+            BBLocalizedStringData(BBSPrologueStringId.CHOOSE_A_CHAPTER),
             buttons
         ).display(sim_info, on_closed=_on_closed)

@@ -5,6 +5,7 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 
 Copyright (c) BLUUBERRYBONANZA
 """
+import services
 from bbsurvival.bb_lib.utils.bb_eco_lifestyle_utility_utils import BBEcoLifestyleUtilityUtils
 from bbsurvival.bb_lib.utils.bb_zone_modifier_utils import BBZoneModifierUtils
 from bbsurvival.mod_identity import ModIdentity
@@ -12,7 +13,6 @@ from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
 from bluuberrylibrary.classes.bb_run_result import BBRunResult
 from bluuberrylibrary.events.event_dispatchers.zone.events.bb_on_zone_load_end_event import BBOnZoneLoadEndEvent
 from bluuberrylibrary.events.event_handling.bb_event_handler_registry import BBEventHandlerRegistry
-from zone import Zone
 
 
 class _BBSLotChallenges:
@@ -59,22 +59,18 @@ class _BBSLotChallenges:
 @BBEventHandlerRegistry.register(ModIdentity(), BBOnZoneLoadEndEvent)
 def _bbs_add_off_the_grid_on_zone_load(event: BBOnZoneLoadEndEvent):
     if not BBSPrologueData().is_mod_fully_active():
-        def _add_lot_challenges(_zone: Zone):
-            def _add():
-                zone_id = _zone.id
-                _BBSLotChallenges.add_lot_challenges(zone_id)
-            return _add
+        def _add_lot_challenges():
+            zone_id = services.current_zone_id()
+            _BBSLotChallenges.add_lot_challenges(zone_id)
 
-        BBSPrologueData().register_on_activate(_add_lot_challenges(event.zone))
+        BBSPrologueData().register_on_activate(_add_lot_challenges)
         return BBRunResult.TRUE
 
-    def _remove_lot_challenges(_zone: Zone):
-        def _remove():
-            zone_id = _zone.id
-            _BBSLotChallenges.remove_lot_challenges(zone_id)
-        return _remove
+    def _remove_lot_challenges():
+        zone_id = services.current_zone_id()
+        _BBSLotChallenges.remove_lot_challenges(zone_id)
 
-    BBSPrologueData().register_on_deactivate(_remove_lot_challenges(event.zone))
+    BBSPrologueData().register_on_deactivate(_remove_lot_challenges)
 
     _BBSLotChallenges.add_lot_challenges(event.zone.id)
     return BBRunResult.TRUE

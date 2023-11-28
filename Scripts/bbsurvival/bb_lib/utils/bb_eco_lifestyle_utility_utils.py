@@ -18,6 +18,8 @@ class BBEcoLifestyleUtilityUtils:
         :rtype: float
         """
         zone = services.get_zone(zone_id)
+        if zone is None:
+            raise AssertionError(f'No Zone was found with id {zone_id}')
         lot = zone.lot
         import objects.components.types
         statistic_component: StatisticComponent = None if lot is None else BBComponentUtils.get_component(lot, objects.components.types.STATISTIC_COMPONENT, return_type=StatisticComponent)
@@ -37,6 +39,8 @@ class BBEcoLifestyleUtilityUtils:
         :type level: float
         """
         zone = services.get_zone(zone_id)
+        if zone is None:
+            raise AssertionError(f'No Zone was found with id {zone_id}')
         lot = zone.lot
         import objects.components.types
         statistic_component: StatisticComponent = None if lot is None else BBComponentUtils.get_component(lot, objects.components.types.STATISTIC_COMPONENT, return_type=StatisticComponent)
@@ -56,6 +60,8 @@ class BBEcoLifestyleUtilityUtils:
         :rtype: float
         """
         zone = services.get_zone(zone_id)
+        if zone is None:
+            raise AssertionError(f'No Zone was found with id {zone_id}')
         lot = zone.lot
         import objects.components.types
         statistic_component: StatisticComponent = None if lot is None else BBComponentUtils.get_component(lot, objects.components.types.STATISTIC_COMPONENT, return_type=StatisticComponent)
@@ -75,6 +81,8 @@ class BBEcoLifestyleUtilityUtils:
         :type level: float
         """
         zone = services.get_zone(zone_id)
+        if zone is None:
+            raise AssertionError(f'No Zone was found with id {zone_id}')
         lot = zone.lot
         import objects.components.types
         statistic_component: StatisticComponent = None if lot is None else BBComponentUtils.get_component(lot, objects.components.types.STATISTIC_COMPONENT, return_type=StatisticComponent)
@@ -94,6 +102,8 @@ class BBEcoLifestyleUtilityUtils:
         :rtype: float
         """
         zone = services.get_zone(zone_id)
+        if zone is None:
+            raise AssertionError(f'No Zone was found with id {zone_id}')
         lot = zone.lot
         import objects.components.types
         statistic_component: StatisticComponent = None if lot is None else BBComponentUtils.get_component(lot, objects.components.types.STATISTIC_COMPONENT, return_type=StatisticComponent)
@@ -113,6 +123,8 @@ class BBEcoLifestyleUtilityUtils:
         :type level: float
         """
         zone = services.get_zone(zone_id)
+        if zone is None:
+            raise AssertionError(f'No Zone was found with id {zone_id}')
         lot = zone.lot
         import objects.components.types
         statistic_component: StatisticComponent = None if lot is None else BBComponentUtils.get_component(lot, objects.components.types.STATISTIC_COMPONENT, return_type=StatisticComponent)

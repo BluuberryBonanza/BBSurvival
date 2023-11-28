@@ -14,6 +14,7 @@ from bbsurvival.bb_lib.utils.bb_alarm_utils import BBAlarmUtils
 from bbsurvival.bb_lib.utils.bb_sim_household_utils import BBSimHouseholdUtils
 from bbsurvival.mod_identity import ModIdentity
 from bbsurvival.prologue.bbs_prologue_data import BBSPrologueData
+from bbsurvival.prologue.enums.string_ids import BBSPrologueStringId
 from bbsurvival.settlement.enums.settlement_member_job import BBSSettlementMemberJobFlags
 from bbsurvival.settlement.enums.trait_ids import BBSSettlementTraitId
 from bbsurvival.settlement.contexts.settlement_context import BBSSettlementContext
@@ -69,32 +70,38 @@ class BBSSettlementContextManager(metaclass=BBSingleton):
         else:
             settlement_context = self.get_settlement_context_for_current_zone()
 
-        if settlement_context is None:
-            log.debug('Failed to locate settlement context.')
-            return BBRunResult(False, 'No Settlement exists on the current lot.')
-
-        head_of_settlement_sim_info = settlement_context.get_head_of_settlement_context().sim_info
+        if settlement_context is not None:
+            head_of_settlement_context = settlement_context.get_head_of_settlement_context()
+            if head_of_settlement_context is None:
+                return BBRunResult(False, 'No Head of Settlement was found for the settlement of the current lot!')
+            head_of_settlement_sim_info = head_of_settlement_context.sim_info
+        else:
+            if head_of_settlement_sim_info_override is None:
+                log.debug('Failed to locate settlement context and no head of settlement override was specified.')
+                return BBRunResult(False, 'No Settlement exists on the current lot and no head of settlement was specified.')
+            head_of_settlement_sim_info = head_of_settlement_sim_info_override
 
         from bbsurvival.settlement.utils.settlement_utils import BBSSettlementUtils
         BBSSettlementUtils.add_head_of_settlement_relationship(head_of_settlement_sim_info, sim_info)
         result = BBSimTraitUtils.add_trait(sim_info, BBSSettlementTraitId.SETTLEMENT_MEMBER)
         log.debug('Trait add result as result of adding settlement member context', result=result, sim_info=sim_info)
 
-        log.debug('Attempting to add sim as member', sim=sim_info)
-        if settlement_context.has_member_context(sim_info):
-            log.debug('Sim was already in the settlement.', sim=sim_info)
-            settlement_context.get_member_context(sim_info).setup()
-            return BBRunResult(True, f'{sim_info} was already in the settlement context.')
+        if settlement_context is not None:
+            log.debug('Attempting to add sim as member', sim=sim_info)
+            if settlement_context.has_member_context(sim_info):
+                log.debug('Sim was already in the settlement.', sim=sim_info)
+                settlement_context.get_member_context(sim_info).setup()
+                return BBRunResult(True, f'{sim_info} was already in the settlement context.')
 
-        log.debug('Adding Sim as member.', sim=sim_info)
-        member_context = BBSSettlementMemberContext(
-            sim_info,
-            BBSSettlementMemberJobFlags.NONE,
-            False
-        )
-        settlement_context.add_member_context(
-            member_context
-        )
+            log.debug('Adding Sim as member.', sim=sim_info)
+            member_context = BBSSettlementMemberContext(
+                sim_info,
+                BBSSettlementMemberJobFlags.NONE,
+                False
+            )
+            settlement_context.add_member_context(
+                member_context
+            )
         return BBRunResult.TRUE
 
     def add_missing_settlement_member_contexts(self) -> BBRunResult:
@@ -177,11 +184,15 @@ class BBSSettlementContextManager(metaclass=BBSingleton):
             self._setup_alarm_for_set_head_of_settlement()
             return
 
+        if len(sim_rows) == 1:
+            _on_submit((sim_rows[0].sim_info,))
+            return
+
         from bbsurvival.bb_lib.dialog.bb_sim_dialog import BBSimDialog
         BBSimDialog(
             ModIdentity(),
-            BBLocalizedStringData('Choose a Sim to become Head of Settlement'),
-            BBLocalizedStringData('The chosen Sim will become the Head of Settlement.'),
+            BBLocalizedStringData(BBSPrologueStringId.CHOOSE_PROTAGONIST_TITLE),
+            BBLocalizedStringData(BBSPrologueStringId.CHOOSE_PROTAGONIST_DESCRIPTION),
             tuple(sim_rows)
         ).display(BBSimUtils.get_active_sim_info(), _on_submit, on_closed=_on_close)
 
